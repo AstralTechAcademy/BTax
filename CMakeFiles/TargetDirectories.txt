@@ -1,0 +1,4 @@
+/home/gabridc/Repositorio/Broker/CMakeFiles/rebuild_cache.dir
+/home/gabridc/Repositorio/Broker/CMakeFiles/edit_cache.dir
+/home/gabridc/Repositorio/Broker/CMakeFiles/Broker.dir
+/home/gabridc/Repositorio/Broker/CMakeFiles/Broker_autogen.dir
