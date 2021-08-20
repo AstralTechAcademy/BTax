@@ -8,8 +8,9 @@ import Broker 1.0
 Window {
     id: mainWindow
     visible: true
-    width: 800
-    height: 480
+    height: Screen.height
+    width: Screen.width
+    //visibility: "FullScreen"
     color: "#e9e7e7"
     title: qsTr("Broker")
 

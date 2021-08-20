@@ -7,10 +7,9 @@ import Broker 1.0
 
 Rectangle{
     id: rect
-    width: 500
+    width: 350
     height: 50
 
-    anchors.horizontalCenter: parent.horizontalCenter
     property alias text_: textInput.text
     Rectangle
     {

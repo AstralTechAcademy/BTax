@@ -7,33 +7,71 @@ Item{
 
     id: body
 
-        MaterialTextInput
-        {
-            id: pv
-            text_: "Precio Venta (PV)"
+        Item{
+            id: inputsItem
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 350
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
+            Column
+            {
+                id: inputs
+                spacing: 15
+
+                MaterialTextInput{
+                    id: pc
+                    text_: "Precio Compra (PC)"
+
+                }
+                        
+                MaterialTextInput{
+                    id: invertido
+                    text_: "Invertido (€)"
+                }
+                    
+                MaterialTextInput
+                {
+                    id: pv
+                    text_: "Precio Venta (PV)"
+                }
+
+                MaterialTextInput{
+                    id: recuperado
+                    text_: "Recuperado (€)"
+                }                
+            }
+
+            Rectangle{
+                id: addButton
+                color: "blue"
+                anchors.top: inputs.top
+                anchors.topMargin: 40
+                anchors.left: inputs.right
+                anchors.leftMargin: 15
+                width: 30
+                height: 30
+                radius: width*0.5
+                Text{
+                    text: "+"
+                    color: "white"
+                    font.pixelSize: 15
+                    font.bold: true
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                MouseArea
+                {
+                    id: addMA
+                    anchors.fill: parent
+                    onClicked: console.log("Add")
+                }
+            }
         }
 
-        MaterialTextInput{
-            id: pc
-            text_: "Precio Compra (PC)"
-            anchors.top: pv.bottom
-            anchors.topMargin: 20
-        }
-        
-        MaterialTextInput{
-            id: invertido
-            text_: "Invertido (€)"
-            anchors.top: pc.bottom
-            anchors.topMargin: 20
-        }
 
-        MaterialTextInput{
-            id: recuperado
-            text_: "Recuperado (€)"
-            anchors.top: invertido.bottom
-            anchors.topMargin: 20
-        }
-
+       
         Button{
             id: calcularButton
             text: "Calcular"
