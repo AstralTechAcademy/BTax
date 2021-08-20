@@ -19,8 +19,7 @@ Window {
         id: logo
         width: 128
         height: 60
-        anchors.left: parent.left
-        anchors.leftMargin: 39
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 23
 

@@ -8,40 +8,67 @@ Item{
 
     id: body
 
+
         Item{
             id: inputsItem
             anchors.top: parent.top
             anchors.topMargin: 0
             anchors.horizontalCenter: parent.horizontalCenter
             width: 350
-            anchors.bottom: parent.bottom
+            anchors.bottom: addButton.top
             anchors.bottomMargin: 20
             Column
             {
                 id: inputs
                 spacing: 15
 
-                MaterialTextInput{
+                Material.TextInput{
                     id: pc
+                    id_: "Precio Compra (PC)"
                     text_: "Precio Compra (PC)"
 
                 }
                         
-                MaterialTextInput{
+                Material.TextInput{
                     id: invertido
+                    id_: "Invertido (€)"
                     text_: "Invertido (€)"
                 }
+
+                Material.TextInput{
+                    id: benefitWaited
+                    id_: "Beneficio (%)"
+                    text_: "Beneficio (%)"
+                    onSelected: {
+                        pv.disabled_ = true
+                        pv.text_ = ""
+                    }
+                }
                     
-                MaterialTextInput
+                Material.TextInput
                 {
                     id: pv
+                    id_: "Precio Venta (PV)"
                     text_: "Precio Venta (PV)"
+                    onSelected: {
+                        benefitWaited.disabled_ = true
+                        benefitWaited.text_ = ""
+                    }
                 }
 
-                MaterialTextInput{
+                Material.TextInput{
                     id: recuperado
+                    id_: "Recuperado (€)"
                     text_: "Recuperado (€)"
-                }                
+                    onSelected: {
+                        pv.disabled_ = true
+                        pv.text_ = ""
+                        benefitWaited.disabled_ = true
+                        benefitWaited.text_ = ""
+                    }
+                }
+
+
             }
 
             Rectangle{
@@ -76,6 +103,51 @@ Item{
         Button{
             id: calcularButton
             text: "Calcular"
-            onClicked: {recuperado.text_ = pv.text_/pc.text_ * invertido.text_}
+            anchors.left: inputsItem.left
+            anchors.leftMargin: 5
+            anchors.bottom: body.bottom
+            anchors.bottomMargin: 10
+            onClicked: {
+                calculate(pc,invertido, benefitWaited, pv, recuperado)
+            }
+        }
+
+        Button{
+            id: clearButton
+            text: "Limpiar"
+            anchors.right: inputsItem.right
+            anchors.rightMargin: 5
+            anchors.bottom: body.bottom
+            anchors.bottomMargin: 10
+            onClicked: {
+                pc.clear()
+                invertido.clear()
+                benefitWaited.clear()
+                pv.clear()
+                recuperado.clear()
+            }
+        }
+
+        function calculate(pc, invertido, benefitWaited, pv, recuperado){
+
+            if(pv.disabled_ && !recuperado.disabled_ && !benefitWaited.disabled_)
+            {
+                recuperado.text_ = Number(invertido.text_) + Number(invertido.text_*benefitWaited.text_/100)
+                pv.text_ = recuperado.text_/invertido.text_*pc.text_
+            }
+            else if(benefitWaited.disabled_ && !recuperado.disabled_ && !pv.disabled_ )
+            {
+                recuperado.text_ = pv.text_/pc.text_ * invertido.text_;
+                benefitWaited.text_ = Number (Number(recuperado.text_) - Number(invertido.text_))*100 / Number(invertido.text_)
+            }
+            else if(benefitWaited.disabled_ && pv.disabled_ )
+            {
+                benefitWaited.text_ = Number (Number(recuperado.text_) - Number(invertido.text_))*100 / Number(invertido.text_)
+                pv.text_ = Number(recuperado.text_/invertido.text_)*Number(pc.text_)
+            }
+            else
+            {
+                recuperado.text_ = pv.text_/pc.text_ * invertido.text_;
+            }
         }
 }
