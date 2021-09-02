@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>body.qml</file>
         <file>MaterialTextInput.qml</file>
+        <file>Operation.qml</file>
     </qresource>
 </RCC>

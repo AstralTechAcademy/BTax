@@ -15,6 +15,14 @@ Window {
     color: "#e9e7e7"
     title: qsTr("Broker")
 
+    BrokerImpl{
+        id: broker
+    }
+
+    Component.onCompleted: console.log(broker.getHost())
+
+    readonly property int host_os: broker.getHost()
+
     Item {
         id: logo
         width: 128

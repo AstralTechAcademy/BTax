@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.14
 import es.broker.components.material 1.0 as Material
+import es.broker 1.0
 
 Item{
 
@@ -14,7 +15,7 @@ Item{
             anchors.top: parent.top
             anchors.topMargin: 0
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 350
+            width: 300
             anchors.bottom: addButton.top
             anchors.bottomMargin: 20
             Column
@@ -40,7 +41,7 @@ Item{
                     id_: "Beneficio (%)"
                     text_: "Beneficio (%)"
                     onSelected: {
-                        pv.disabled_ = true
+                        pv.state = "disabled"
                         pv.text_ = ""
                     }
                 }
@@ -51,7 +52,7 @@ Item{
                     id_: "Precio Venta (PV)"
                     text_: "Precio Venta (PV)"
                     onSelected: {
-                        benefitWaited.disabled_ = true
+                        benefitWaited.state = "disabled"
                         benefitWaited.text_ = ""
                     }
                 }
@@ -61,9 +62,9 @@ Item{
                     id_: "Recuperado (€)"
                     text_: "Recuperado (€)"
                     onSelected: {
-                        pv.disabled_ = true
+                        pv.state = "disabled"
                         pv.text_ = ""
-                        benefitWaited.disabled_ = true
+                        benefitWaited.state = "disabled"
                         benefitWaited.text_ = ""
                     }
                 }
@@ -149,5 +150,15 @@ Item{
             {
                 recuperado.text_ = pv.text_/pc.text_ * invertido.text_;
             }
+        }
+
+        Operation{
+            id: operation
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: clearButton.top
+            anchors.bottomMargin: 150
+            coinName_: "ADA/EUR"
+            deposit_: "0.14556" + "~ 400€"
+            retired_: "1.56780" + "~ 460€"
         }
 }

@@ -52,19 +52,20 @@ include_directories(~/Qt/5.15.2/gcc_64/include/)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtNetworkAuth)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtNetwork)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtWidgets)
-
-
+include_directories(./)
 
 qt5_add_resources(RESOURCES ./qml.qrc)
 
 if(ANDROID)
     add_library(Broker SHARED
             main.cpp
+            Broker.cpp
+            Broker.h
             ${RESOURCES})
 else()
 add_executable(Broker
         main.cpp
-        ${RESOURCES})
+        ${RESOURCES} Broker.cpp Broker.h)
 endif()
 
 if(LINUX)
