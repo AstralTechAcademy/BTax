@@ -6,7 +6,7 @@ import QtQuick.Controls 2.14
 
 Rectangle{
     id: rect
-    width: 350
+    width: 280
     height: 50
 
     signal selected()
@@ -14,7 +14,12 @@ Rectangle{
     property alias text_: textInput.text
     property bool disabled_: false
 
-    color: if(disabled_ == false){"white"}else{"lightgray"}
+    color: "white"
+
+    Component.onCompleted:{
+        oldValue.state = "enabled"
+        textInput.state = "enabled"
+    }
 
     Rectangle
     {
@@ -28,13 +33,31 @@ Rectangle{
 
     Text {
         id: oldValue
-        text : if(disabled_ == false){""}else{id_}
-        color: if(disabled_ == false){"#03657c"}else{"white"}
+        text : ""
+        color: "#03657c"
         anchors.top: parent.top
         anchors.topMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 10
-    
+
+        states: [
+            State {
+                name: "disabled"
+                PropertyChanges { target: oldValue; text: id_; color: "white" }
+            },
+            State {
+                name: "enabled"
+                PropertyChanges { target: oldValue; text: ""; color: "#03657c" }
+            },
+            State {
+                name: "selected"
+                PropertyChanges { target: oldValue; text: id_; color: "#03657c"}
+            },
+            State {
+                name: "default"
+                PropertyChanges { target: oldValue; text: ""; color: "#03657c"}
+            }
+        ]
     }
 
     TextInput{
@@ -45,8 +68,8 @@ Rectangle{
         anchors.topMargin: 15
         anchors.left: parent.left
         anchors.leftMargin: 10
-        enabled: if(disabled_ == false){true}else{false}
-        color: if(disabled_ == false){"lightgray"}else{"white"}
+        enabled: true
+        color: "lightgray"
         text:  text_
         verticalAlignment: TextInput.AlignVCenter
 
@@ -54,27 +77,76 @@ Rectangle{
         {
             id: ma
             anchors.fill: textInput
-            enabled: if(disabled_ == false){true}else{false}
+            enabled: true
             onClicked: {
-                oldValue.text = text_
-                textInput.color = "black"
-                text_ = ""
-                ma.visible = false
-                textInput.focus = true
+                oldValue.state = "selected"
+                textInput.state = "selected"
+                //textInput.color = "black"
+                //text_ = ""
                 rect.selected()
             }
-        }                
+
+            states: [
+                State {
+                    name: "disabled"
+                    PropertyChanges { target: ma; enabled: false; visible: false}
+                },
+                State {
+                    name: "enabled"
+                    PropertyChanges { target: ma; enabled: true; visible: true }
+                },
+                State {
+                    name: "default"
+                    PropertyChanges { target: ma; enabled: true; visible: true }
+                }
+            ]
+        }
+        states: [
+            State {
+                name: "disabled"
+                PropertyChanges { target: textInput; text: text_; color: "white"}
+                PropertyChanges { target: ma; state: "disabled"}
+            },
+            State {
+                name: "enabled"
+                PropertyChanges { target: textInput; text: text_; color: "lightgray"}
+                PropertyChanges { target: ma; state: "enabled"}
+            },
+            State {
+                name: "selected"
+                PropertyChanges { target: textInput; text: ""; color: "black"; focus: true}
+                PropertyChanges { target: ma; state: "disabled"}
+            },
+            State {
+                name: "default"
+                PropertyChanges { target: textInput; text: id_; color: "lightgray"; enabled: true; focus: false}
+                PropertyChanges { target: ma; state: "default"}
+            }
+        ]
     }
+
+    states: [
+        State {
+            name: "disabled"
+            PropertyChanges { target: oldValue; state: "disabled" }
+            PropertyChanges { target: textInput; state: "disabled"}
+            PropertyChanges { target: rect; color: "lightgray"}
+        },
+        State {
+            name: "enabled"
+            PropertyChanges { target: textInput; state: "enabled" }
+            PropertyChanges { target: oldValue; state: "enabled" }
+            PropertyChanges { target: rect; color: "white"}
+        }
+    ]
 
     function clear()
     {
          text_ = id_
-         disabled_ = false
-         oldValue.text = ""
-//         if(disabled_ == false){ oldValue.color = "#03657c"}else{  oldValue.color = "white"}
-  //       if(disabled_ == false){textInput.color =  "lightgray"}else{ textInput.color =  "white"}
-         textInput.focus = false
-         ma.enabled = true
-         ma.visible = true
+         oldValue.state = "default"
+         textInput.state = "default"
+         ma.state = "default"
+         rect.state = "enabled"
     }
+
 }
