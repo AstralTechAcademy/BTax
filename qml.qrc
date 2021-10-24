@@ -4,5 +4,13 @@
         <file>body.qml</file>
         <file>MaterialTextInput.qml</file>
         <file>Operation.qml</file>
+        <file>SchedulerBody.qml</file>
+    </qresource>
+
+    <qresource prefix="/assets">
+        <file alias="home">assets/home-white-18dp.svg</file>
+        <file alias="average">assets/calculate_black_48dp.svg</file>
+        <file alias="average-white">assets/calculate_white_48dp.svg</file>
+        <file alias="schedule-white">assets/schedule_white_48dp.svg</file>
     </qresource>
 </RCC>
