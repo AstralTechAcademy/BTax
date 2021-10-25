@@ -9,12 +9,16 @@ Rectangle{
 
     color: "#A5A5A5"
     radius: 10
-    width: 300
-    height: 100
+    width: parent.width
+    height: 70
 
     property int id_: 0
     property alias buyPrice_ : precioCompra.text
-    property alias precioVenta_ : precioVenta.text
+    //property alias buyPriceFiat_ : buyPriceFiat.text
+    property alias buyDate_ : buyDate.text
+    property alias sellPrice_ : precioVenta.text
+    //property alias sellPriceFiat_ : sellPriceFiat.text
+    property alias sellDate_ : sellDate.text
     property alias deposit_: deposit.text
     property alias retired_: retired.text
     property alias status_: status.text
@@ -24,8 +28,7 @@ Rectangle{
         id: coinNameFirst
         currentIndex: 0
         model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD"]
-        anchors.top: parent.top
-        anchors.topMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 10
         width: 90
@@ -36,8 +39,7 @@ Rectangle{
         id: coinNameSecond
         currentIndex: 0
         model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD"]
-        anchors.top: parent.top
-        anchors.topMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
         anchors.left: coinNameFirst.right
         anchors.leftMargin: 10
         width: 90
@@ -45,14 +47,46 @@ Rectangle{
 
     }
 
+    Text{
+        text: "Invested"
+        font.pixelSize: 12
+        color: "white"
+        anchors.bottom: deposit.top
+        anchors.bottomMargin: 2
+        anchors.left: deposit.left
+        anchors.leftMargin: 0
+    }
+
+    TextInput{
+        id: deposit
+        text: "Invested"
+        color: "red"
+        font.pixelSize: 15
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: coinNameSecond.right
+        anchors.leftMargin: 30
+        width: 130
+        height: 20
+    }
+
+    Text{
+        text: "Buy Price"
+        font.pixelSize: 12
+        color: "white"
+        anchors.bottom: precioCompra.top
+        anchors.bottomMargin: 2
+        anchors.left: precioCompra.left
+        anchors.leftMargin: 0
+    }
+
+
     TextInput{
         id: precioCompra
         text: "PC"
         color: "white"
         font.pixelSize: 15
-        anchors.top: coinNameFirst.bottom
-        anchors.topMargin: 10
-        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: deposit.right
         anchors.leftMargin: 10
         width: 60
         height: 20
@@ -100,15 +134,63 @@ Rectangle{
 
     }
 
+    Text{
+        id: buyDate
+        text: "No Date"
+        font.pixelSize: 12
+        color: "white"
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: precioCompra.right
+        anchors.leftMargin: 10
+    }
+
+    ToolSeparator{
+        orientation: Qt.Vertical
+        anchors.left: buyDate.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 10
+    }
+
+    Text{
+        text: "Sell Price"
+        font.pixelSize: 12
+        color: "white"
+        anchors.bottom: precioVenta.top
+        anchors.bottomMargin: 2
+        anchors.left: precioVenta.left
+        anchors.leftMargin: 0
+    }
+
+    Text{
+        text: "Retired"
+        font.pixelSize: 12
+        color: "white"
+        anchors.bottom: retired.top
+        anchors.bottomMargin: 2
+        anchors.left: retired.left
+        anchors.leftMargin: 0
+    }
+
+    TextInput{
+        id: retired
+        text: "Retired"
+        color: "green"
+        font.pixelSize: 15
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: buyDate.right
+        anchors.leftMargin: 30
+        width: 130
+        height: 20
+    }
+
     TextInput {
         id: precioVenta
         text: "PV"
         color: "white"
         font.pixelSize: 15
-        anchors.top: precioCompra.top
-        anchors.topMargin: 0
-        anchors.left: precioCompra.right
-        anchors.leftMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: retired.right
+        anchors.leftMargin: 30
         width: 60
         height: 20
         enabled: true
@@ -121,7 +203,7 @@ Rectangle{
             enabled: true
             onClicked: {
                 console.log("Clicked")
-                precioVenta_ += "10"
+                sellPrice_ += "10"
                 pvMA.state = "disabled"
             }
 
@@ -144,7 +226,7 @@ Rectangle{
         states: [
             State {
                 name: "default"
-                PropertyChanges { target: precioVenta; text: precioVenta_}
+                PropertyChanges { target: precioVenta; text: sellPrice_}
             },
             State {
                 name: "selected"
@@ -154,31 +236,24 @@ Rectangle{
         ]
     }
 
-    TextInput{
-        id: deposit
-        text: "Deposit"
-        color: "red"
-        font.pixelSize: 15
-        anchors.top: precioCompra.bottom
-        anchors.topMargin: 5
-        anchors.left: parent.left
+    Text{
+        id: sellDate
+        text: "No Date"
+        font.pixelSize: 12
+        color: "white"
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: precioVenta.right
         anchors.leftMargin: 10
-        width: 130
-        height: 20
     }
 
-    TextInput{
-        id: retired
-        text: "Retired"
-        color: "green"
-        font.pixelSize: 15
-        anchors.top: deposit.top
-        anchors.topMargin: 0
-        anchors.left: deposit.right
+    ToolSeparator{
+        orientation: Qt.Vertical
+        anchors.left: sellDate.right
+        anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: 10
-        width: 130
-        height: 20
     }
+
+
 
     Text{
         id: status

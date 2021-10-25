@@ -29,10 +29,12 @@ ListView{
         model: operationsModel
         delegate: Operation{
             id_: model.id
-            buyPrice_: model.buyPrice
-            //sellPrice: model.sellPrice
+            buyPrice_: String(model.buyPrice)
+            sellPrice_: model.sellPrice
             //buyPriceDate: model.buyPriceDate
             //sellPriceDate: model.sellPriceDate
+            buyDate_: "January 10, 2000 00:00:00"
+            sellDate_: "January 10, 2000 00:00:00"
             deposit_: model.deposit
             retired_: model.retired
             status_: model.status

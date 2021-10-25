@@ -29,7 +29,7 @@ public:
         comments,
     };
     OperationsModel(QObject *parent = 0){
-        add(new Operation(1, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
+        add(new Operation(1, "ADA", "EUR", 100000, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
         add(new Operation(2, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
         add(new Operation(3, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
         add(new Operation(4, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
