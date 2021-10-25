@@ -23,7 +23,7 @@ ListView{
         anchors.rightMargin: 20
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
-        orientation: Qt.Horizontal
+        orientation: Qt.Vertical
         spacing: 10
         clip: true
         model: operationsModel

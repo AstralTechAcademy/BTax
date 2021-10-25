@@ -19,6 +19,9 @@ Window {
         id: broker
     }
 
+
+    //OperationsModel{id: operationsModel}
+
     Component.onCompleted: console.log(broker.getHost())
 
     readonly property int host_os: broker.getHost()
@@ -52,7 +55,7 @@ Window {
         id: body
         anchors.top: logo.bottom
         anchors.topMargin: 20
-        anchors.bottom: parent.bottom
+        anchors.bottom: menuBar.top
         anchors.bottomMargin: 0
         anchors.left: parent.left
         anchors.leftMargin: 0
@@ -62,10 +65,69 @@ Window {
         Loader{
             id: bodyLoader
             anchors.fill: parent
-            source: "body.qml"
+
         }
 
         
+    }
+
+    Rectangle{
+        id: menuBar
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+        height: 35
+        color: "gray"
+
+        Image{
+            id: homeButton
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:assets/home"
+            height: 23
+            width: 23
+            MouseArea{
+                id: homeMA
+                anchors.fill: parent
+                onClicked: bodyLoader.source = "body.qml"
+            }
+        }
+
+        Image{
+            id: averageButton
+            anchors.left: homeButton.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:assets/average-white"
+            height: 30
+            width: 30
+            MouseArea{
+                id: avgMA
+                anchors.fill: parent
+                onClicked: bodyLoader.source = ""
+            }
+        }
+
+
+        Image{
+            id: scheduleButton
+            anchors.right: homeButton.left
+            anchors.rightMargin: 5
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:assets/schedule-white"
+            height: 30
+            width: 30
+            MouseArea{
+                id: schMA
+                anchors.fill: parent
+                onClicked: bodyLoader.source = "SchedulerBody.qml"
+            }
+        }
+
+
     }
 
 }

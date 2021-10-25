@@ -157,7 +157,6 @@ Item{
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: clearButton.top
             anchors.bottomMargin: 150
-            coinName_: "ADA/EUR"
             deposit_: "0.14556" + "~ 400€"
             retired_: "1.56780" + "~ 460€"
         }
