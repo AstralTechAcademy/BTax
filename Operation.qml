@@ -7,10 +7,17 @@ import es.broker.components.material 1.0 as Material
 
 Rectangle{
 
-    color: "#A5A5A5"
+    color: "#00000000"//"#A5A5A5"
     radius: 10
     width: parent.width
     height: 70
+
+    ToolSeparator{
+        width: parent.width
+        orientation: Qt.Horizontal
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+    }
 
     property int id_: 0
     property alias buyPrice_ : precioCompra.text
@@ -50,7 +57,7 @@ Rectangle{
     Text{
         text: "Invested"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.bottom: deposit.top
         anchors.bottomMargin: 2
         anchors.left: deposit.left
@@ -72,7 +79,7 @@ Rectangle{
     Text{
         text: "Buy Price"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.bottom: precioCompra.top
         anchors.bottomMargin: 2
         anchors.left: precioCompra.left
@@ -83,7 +90,7 @@ Rectangle{
     TextInput{
         id: precioCompra
         text: "PC"
-        color: "white"
+        color: "black"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: deposit.right
@@ -138,7 +145,7 @@ Rectangle{
         id: buyDate
         text: "No Date"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: precioCompra.right
         anchors.leftMargin: 10
@@ -154,7 +161,7 @@ Rectangle{
     Text{
         text: "Sell Price"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.bottom: precioVenta.top
         anchors.bottomMargin: 2
         anchors.left: precioVenta.left
@@ -164,7 +171,7 @@ Rectangle{
     Text{
         text: "Retired"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.bottom: retired.top
         anchors.bottomMargin: 2
         anchors.left: retired.left
@@ -186,7 +193,7 @@ Rectangle{
     TextInput {
         id: precioVenta
         text: "PV"
-        color: "white"
+        color: "black"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: retired.right
@@ -240,7 +247,7 @@ Rectangle{
         id: sellDate
         text: "No Date"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: precioVenta.right
         anchors.leftMargin: 10
@@ -259,7 +266,7 @@ Rectangle{
         id: status
         text: "Not Completed"
         font.pixelSize: 12
-        color: "white"
+        color: "black"
         anchors.top: circleCheckBox.bottom
         anchors.topMargin: 10
         anchors.right: parent.right
@@ -280,11 +287,11 @@ Rectangle{
         states: [
             State {
                 name: "checked"
-                PropertyChanges { target: circleCheckBox; color: "green"; border.color: "white"}
+                PropertyChanges { target: circleCheckBox; color: "green"; border.color: "black"}
             },
             State {
                 name: "notChecked"
-                PropertyChanges { target: circleCheckBox; color: "#00000000"; border.color: "white"}
+                PropertyChanges { target: circleCheckBox; color: "#00000000"; border.color: "black"}
             }
         ]
 
