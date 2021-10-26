@@ -3,10 +3,11 @@ import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.14
 import es.broker.components.material 1.0 as Material
+import es.broker.components 1.0 as Components
 
 
 Rectangle{
-
+    id: operation
     color: "#00000000"//"#A5A5A5"
     radius: 10
     width: parent.width
@@ -28,7 +29,8 @@ Rectangle{
     property alias sellDate_ : sellDate.text
     property alias deposit_: deposit.text
     property alias retired_: retired.text
-    property alias status_: status.text
+    property alias statusBuy_: statusBuy.text
+    property alias statusSell_: statusSell.text
 
 
     ComboBox{
@@ -40,6 +42,7 @@ Rectangle{
         anchors.leftMargin: 10
         width: 90
         height: 30
+        enabled: if(statusSellCheck.state == "checked" || statusBuyCheck.state == "checked") { return false} else return true
     }
 
     ComboBox{
@@ -51,6 +54,7 @@ Rectangle{
         anchors.leftMargin: 10
         width: 90
         height: 30
+        enabled: if(statusSellCheck.state == "checked" || statusBuyCheck.state == "checked") { return false} else return true
 
     }
 
@@ -74,6 +78,8 @@ Rectangle{
         anchors.leftMargin: 30
         width: 130
         height: 20
+        enabled: if(statusBuyCheck.state == "checked") { return false} else return true
+        onAccepted: focus = false
     }
 
     Text{
@@ -97,48 +103,8 @@ Rectangle{
         anchors.leftMargin: 10
         width: 60
         height: 20
-        enabled: true
-        onAccepted: pcMA.state = "enabled"
-
-        MouseArea
-        {
-            id: pcMA
-            anchors.fill: precioCompra
-            enabled: true
-            onClicked: {
-                console.log("Clicked")
-                buyPrice_ += "10"
-                pcMA.state = "disabled"
-            }
-
-            state: "enabled"
-            states: [
-                State {
-                    name: "enabled"
-                    PropertyChanges { target: pcMA; enabled: true}
-                    PropertyChanges { target: precioCompra; state: "default"}
-                },
-                State {
-                    name: "disabled"
-                    PropertyChanges { target: pcMA; enabled: false}
-                    PropertyChanges { target: precioCompra; state: "selected"}
-                }
-            ]
-        }
-
-        state: "default"
-        states: [
-            State {
-                name: "default"
-                PropertyChanges { target: precioCompra; text: buyPrice_}
-            },
-            State {
-                name: "selected"
-                PropertyChanges { target: precioCompra; text: ""; focus: true}
-                PropertyChanges { target: pcMA; state: "disabled"}
-            }
-        ]
-
+        enabled: if(statusBuyCheck.state == "checked") { return false} else return true
+        onAccepted: focus = false
     }
 
     Text{
@@ -149,11 +115,77 @@ Rectangle{
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: precioCompra.right
         anchors.leftMargin: 10
+        enabled: if(statusBuyCheck.state == "checked") { return false} else return true
+    }
+
+    Text{
+        id: statusBuy
+        text: "Not Completed"
+        font.pixelSize: 12
+        color: "black"
+        anchors.top: statusBuyCheck.bottom
+        anchors.topMargin: 10
+        anchors.left: buyDate.right
+        anchors.leftMargin: 30
+    }
+
+    Components.IconButton{
+        id: lockOoperation
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                anchors.right: statusBuyCheck.left
+                anchors.rightMargin: 10
+                source: if(statusBuyCheck.state == "checked") return "qrc:/assets/lock-black"; else "qrc:/assets/lock-open-black";
+        onClicked: {
+            operation.state ="disabled"
+        }
+        color_: "black"
+    }
+
+    Rectangle
+    {
+        id: statusBuyCheck
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.right: statusBuy.right
+        anchors.rightMargin: 0
+        width: 20
+        height: 20
+        radius: width * 0.5
+        state: "notChecked"
+        states: [
+            State {
+                name: "checked"
+                PropertyChanges { target: statusBuyCheck; color: "green"; border.color: "black"}
+            },
+            State {
+                name: "notChecked"
+                PropertyChanges { target: statusBuyCheck; color: "#00000000"; border.color: "black"}
+            }
+        ]
+
+        MouseArea{
+            id: statusBuyCheckMA
+            anchors.fill: statusBuyCheck
+            onClicked: {
+                if(statusBuyCheck.state == "checked")
+                {
+                    statusBuyCheck.state = "notChecked"
+                    statusBuy_ = "Not Completed"
+                }else
+                {
+                    statusBuyCheck.state = "checked"
+                    statusBuy_ = "Completed"
+                }
+            }
+        }
+
     }
 
     ToolSeparator{
+        id: buySeparator
         orientation: Qt.Vertical
-        anchors.left: buyDate.right
+        anchors.left: statusBuy.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: 10
     }
@@ -184,10 +216,12 @@ Rectangle{
         color: "green"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
-        anchors.left: buyDate.right
-        anchors.leftMargin: 30
+        anchors.left: buySeparator.right
+        anchors.leftMargin: 10
         width: 130
         height: 20
+        enabled: if(statusSellCheck.state == "checked") { return false} else return true
+        onAccepted: focus = false
     }
 
     TextInput {
@@ -200,47 +234,8 @@ Rectangle{
         anchors.leftMargin: 30
         width: 60
         height: 20
-        enabled: true
-        onAccepted: pvMA.state = "enabled"
-
-        MouseArea
-        {
-            id: pvMA
-            anchors.fill: precioVenta
-            enabled: true
-            onClicked: {
-                console.log("Clicked")
-                sellPrice_ += "10"
-                pvMA.state = "disabled"
-            }
-
-            state: "enabled"
-            states: [
-                State {
-                    name: "enabled"
-                    PropertyChanges { target: pvMA; enabled: true}
-                    PropertyChanges { target: precioVenta; state: "default"}
-                },
-                State {
-                    name: "disabled"
-                    PropertyChanges { target: pvMA; enabled: false}
-                    PropertyChanges { target: precioVenta; state: "selected"}
-                }
-            ]
-        }
-
-        state: "default"
-        states: [
-            State {
-                name: "default"
-                PropertyChanges { target: precioVenta; text: sellPrice_}
-            },
-            State {
-                name: "selected"
-                PropertyChanges { target: precioVenta; text: ""; focus: true}
-                PropertyChanges { target: pvMA; state: "disabled"}
-            }
-        ]
+        enabled: if(statusSellCheck.state == "checked") { return false} else return true
+        onAccepted: focus = false
     }
 
     Text{
@@ -253,33 +248,37 @@ Rectangle{
         anchors.leftMargin: 10
     }
 
-    ToolSeparator{
-        orientation: Qt.Vertical
-        anchors.left: sellDate.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 10
-    }
-
-
-
     Text{
-        id: status
+        id: statusSell
         text: "Not Completed"
         font.pixelSize: 12
         color: "black"
-        anchors.top: circleCheckBox.bottom
+        anchors.top: statusSellCheck.bottom
         anchors.topMargin: 10
-        anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.left: sellDate.right
+        anchors.leftMargin: 30
+    }
+
+    Components.IconButton{
+        id: lockSell
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                anchors.right: statusSellCheck.left
+                anchors.rightMargin: 10
+                source: if(statusSellCheck.state == "checked") return "qrc:/assets/lock-black"; else "qrc:/assets/lock-open-black";
+        onClicked: {
+            operation.state ="disabled"
+        }
+        color_: "black"
     }
 
     Rectangle
     {
-        id: circleCheckBox
+        id: statusSellCheck
         anchors.top: parent.top
         anchors.topMargin: 10
-        anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.right: statusSell.right
+        anchors.rightMargin: 0
         width: 20
         height: 20
         radius: width * 0.5
@@ -287,30 +286,37 @@ Rectangle{
         states: [
             State {
                 name: "checked"
-                PropertyChanges { target: circleCheckBox; color: "green"; border.color: "black"}
+                PropertyChanges { target: statusSellCheck; color: "green"; border.color: "black"}
             },
             State {
                 name: "notChecked"
-                PropertyChanges { target: circleCheckBox; color: "#00000000"; border.color: "black"}
+                PropertyChanges { target: statusSellCheck; color: "#00000000"; border.color: "black"}
             }
         ]
 
         MouseArea{
-            id: circleCheckBoxMA
-            anchors.fill: circleCheckBox
+            id: statusSellCheckMA
+            anchors.fill: statusSellCheck
             onClicked: {
-                if(circleCheckBox.state == "checked")
+                if(statusSellCheck.state == "checked")
                 {
-                    circleCheckBox.state = "notChecked"
-                    status_ = "Not Completed"
+                    statusSellCheck.state = "notChecked"
+                    statusSell_ = "Not Completed"
                 }else
                 {
-                    circleCheckBox.state = "checked"
-                    status_ = "Completed"
+                    statusSellCheck.state = "checked"
+                    statusSell_ = "Completed"
                 }
             }
         }
 
+    }
+
+    ToolSeparator{
+        orientation: Qt.Vertical
+        anchors.left: sellDate.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 10
     }
 
 

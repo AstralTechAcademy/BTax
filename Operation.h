@@ -17,7 +17,8 @@ class Operation : public QObject{
     Q_PROPERTY(double sellPriceFiat MEMBER sellPriceFiat_ READ getSellPriceFiat WRITE setSellPriceFiat NOTIFY sellPriceFiatChanged)
     Q_PROPERTY(double deposit MEMBER deposit_ READ getDeposit WRITE setDeposit NOTIFY depositChanged)
     Q_PROPERTY(double retired MEMBER retired_ READ getRetired WRITE setRetired NOTIFY retiredChanged)
-    Q_PROPERTY(QString status MEMBER status_ READ getStatus WRITE setStatus NOTIFY statusChanged)
+    Q_PROPERTY(QString statusBuy MEMBER statusBuy_ READ getStatusBuy WRITE setStatusBuy NOTIFY statusBuyChanged)
+    Q_PROPERTY(QString statusSell MEMBER statusSell_ READ getStatusSell WRITE setStatusSell NOTIFY statusSellChanged)
     Q_PROPERTY(QString buyDate MEMBER buyDate_ READ getBuyDate WRITE setBuyDate NOTIFY buyDateChanged)
     Q_PROPERTY(QString sellDate MEMBER sellDate_ READ getSellDate WRITE setSellDate NOTIFY sellDateChanged)
     Q_PROPERTY(QString comments MEMBER comments_ READ getComments WRITE setComments NOTIFY commentsChanged)
@@ -26,7 +27,7 @@ public:
     ~Operation(void) = default;
     Operation(int id, QString pair1, QString pair2, double buyPrice, double sellPrice,
               double buyPriceFiat, double sellPriceFiat, double deposit, double retired,
-              QString status, QString buyDate, QString sellDate, QString comments):
+              QString statusBuy, QString statusSell, QString buyDate, QString sellDate, QString comments):
               id_(id),
               pair1_(pair1),
               pair2_(pair2),
@@ -36,7 +37,8 @@ public:
               sellPriceFiat_(sellPriceFiat),
               deposit_(deposit),
               retired_(retired),
-              status_(status),
+              statusBuy_(statusBuy),
+              statusSell_(statusSell),
               buyDate_(buyDate),
               sellDate_(sellDate),
               comments_(comments){};
@@ -50,7 +52,8 @@ public:
     double getSellPriceFiat(void) const noexcept;
     double getDeposit(void) const noexcept;
     double getRetired(void) const noexcept;
-    QString getStatus(void) const noexcept;
+    QString getStatusBuy(void) const noexcept;
+    QString getStatusSell(void) const noexcept;
     QString getBuyDate(void) const noexcept;
     QString getSellDate(void) const noexcept;
     QString getComments(void) const noexcept;
@@ -64,7 +67,8 @@ public:
     void setSellPriceFiat(const double value) noexcept;
     void setDeposit(const double value) noexcept;
     void setRetired(const double value) noexcept;
-    void setStatus(const QString status) noexcept;
+    void setStatusBuy(const QString status) noexcept;
+    void setStatusSell(const QString status) noexcept;
     void setBuyDate(const QString buyDate) noexcept;
     void setSellDate(const QString sellDate) noexcept;
     void setComments(const QString ) noexcept;
@@ -79,7 +83,8 @@ private:
     double sellPriceFiat_;
     double deposit_;
     double retired_;
-    QString status_;
+    QString statusBuy_;
+    QString statusSell_;
     QString buyDate_;
     QString sellDate_;
     QString comments_;

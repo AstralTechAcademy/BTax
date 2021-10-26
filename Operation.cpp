@@ -43,9 +43,14 @@ double Operation::getRetired(void) const noexcept{
     return retired_;
 }
 
-QString Operation::getStatus(void) const noexcept{
-    return status_;
+QString Operation::getStatusBuy(void) const noexcept{
+    return statusBuy_;
 }
+
+QString Operation::getStatusSell(void) const noexcept{
+    return statusSell_;
+}
+
 
 QString Operation::getBuyDate(void) const noexcept{
     return buyDate_;

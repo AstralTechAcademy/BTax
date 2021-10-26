@@ -19,7 +19,8 @@ roles[buyPriceFiat] = "buyPriceFiat";
 roles[sellPriceFiat] = "sellPriceFiat";
 roles[deposit] = "deposit";
 roles[retired] = "retired";
-roles[status] = "status";
+roles[statusBuy] = "statusBuy";
+roles[statusSell] = "statusSell";
 roles[buyDate] = "buyDate";
 roles[sellDate] = "sellDate";
 roles[comments] = "comments";
@@ -70,15 +71,18 @@ if (index.isValid()) {
             value = operations_.at(index.row())->getRetired();
             break;
         case Qt::UserRole + 10:
-            value = operations_.at(index.row())->getStatus();
+            value = operations_.at(index.row())->getStatusBuy();
             break;
         case Qt::UserRole + 11:
-            value = operations_.at(index.row())->getBuyDate();
+            value = operations_.at(index.row())->getStatusSell();
             break;
         case Qt::UserRole + 12:
-            value = operations_.at(index.row())->getSellDate();
+            value = operations_.at(index.row())->getBuyDate();
             break;
         case Qt::UserRole + 13:
+            value = operations_.at(index.row())->getSellDate();
+            break;
+        case Qt::UserRole + 14:
             value = operations_.at(index.row())->getComments();
             break;
         default:

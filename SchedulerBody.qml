@@ -37,7 +37,8 @@ ListView{
             sellDate_: "January 10, 2000 00:00:00"
             deposit_: model.deposit
             retired_: model.retired
-            status_: model.status
+            statusBuy_: model.statusBuy
+            statusSell_: model.statusSell
         }
     }
 

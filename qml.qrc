@@ -5,6 +5,7 @@
         <file>MaterialTextInput.qml</file>
         <file>Operation.qml</file>
         <file>SchedulerBody.qml</file>
+        <file>IconButton.qml</file>
     </qresource>
 
     <qresource prefix="/assets">
@@ -12,5 +13,7 @@
         <file alias="average">assets/calculate_black_48dp.svg</file>
         <file alias="average-white">assets/calculate_white_48dp.svg</file>
         <file alias="schedule-white">assets/schedule_white_48dp.svg</file>
+        <file alias="lock-black">assets/lock_black_48dp.svg</file>
+        <file alias="lock-open-black">assets/lock_open_black_48dp.svg</file>
     </qresource>
 </RCC>
