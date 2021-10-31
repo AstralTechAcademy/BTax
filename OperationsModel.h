@@ -17,34 +17,33 @@ public:
         id = Qt::UserRole + 1,
         pair1,
         pair2,
-        buyPrice,
-        sellPrice,
-        buyPriceFiat,
-        sellPriceFiat,
+        price,
+        priceFiat,
         deposit,
-        retired,
-        statusBuy,
-        statusSell,
-        buyDate,
-        sellDate,
+        status,
+        date,
         comments,
     };
     OperationsModel(QObject *parent = 0){
-        add(new Operation(1, "ADA", "EUR", 100000, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
-        add(new Operation(2, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed",  "10/10/2021", "00/00/00", "Gabriel"));
-        add(new Operation(3, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
-        add(new Operation(4, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
-        add(new Operation(5, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
-        add(new Operation(6, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
-        add(new Operation(7, "ADA", "EUR", 1.0, 10.0, 1.0, 10.0, 100, 0.0, "Not Confirmed", "Not Confirmed", "10/10/2021", "00/00/00", "Gabriel"));
-
+        add(new Operation(1, "ADA", "EUR", 10.5, 10.0, 1000.0, "Not Confirmed", "10/10/2021", "Gabriel"));
+        add(new Operation(2, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
+        add(new Operation(3, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
+        add(new Operation(4, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
+        add(new Operation(5, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
     };
+
+    //Expone el nombre de los atributos y los relaciona entre QML y C++
     QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
+
+    //Permite leer los atributos de la clase Operation en QML
     QVariant data(const QModelIndex &index, int role) const;
     void add(Operation* operation);
     QList<Operation*> operations(void);
     void setOperations(QList<Operation*> operations);
+
+    // Esta función permite modificar los parametros de la clase Operation desde QML
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
 private:
     QList<Operation*> operations_;
 

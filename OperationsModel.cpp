@@ -12,17 +12,11 @@ QHash<int, QByteArray> roles;
 roles[id] = "id";
 roles[pair1] = "pair1";
 roles[pair2] = "pair2";
-roles[buyPrice] = "buyPrice";
-roles[sellPrice] = "sellPrice";
-roles[sellPrice] = "sellPrice";
-roles[buyPriceFiat] = "buyPriceFiat";
-roles[sellPriceFiat] = "sellPriceFiat";
+roles[price] = "price";
+roles[priceFiat] = "priceFiat";
 roles[deposit] = "deposit";
-roles[retired] = "retired";
-roles[statusBuy] = "statusBuy";
-roles[statusSell] = "statusSell";
-roles[buyDate] = "buyDate";
-roles[sellDate] = "sellDate";
+roles[status] = "status";
+roles[date] = "date";
 roles[comments] = "comments";
 return roles;
 }
@@ -53,36 +47,21 @@ if (index.isValid()) {
             value = operations_.at(index.row())->getPair2();
             break;
         case Qt::UserRole + 4:
-            value = operations_.at(index.row())->getBuyPrice();
+            value = operations_.at(index.row())->getPrice();
             break;
         case Qt::UserRole + 5:
-            value = operations_.at(index.row())->getSellPrice();
+            value = operations_.at(index.row())->getPriceFiat();
             break;
         case Qt::UserRole + 6:
-            value = operations_.at(index.row())->getBuyPriceFiat();
-            break;
-        case Qt::UserRole + 7:
-            value = operations_.at(index.row())->getSellPriceFiat();
-            break;
-        case Qt::UserRole + 8:
             value = operations_.at(index.row())->getDeposit();
             break;
+        case Qt::UserRole + 7:
+            value = operations_.at(index.row())->getStatus();
+            break;
+        case Qt::UserRole + 8:
+            value = operations_.at(index.row())->getDate();
+            break;
         case Qt::UserRole + 9:
-            value = operations_.at(index.row())->getRetired();
-            break;
-        case Qt::UserRole + 10:
-            value = operations_.at(index.row())->getStatusBuy();
-            break;
-        case Qt::UserRole + 11:
-            value = operations_.at(index.row())->getStatusSell();
-            break;
-        case Qt::UserRole + 12:
-            value = operations_.at(index.row())->getBuyDate();
-            break;
-        case Qt::UserRole + 13:
-            value = operations_.at(index.row())->getSellDate();
-            break;
-        case Qt::UserRole + 14:
             value = operations_.at(index.row())->getComments();
             break;
         default:
@@ -108,4 +87,40 @@ QList<Operation*> OperationsModel::operations(void)
 void OperationsModel::setOperations(QList<Operation*> operations)
 {
     operations_ = operations;
+}
+
+bool OperationsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (index.isValid()) {
+        switch(role)
+        {
+            case Qt::UserRole + 1:
+                //operations_.at(index.row())->setID(value.toInt());
+                break;
+            case Qt::UserRole + 2:
+                //operations_.at(index.row())->setPair1(value.toString());
+                break;
+            case Qt::UserRole + 3:
+                //operations_.at(index.row())->setPair2(value.toString());
+                break;
+            case Qt::UserRole + 4:
+                //operations_.at(index.row())->setPrice(value.toDouble());
+                break;
+            case Qt::UserRole + 5:
+                break;
+            case Qt::UserRole + 6:
+                operations_.at(index.row())->setDeposit(value.toString());
+                break;
+            case Qt::UserRole + 7:
+                break;
+            case Qt::UserRole + 8:
+                break;
+            case Qt::UserRole + 9:
+                break;
+            default:
+                break;
+        }
+    }
+
+    return true;
 }

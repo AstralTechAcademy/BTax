@@ -28,17 +28,12 @@ ListView{
         clip: true
         model: operationsModel
         delegate: Operation{
-            id_: model.id
-            buyPrice_: String(model.buyPrice)
-            sellPrice_: model.sellPrice
-            //buyPriceDate: model.buyPriceDate
-            //sellPriceDate: model.sellPriceDate
-            buyDate_: "January 10, 2000 00:00:00"
-            sellDate_: "January 10, 2000 00:00:00"
-            deposit_: model.deposit
-            retired_: model.retired
-            statusBuy_: model.statusBuy
-            statusSell_: model.statusSell
+            //id_: model.id
+            //price_: model.price
+            //date_: model.date //NO son necesario se ven desde Operation.qml con el nombre dado en Q_PRoperty de operation.h
+            //deposit_: model.deposit
+            //status_: model.status
+            //comments_: model.comments
         }
     }
 
