@@ -17,19 +17,22 @@ public:
         id = Qt::UserRole + 1,
         pair1,
         pair2,
-        price,
-        priceFiat,
-        deposit,
+        pair1Amount,
+        pair1AmountFiat,
+        pair2Amount,
+        pair2AmountFiat,
+        comision,
+        comisionFiat,
         status,
         date,
         comments,
+        type,
+        ganancia,
     };
     OperationsModel(QObject *parent = 0){
-        add(new Operation(1, "ADA", "EUR", 10.5, 10.0, 1000.0, "Not Confirmed", "10/10/2021", "Gabriel"));
-        add(new Operation(2, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
-        add(new Operation(3, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
-        add(new Operation(4, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
-        add(new Operation(5, "ADA", "EUR", 100000, 10.0, 10.0, "Not Confirmed", "10/10/2021", "Gabriel"));
+        add(new Operation(1, "ADA", "EUR", 15.74, 1.27, 20.20, 1, 1,1, "Not Confirmed", "10/10/2021", "Gabriel", "Compra", 0.0));
+        add(new Operation(1, "ADA", "BNB", 4.89, 2.17, 0.02572, 412.5, 0, 0, "Not Confirmed", "10/10/2021", "Gabriel", "Venta", 4.401));
+        add(new Operation(1, "BNB", "DOT", 0.02, 389,0.2191, 35.5,    0, 0, "Not Confirmed", "10/10/2021", "Gabriel", "Venta", -0.35));
     };
 
     //Expone el nombre de los atributos y los relaciona entre QML y C++

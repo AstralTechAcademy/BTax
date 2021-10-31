@@ -27,14 +27,7 @@ ListView{
         spacing: 10
         clip: true
         model: operationsModel
-        delegate: Operation{
-            //id_: model.id
-            //price_: model.price
-            //date_: model.date //NO son necesario se ven desde Operation.qml con el nombre dado en Q_PRoperty de operation.h
-            //deposit_: model.deposit
-            //status_: model.status
-            //comments_: model.comments
-        }
+        delegate: Operation{}
     }
 
     ListView{

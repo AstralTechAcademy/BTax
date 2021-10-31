@@ -12,12 +12,17 @@ QHash<int, QByteArray> roles;
 roles[id] = "id";
 roles[pair1] = "pair1";
 roles[pair2] = "pair2";
-roles[price] = "price";
-roles[priceFiat] = "priceFiat";
-roles[deposit] = "deposit";
+roles[pair1Amount] = "pair1Amount";
+roles[pair1AmountFiat] = "pair1AmountFiat";
+roles[pair2Amount] = "pair2Amount";
+roles[pair2AmountFiat] = "pair2AmountFiat";
+roles[comision] = "comision";
+roles[comisionFiat] = "comisionFiat";
 roles[status] = "status";
 roles[date] = "date";
 roles[comments] = "comments";
+roles[type] = "type";
+roles[ganancia] = "ganancia";
 return roles;
 }
 
@@ -47,22 +52,37 @@ if (index.isValid()) {
             value = operations_.at(index.row())->getPair2();
             break;
         case Qt::UserRole + 4:
-            value = operations_.at(index.row())->getPrice();
+            value = operations_.at(index.row())->getPair1Amount();
             break;
         case Qt::UserRole + 5:
-            value = operations_.at(index.row())->getPriceFiat();
+            value = operations_.at(index.row())->getPair1AmountFiat();
             break;
         case Qt::UserRole + 6:
-            value = operations_.at(index.row())->getDeposit();
+            value = operations_.at(index.row())->getPair2Amount();
             break;
         case Qt::UserRole + 7:
-            value = operations_.at(index.row())->getStatus();
+            value = operations_.at(index.row())->getPair2AmountFiat();
             break;
         case Qt::UserRole + 8:
-            value = operations_.at(index.row())->getDate();
+            value = operations_.at(index.row())->getComision();
             break;
         case Qt::UserRole + 9:
+            value = operations_.at(index.row())->getComisionFiat();
+            break;
+        case Qt::UserRole + 10:
+            value = operations_.at(index.row())->getStatus();
+            break;
+        case Qt::UserRole + 11:
+            value = operations_.at(index.row())->getDate();
+            break;
+        case Qt::UserRole + 12:
             value = operations_.at(index.row())->getComments();
+            break;
+        case Qt::UserRole + 13:
+            value = operations_.at(index.row())->getType();
+            break;
+        case Qt::UserRole + 14:
+            value = operations_.at(index.row())->getGanancia();
             break;
         default:
             value = QVariant();
@@ -109,7 +129,7 @@ bool OperationsModel::setData(const QModelIndex &index, const QVariant &value, i
             case Qt::UserRole + 5:
                 break;
             case Qt::UserRole + 6:
-                operations_.at(index.row())->setDeposit(value.toString());
+                //operations_.at(index.row())->setDeposit(value.toString());
                 break;
             case Qt::UserRole + 7:
                 break;

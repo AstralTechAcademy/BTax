@@ -31,12 +31,24 @@ Rectangle{
     //property alias comments_: comment.text
 
 
+    Text{
+        id: opType
+        text: type
+        width: 50
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        color: if(type == "Venta" || type == "Withdraw") { return "red"} else {return "green"}
+    }
+
+
+
     ComboBox{
         id: coinNameFirst
         currentIndex: 0
         model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD"]
         anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
+        anchors.left: opType.right
         anchors.leftMargin: 10
         width: 90
         height: 30
@@ -57,18 +69,18 @@ Rectangle{
     }
 
     Text{
-        text: "Invested"
+        text: pair1
         font.pixelSize: 12
         color: "black"
-        anchors.bottom: invested.top
+        anchors.bottom: p1Amount.top
         anchors.bottomMargin: 2
-        anchors.left: invested.left
+        anchors.left: p1Amount.left
         anchors.leftMargin: 0
     }
 
     TextInput{
-        id: invested
-        text: deposit
+        id: p1Amount
+        text: pair1Amount +"~" + (  pair1Amount*pair1AmountFiat).toFixed(2);
         color: "red"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
@@ -77,27 +89,51 @@ Rectangle{
         width: 150
         height: 20
         enabled: if(statusCheck.state == "checked") { return false} else return true
-        onAccepted: {focus = false; deposit = text}
+        onAccepted: {focus = false; }
     }
 
     Text{
-        text: "Price ( " + coinNameSecond.currentText + " )"
+        text: pair1 + "/EUR"
         font.pixelSize: 12
         color: "black"
-        anchors.bottom: precioCompra.top
+        anchors.bottom: p1AmountFiat.top
         anchors.bottomMargin: 2
-        anchors.left: precioCompra.left
+        anchors.left: p1AmountFiat.left
+        anchors.leftMargin: 0
+    }
+
+    TextInput{
+        id: p1AmountFiat
+        text: pair1AmountFiat
+        color: "red"
+        font.pixelSize: 15
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: p1Amount.right
+        anchors.leftMargin: 30
+        width: 150
+        height: 20
+        enabled: if(statusCheck.state == "checked") { return false} else return true
+        onAccepted: {focus = false; }
+    }
+
+    Text{
+        text: pair2
+        font.pixelSize: 12
+        color: "black"
+        anchors.bottom: p2Amount.top
+        anchors.bottomMargin: 2
+        anchors.left: p2Amount.left
         anchors.leftMargin: 0
     }
 
 
     TextInput{
-        id: precioCompra
-        text: price
+        id: p2Amount
+        text: pair2Amount +"~" + (pair2Amount*pair2AmountFiat).toFixed(2);
         color: "black"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
-        anchors.left: invested.right
+        anchors.left: p1AmountFiat.right
         anchors.leftMargin: 10
         width: 150
         height: 20
@@ -106,7 +142,7 @@ Rectangle{
     }
 
     Text{
-        text: "Price Fiat ( EUR )"
+        text: pair2 + "/EUR"
         font.pixelSize: 12
         color: "black"
         anchors.bottom: pFiat.top
@@ -118,11 +154,11 @@ Rectangle{
 
     TextInput{
         id: pFiat
-        text: priceFiat
+        text: pair2AmountFiat
         color: "black"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
-        anchors.left: precioCompra.right
+        anchors.left: p2Amount.right
         anchors.leftMargin: 10
         width: 150
         height: 20
@@ -153,12 +189,34 @@ Rectangle{
         enabled: if(statusCheck.state == "checked") { return false} else return true
     }
 
+    Text{
+        text: "Ganancia"
+        font.pixelSize: 12
+        color: "black"
+        anchors.bottom: opDate.top
+        anchors.bottomMargin: 2
+        anchors.left: ganan.left
+        anchors.leftMargin: 0
+    }
+
+    Text{
+        id: ganan
+        text: ganancia
+        font.pixelSize: 12
+        color: if(ganancia >= 0)  { return "green"} else return "red"
+        width: 150
+        height: 20
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: opDate.right
+        anchors.leftMargin: 10
+        enabled: if(statusCheck.state == "checked") { return false} else return true
+    }
 
     Text{
         text: "Comment"
         font.pixelSize: 12
         color: "black"
-        anchors.bottom: opDate.top
+        anchors.bottom: ganan.top
         anchors.bottomMargin: 2
         anchors.left: comment.left
         anchors.leftMargin: 0
@@ -230,11 +288,11 @@ Rectangle{
                 if(statusCheck.state == "checked")
                 {
                     statusCheck.state = "notChecked"
-                    status_ = "Not Completed"
+                    status = "Not Completed"
                 }else
                 {
                     statusCheck.state = "checked"
-                    status_ = "Completed"
+                    status   = "Completed"
                 }
             }
         }
