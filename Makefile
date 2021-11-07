@@ -209,6 +209,33 @@ Broker_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Broker_autogen/mocs_compilation.cpp.s
 .PHONY : Broker_autogen/mocs_compilation.cpp.s
 
+DBLocal.o: DBLocal.cpp.o
+
+.PHONY : DBLocal.o
+
+# target to build an object file
+DBLocal.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBLocal.cpp.o
+.PHONY : DBLocal.cpp.o
+
+DBLocal.i: DBLocal.cpp.i
+
+.PHONY : DBLocal.i
+
+# target to preprocess a source file
+DBLocal.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBLocal.cpp.i
+.PHONY : DBLocal.cpp.i
+
+DBLocal.s: DBLocal.cpp.s
+
+.PHONY : DBLocal.s
+
+# target to generate assembly for a file
+DBLocal.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBLocal.cpp.s
+.PHONY : DBLocal.cpp.s
+
 Operation.o: Operation.cpp.o
 
 .PHONY : Operation.o
@@ -262,6 +289,33 @@ OperationsModel.s: OperationsModel.cpp.s
 OperationsModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/OperationsModel.cpp.s
 .PHONY : OperationsModel.cpp.s
+
+SQLManager.o: SQLManager.cpp.o
+
+.PHONY : SQLManager.o
+
+# target to build an object file
+SQLManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/SQLManager.cpp.o
+.PHONY : SQLManager.cpp.o
+
+SQLManager.i: SQLManager.cpp.i
+
+.PHONY : SQLManager.i
+
+# target to preprocess a source file
+SQLManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/SQLManager.cpp.i
+.PHONY : SQLManager.cpp.i
+
+SQLManager.s: SQLManager.cpp.s
+
+.PHONY : SQLManager.s
+
+# target to generate assembly for a file
+SQLManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/SQLManager.cpp.s
+.PHONY : SQLManager.cpp.s
 
 main.o: main.cpp.o
 
@@ -333,12 +387,18 @@ help:
 	@echo "... Broker_autogen/mocs_compilation.o"
 	@echo "... Broker_autogen/mocs_compilation.i"
 	@echo "... Broker_autogen/mocs_compilation.s"
+	@echo "... DBLocal.o"
+	@echo "... DBLocal.i"
+	@echo "... DBLocal.s"
 	@echo "... Operation.o"
 	@echo "... Operation.i"
 	@echo "... Operation.s"
 	@echo "... OperationsModel.o"
 	@echo "... OperationsModel.i"
 	@echo "... OperationsModel.s"
+	@echo "... SQLManager.o"
+	@echo "... SQLManager.i"
+	@echo "... SQLManager.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

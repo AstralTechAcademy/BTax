@@ -4,7 +4,7 @@
 #include <QQmlContext>
 #include "Broker.h"
 #include "OperationsModel.h"
-
+#include "DBLocal.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,6 +23,10 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:SchedulerBody.qml"), "es.broker", 1, 0, "Scheduler");
 
     OperationsModel operationsModel;
+
+    DBLocal::GetInstance()->createDatabase();
+    DBLocal::GetInstance()->openDatabase();
+    DBLocal::GetInstance()->getWallets();
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
