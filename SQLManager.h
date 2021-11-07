@@ -11,7 +11,7 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QVariant>
-
+#include <Operation.h>
 
 
 class SQLManager {
@@ -30,8 +30,8 @@ public:
      */
     virtual bool createDatabase(void) = 0;
     virtual bool openDatabase(void) = 0;
-
     virtual void getWallets(void) = 0;
+    virtual std::tuple<bool, std::vector<Operation*>> getOperations(void) = 0;
 
     const QString LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia_2).db";
 

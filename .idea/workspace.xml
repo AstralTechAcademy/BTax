@@ -15,12 +15,11 @@
     <list default="true" id="875a929d-9bbd-4e4e-a271-0edb23dbe0ad" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Broker" beforeDir="false" afterPath="$PROJECT_DIR$/Broker" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Operation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Operation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DBLocal.h" beforeDir="false" afterPath="$PROJECT_DIR$/DBLocal.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Operation.h" beforeDir="false" afterPath="$PROJECT_DIR$/Operation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Operation.qml" beforeDir="false" afterPath="$PROJECT_DIR$/Operation.qml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OperationsModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/OperationsModel.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OperationsModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/OperationsModel.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SchedulerBody.qml" beforeDir="false" afterPath="$PROJECT_DIR$/SchedulerBody.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQLManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/SQLManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qrc_qml.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/qrc_qml.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -120,7 +119,9 @@
       <workItem from="1635184553049" duration="412000" />
       <workItem from="1635266902469" duration="3756000" />
       <workItem from="1635346854444" duration="6421000" />
-      <workItem from="1635696533570" duration="5281000" />
+      <workItem from="1635696533570" duration="5587000" />
+      <workItem from="1635976981948" duration="351000" />
+      <workItem from="1636295930294" duration="5261000" />
     </task>
     <servers />
   </component>

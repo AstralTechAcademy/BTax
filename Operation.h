@@ -74,6 +74,25 @@ public:
     void setType(const QString &type);
     void setGanancia(double ganancia);
 
+    enum class EN_OperationColumns_t {
+        ID = 0,
+        PAIR1,
+        PAIR2,
+        PAIRA1AMOUNT,
+        PAIRA1AMOUNTFIAT,
+        PAIR2AMOUNT,
+        COMISION,
+        COMISIONFIAT,
+        PAIR2AMOUNTFIAT,
+        STATUS,
+        DATE,
+        COMMENTS,
+        TYPE,
+        GANANCIA,
+        COMISIONCOIN
+
+    };
+
 private:
     int  id_;
     QString   pair1_;

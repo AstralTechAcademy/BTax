@@ -71,6 +71,50 @@ public:
 
     }
 
+    std::tuple<bool, std::vector<Operation*>> getOperations(void)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT COUNT(*) FROM Operations");
+        query.exec();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
+        }
+
+        if(result)
+        {
+            std::vector<Operation *> operations;
+            query.prepare("SELECT * FROM Operations");
+            query.exec();
+            while(query.next())
+            {
+                 operations.push_back(
+                        new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)).toInt(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR1)).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2)).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)).toDouble()
+                        ));
+            }
+            return std::tuple<bool, std::vector<Operation *>>(result, operations);
+        }
+        else
+        {
+            return std::tuple<bool, std::vector<Operation *>>(result, {});
+        }
+
+
+    };
+
 private:
     static DBLocal* db_;
     static QSqlDatabase database;

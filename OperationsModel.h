@@ -29,11 +29,7 @@ public:
         type,
         ganancia,
     };
-    OperationsModel(QObject *parent = 0){
-        add(new Operation(1, "ADA", "EUR", 15.74, 1.27, 20.20, 1, 1,1, "Not Confirmed", "10/10/2021", "Gabriel", "Compra", 0.0));
-        add(new Operation(1, "ADA", "BNB", 4.89, 2.17, 0.02572, 412.5, 0, 0, "Not Confirmed", "10/10/2021", "Gabriel", "Venta", 4.401));
-        add(new Operation(1, "BNB", "DOT", 0.02, 389,0.2191, 35.5,    0, 0, "Not Confirmed", "10/10/2021", "Gabriel", "Venta", -0.35));
-    };
+    OperationsModel(QObject *parent = 0){};
 
     //Expone el nombre de los atributos y los relaciona entre QML y C++
     QHash<int, QByteArray> roleNames() const;

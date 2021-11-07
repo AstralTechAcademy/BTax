@@ -27,6 +27,13 @@ int main(int argc, char *argv[])
     DBLocal::GetInstance()->createDatabase();
     DBLocal::GetInstance()->openDatabase();
     DBLocal::GetInstance()->getWallets();
+    auto operations = DBLocal::GetInstance()->getOperations();
+
+    if(std::get<0>(operations) == true)
+    {
+        for(auto op : std::get<1>(operations))
+            operationsModel.add(op);
+    }
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
