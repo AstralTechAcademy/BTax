@@ -317,6 +317,33 @@ SQLManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/SQLManager.cpp.s
 .PHONY : SQLManager.cpp.s
 
+Wallet.o: Wallet.cpp.o
+
+.PHONY : Wallet.o
+
+# target to build an object file
+Wallet.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Wallet.cpp.o
+.PHONY : Wallet.cpp.o
+
+Wallet.i: Wallet.cpp.i
+
+.PHONY : Wallet.i
+
+# target to preprocess a source file
+Wallet.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Wallet.cpp.i
+.PHONY : Wallet.cpp.i
+
+Wallet.s: Wallet.cpp.s
+
+.PHONY : Wallet.s
+
+# target to generate assembly for a file
+Wallet.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Wallet.cpp.s
+.PHONY : Wallet.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -399,6 +426,9 @@ help:
 	@echo "... SQLManager.o"
 	@echo "... SQLManager.i"
 	@echo "... SQLManager.s"
+	@echo "... Wallet.o"
+	@echo "... Wallet.i"
+	@echo "... Wallet.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

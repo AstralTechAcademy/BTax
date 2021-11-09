@@ -5,6 +5,7 @@
 #ifndef BROKER_DBLOCAL_H
 #define BROKER_DBLOCAL_H
 #include "SQLManager.h"
+#include "Wallet.h"
 #include <iostream>
 
 class DBLocal : public SQLManager {
@@ -66,8 +67,35 @@ public:
 
         while(query.next())
         {
-            std::cout << query.value(0).toString().toStdString() << std::endl;
+            auto wallet = query.value(0).toString();
+            getWallet(wallet).print();
         }
+
+    }
+
+    Wallet getWallet(const QString& wallet)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT * FROM " + wallet);
+        query.exec();
+
+        std::cout << wallet.toStdString() << std::endl;
+        std::cout << "------------" << std::endl;
+        double amount = 0.0;
+        double retired = 0.0;
+        double available = 0.0;
+        double invested = 0.0;
+        while(query.next())
+        {
+            amount += query.value(1).toDouble();
+            retired += query.value(2).toDouble();
+            available += query.value(3).toDouble();
+            //Calculo de lo que hay invertido en este momento
+            invested += (query.value(3).toDouble() * query.value(5   ).toDouble());
+        }
+
+        return Wallet(wallet, amount, invested, available, retired);
+
 
     }
 
@@ -114,6 +142,7 @@ public:
 
 
     };
+
 
 private:
     static DBLocal* db_;

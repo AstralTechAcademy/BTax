@@ -65,7 +65,7 @@ if(ANDROID)
 else()
 add_executable(Broker
         main.cpp
-        ${RESOURCES} Broker.cpp Broker.h OperationsModel.cpp OperationsModel.h Operation.cpp Operation.h SQLManager.cpp SQLManager.h DBLocal.cpp DBLocal.h)
+        ${RESOURCES} Broker.cpp Broker.h OperationsModel.cpp OperationsModel.h Operation.cpp Operation.h SQLManager.cpp SQLManager.h DBLocal.cpp DBLocal.h Wallet.cpp Wallet.h)
 endif()
 
 if(LINUX)
