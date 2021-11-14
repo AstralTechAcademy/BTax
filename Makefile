@@ -236,6 +236,33 @@ DBLocal.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBLocal.cpp.s
 .PHONY : DBLocal.cpp.s
 
+Deposit.o: Deposit.cpp.o
+
+.PHONY : Deposit.o
+
+# target to build an object file
+Deposit.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Deposit.cpp.o
+.PHONY : Deposit.cpp.o
+
+Deposit.i: Deposit.cpp.i
+
+.PHONY : Deposit.i
+
+# target to preprocess a source file
+Deposit.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Deposit.cpp.i
+.PHONY : Deposit.cpp.i
+
+Deposit.s: Deposit.cpp.s
+
+.PHONY : Deposit.s
+
+# target to generate assembly for a file
+Deposit.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Deposit.cpp.s
+.PHONY : Deposit.cpp.s
+
 Operation.o: Operation.cpp.o
 
 .PHONY : Operation.o
@@ -316,6 +343,33 @@ SQLManager.s: SQLManager.cpp.s
 SQLManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/SQLManager.cpp.s
 .PHONY : SQLManager.cpp.s
+
+Statistics.o: Statistics.cpp.o
+
+.PHONY : Statistics.o
+
+# target to build an object file
+Statistics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Statistics.cpp.o
+.PHONY : Statistics.cpp.o
+
+Statistics.i: Statistics.cpp.i
+
+.PHONY : Statistics.i
+
+# target to preprocess a source file
+Statistics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Statistics.cpp.i
+.PHONY : Statistics.cpp.i
+
+Statistics.s: Statistics.cpp.s
+
+.PHONY : Statistics.s
+
+# target to generate assembly for a file
+Statistics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Statistics.cpp.s
+.PHONY : Statistics.cpp.s
 
 Wallet.o: Wallet.cpp.o
 
@@ -417,6 +471,9 @@ help:
 	@echo "... DBLocal.o"
 	@echo "... DBLocal.i"
 	@echo "... DBLocal.s"
+	@echo "... Deposit.o"
+	@echo "... Deposit.i"
+	@echo "... Deposit.s"
 	@echo "... Operation.o"
 	@echo "... Operation.i"
 	@echo "... Operation.s"
@@ -426,6 +483,9 @@ help:
 	@echo "... SQLManager.o"
 	@echo "... SQLManager.i"
 	@echo "... SQLManager.s"
+	@echo "... Statistics.o"
+	@echo "... Statistics.i"
+	@echo "... Statistics.s"
 	@echo "... Wallet.o"
 	@echo "... Wallet.i"
 	@echo "... Wallet.s"

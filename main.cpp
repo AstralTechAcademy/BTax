@@ -26,14 +26,61 @@ int main(int argc, char *argv[])
 
     DBLocal::GetInstance()->createDatabase();
     DBLocal::GetInstance()->openDatabase();
-    DBLocal::GetInstance()->getWallets();
+    DBLocal::GetInstance()->getWallets("Gabriel");
     auto operations = DBLocal::GetInstance()->getOperations();
+
+    double gananciasAnuales = 0.0;
+    for(auto operation : std::get<1>(DBLocal::GetInstance()->getOperations("B2M")) )
+    {
+        gananciasAnuales += operation->getGanancia();
+    }
+
+    double invertido = 0.0;
+    auto deposits = std::get<1>(DBLocal::GetInstance()->getDeposits("Gabriel"));
+    for(auto deposit : deposits)
+    {
+        std::cout << deposit->getUser().toStdString() << std::endl;
+        invertido += deposit->getAmount();
+    }
+
+    std::cout << "Invertido: " << invertido << std::endl;
+    std::cout << "Ganancias Anuales: " << gananciasAnuales << std::endl;
+
+    deposits = std::get<1>(DBLocal::GetInstance()->getDeposits("Gabriel", "B2M"));
+    invertido = 0.0;
+    for(auto deposit : deposits)
+    {
+        std::cout << deposit->getUser().toStdString() << std::endl;
+        invertido += deposit->getAmount();
+    }
+
+    std::cout << "Depositado B2M: " << invertido << std::endl;
 
     if(std::get<0>(operations) == true)
     {
         for(auto op : std::get<1>(operations))
             operationsModel.add(op);
     }
+
+    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "B2M", "B2M");
+
+    std::cout << "Invertido B2M: " <<  invertido << std::endl;
+
+    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "ADA");
+
+    std::cout << "Invertido ADA: " <<  invertido << std::endl;
+
+    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "DOT");
+
+    std::cout << "Invertido DOT: " <<  invertido << std::endl;
+
+    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "MATIC");
+
+    std::cout << "Invertido MATIC: " <<  invertido << std::endl;
+
+    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "SOL");
+
+    std::cout << "Invertido SOL: " <<  invertido << std::endl;
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

@@ -6,6 +6,7 @@
 #define BROKER_DBLOCAL_H
 #include "SQLManager.h"
 #include "Wallet.h"
+#include "Deposit.h"
 #include <iostream>
 
 class DBLocal : public SQLManager {
@@ -59,17 +60,157 @@ public:
         return opened;
     };
 
-    void getWallets(void)
+    std::tuple<bool, std::vector<Deposit*>> getDeposits(void)
     {
         QSqlQuery query = QSqlQuery(database);
-        query.prepare("SELECT * FROM Wallets");
+        query.prepare("SELECT COUNT(*) FROM Deposits");
         query.exec();
-
-        while(query.next())
-        {
-            auto wallet = query.value(0).toString();
-            getWallet(wallet).print();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
         }
+
+        if(result)
+        {
+            std::vector<Deposit*> deposits;
+            query.prepare("SELECT * FROM Deposits");
+            query.exec();
+            while(query.next())
+            {
+                deposits.push_back(new Deposit(
+                        query.value(0).toString(),
+                        query.value(1).toDouble(),
+                        query.value(2).toDouble(),
+                        query.value(3).toDouble(),
+                        QDate::fromString("01/01/1999 00:00:00"),
+                        query.value(5).toString(),
+                        query.value(6).toString()
+                ));
+            }
+            return std::tuple<bool, std::vector<Deposit*>>(false, deposits);
+        }
+        else
+        {
+            return std::tuple<bool, std::vector<Deposit*>>(false, {});
+        }
+    }
+
+    std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT COUNT(*) FROM Deposits WHERE user=:user");
+        query.bindValue(":user", user);
+        query.exec();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
+        }
+
+        if(result)
+        {
+            std::vector<Deposit*> deposits;
+            query.prepare("SELECT * FROM Deposits WHERE user=:user");
+            query.bindValue(":user", user);
+            query.exec();
+            while(query.next())
+            {
+                deposits.push_back(new Deposit(
+                        query.value(0).toString(),
+                        query.value(1).toDouble(),
+                        query.value(2).toDouble(),
+                        query.value(3).toDouble(),
+                        QDate::fromString("01/01/1999 00:00:00"),
+                        query.value(5).toString(),
+                        query.value(6).toString()
+                ));
+            }
+            return std::tuple<bool, std::vector<Deposit*>>(false, deposits);
+        }
+        else
+        {
+            return std::tuple<bool, std::vector<Deposit*>>(false, {});
+        }
+    }
+
+    std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT COUNT(*) FROM Deposits WHERE user=:user AND exchange=:exchange");
+        query.bindValue(":user", user);
+        query.bindValue(":exchange", exchange);
+        query.exec();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
+        }
+
+        if(result)
+        {
+            std::vector<Deposit*> deposits;
+            query.prepare("SELECT * FROM Deposits WHERE user=:user AND exchange=:exchange");
+            query.bindValue(":user", user);
+            query.bindValue(":exchange", exchange);
+            query.exec();
+            while(query.next())
+            {
+                deposits.push_back(new Deposit(
+                        query.value(0).toString(),
+                        query.value(1).toDouble(),
+                        query.value(2).toDouble(),
+                        query.value(3).toDouble(),
+                        QDate::fromString("01/01/1999 00:00:00"),
+                        query.value(5).toString(),
+                        query.value(6).toString()
+                ));
+            }
+            return std::tuple<bool, std::vector<Deposit*>>(false, deposits);
+        }
+        else
+        {
+            return std::tuple<bool, std::vector<Deposit*>>(false, {});
+        }
+    }
+
+    std::tuple<bool, std::vector<Wallet*>> getWallets(const QString& user)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT COUNT(*) FROM WalletOperations WOP"
+                      " INNER JOIN Wallets W  ON WOP.walletID = W.id"
+                      " WHERE W.user=:user");
+        query.bindValue(":user", user);
+        query.exec();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
+        }
+        if(result)
+        {
+            std::vector<Wallet*> wallets;
+            query.prepare("SELECT WOP.* FROM WalletOperations WOP "
+                          " INNER JOIN Wallets W ON WOP.walletID = W.id"
+                          " WHERE W.user=:user");
+            query.bindValue(":user", user);
+            query.exec();
+            while(query.next())
+            {
+                wallets.push_back(new Wallet(query.value(0).toString(),
+                                             query.value(1).toDouble(),
+                                             query.value(2).toDouble(),
+                                             query.value(3).toDouble(),
+                                             query.value(4).toDouble(),
+                                             query.value(5).toString(),
+                                             query.value(6).toDouble(),
+                                             query.value(7).toString(),
+                                             query.value(8).toInt()));
+
+            }
+            return std::tuple<bool, std::vector<Wallet*>> (false, wallets);
+        }
+        else
+        {
+            return std::tuple<bool, std::vector<Wallet*>> (false, {});
+        }
+
 
     }
 
@@ -94,7 +235,15 @@ public:
             invested += (query.value(3).toDouble() * query.value(5   ).toDouble());
         }
 
-        return Wallet(wallet, amount, invested, available, retired);
+        return Wallet(query.value(0).toString(),
+                      query.value(1).toDouble(),
+                      query.value(2).toDouble(),
+                      query.value(3).toDouble(),
+                      query.value(4).toDouble(),
+                      query.value(5).toString(),
+                      query.value(6).toDouble(),
+                      query.value(7).toString(),
+                      query.value(8).toInt());
 
 
     }
@@ -142,6 +291,94 @@ public:
 
 
     };
+
+    std::tuple<bool, std::vector<Operation*>> getOperations(const QString& exchange)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT COUNT(*) FROM Operations WHERE exchpair1=:exchange OR exchpair2=:exchange");
+        query.bindValue(":exchange", exchange);
+        query.exec();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
+        }
+
+        if(result)
+        {
+            std::vector<Operation *> operations;
+            query.prepare("SELECT * FROM Operations WHERE exchpair1=:exchange OR exchpair2=:exchange");
+            query.bindValue(":exchange", exchange);
+            query.exec();
+            while(query.next())
+            {
+                std::cout << query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)).toInt() << std::endl;
+                operations.push_back(
+                        new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)).toInt(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR1)).toString(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2)).toString(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)).toDouble(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)).toDouble(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)).toDouble(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)).toDouble(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)).toDouble(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)).toDouble(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)).toString(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)).toString(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)).toString(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)).toString(),
+                                      query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)).toDouble()
+                        ));
+            }
+            return std::tuple<bool, std::vector<Operation *>>(result, operations);
+        }
+        else
+        {
+            return std::tuple<bool, std::vector<Operation *>>(result, {});
+        }
+    }
+
+    double getInvested(const QString& user, const QString& exchange, const QString& wallet)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT COUNT(*) FROM WalletOperations WOP"
+                      " INNER JOIN Wallets W ON WOP.walletID = W.id"
+                      " WHERE W.user=:user AND W.coin =:coin AND W.exchange=:exchange");
+        query.bindValue(":user", user);
+        query.bindValue(":exchange", exchange);
+        query.bindValue(":coin", wallet);
+        query.exec();
+        bool result = false;
+        while (query.next()) {
+            result = query.value(0) > 0;
+        }
+
+        if(result)
+        {
+            query.prepare("SELECT * FROM WalletOperations WOP"
+                          " INNER JOIN Wallets W ON WOP.walletID = W.id"
+                          " WHERE W.user=:user AND W.coin =:coin AND W.exchange=:exchange");
+            query.bindValue(":user", user);
+            query.bindValue(":exchange", exchange);
+            query.bindValue(":coin", wallet);
+            query.exec();
+            double invested = 0.0;
+            while(query.next())
+            {
+                double available = query.value(3).toDouble();
+                double fiatPrice = query.value(5).toDouble();
+
+                invested += (available * fiatPrice);
+
+
+            }
+
+            return invested;
+
+        }
+
+        return 0.0;
+    }
+
 
 
 private:
