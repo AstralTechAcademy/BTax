@@ -5,6 +5,8 @@
         <file>MaterialTextInput.qml</file>
         <file>Operation.qml</file>
         <file>SchedulerBody.qml</file>
+        <file>WalletsBody.qml</file>
+        <file>Wallet.qml</file>
         <file>IconButton.qml</file>
     </qresource>
 

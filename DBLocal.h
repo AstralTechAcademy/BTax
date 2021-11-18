@@ -174,47 +174,57 @@ public:
     std::tuple<bool, std::vector<Wallet*>> getWallets(const QString& user)
     {
         QSqlQuery query = QSqlQuery(database);
-        query.prepare("SELECT COUNT(*) FROM WalletOperations WOP"
-                      " INNER JOIN Wallets W  ON WOP.walletID = W.id"
+        query.prepare("SELECT * FROM Wallets W"
                       " WHERE W.user=:user");
         query.bindValue(":user", user);
         query.exec();
         bool result = false;
-        while (query.next()) {
-            result = query.value(0) > 0;
-        }
+        query.next();
+        result = query.value(0) > 0;
         if(result)
         {
-            std::vector<Wallet*> wallets;
-            query.prepare("SELECT WOP.* FROM WalletOperations WOP "
-                          " INNER JOIN Wallets W ON WOP.walletID = W.id"
+            query.prepare("SELECT * FROM Wallets W"
                           " WHERE W.user=:user");
             query.bindValue(":user", user);
             query.exec();
-            while(query.next())
+            std::vector<Wallet*> wallets;
+            while (query.next())
             {
-                wallets.push_back(new Wallet(query.value(0).toString(),
-                                             query.value(1).toDouble(),
-                                             query.value(2).toDouble(),
-                                             query.value(3).toDouble(),
-                                             query.value(4).toDouble(),
-                                             query.value(5).toString(),
-                                             query.value(6).toDouble(),
-                                             query.value(7).toString(),
-                                             query.value(8).toInt()));
+
+                auto id = query.value(0).toInt();
+                auto coin = query.value(1).toString();
+                auto exchange = query.value(6).toString();
+                auto user = query.value(7).toString();
+
+                auto wallet = new Wallet(id, coin, exchange, user);
+
+                QSqlQuery query2 = QSqlQuery(database);
+                query2.prepare("SELECT WOP.* FROM WalletOperations WOP "
+                              " WHERE WOP.walletID=:id");
+                query2.bindValue(":id", id);
+                query2.exec();
+                double amount = 0.0;
+                double invested = 0.0;
+                while(query2.next())
+                {
+                    amount += query2.value(3).toDouble();
+                    invested += (query2.value(3).toDouble() * query2.value(5).toDouble());
+                }
+                wallet->setAmount(amount);
+                wallet->setInvested(invested);
+                wallets.push_back(wallet);
 
             }
-            return std::tuple<bool, std::vector<Wallet*>> (false, wallets);
+
+            return std::tuple<bool, std::vector<Wallet*>> (true, wallets);
         }
         else
         {
             return std::tuple<bool, std::vector<Wallet*>> (false, {});
         }
-
-
     }
 
-    Wallet getWallet(const QString& wallet)
+   /* Wallet getWallet(const QString& wallet)
     {
         QSqlQuery query = QSqlQuery(database);
         query.prepare("SELECT * FROM " + wallet);
@@ -246,7 +256,7 @@ public:
                       query.value(8).toInt());
 
 
-    }
+    }*/
 
     std::tuple<bool, std::vector<Operation*>> getOperations(void)
     {

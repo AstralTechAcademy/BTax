@@ -4,12 +4,36 @@
 
 #include "Wallet.h"
 #include <iostream>
+#include "DBLocal.h"
 
 void Wallet::print() const noexcept
 {
-    //std::cout << "History Total Ammount: " << amount << " " << coin.toStdString() << std::endl;
-    std::cout << "Current Invested: " << invested << " " << "   EUR" << std::endl;
-    std::cout << "Available: " << available << " " << coin.toStdString() << std::endl;
-    std::cout << "Retired: " << retired << " " << coin.toStdString() << std::endl;
-    std::cout << "Current Average Price: " << invested /  available << std::endl;
+}
+
+
+double Wallet::getAverageCost(void) const noexcept
+{
+    return invested_ / amount_;
+}
+
+double Wallet::getAmount(void) const noexcept {return amount_;}
+double Wallet::getInvested(void) const noexcept {return invested_;}
+QString Wallet::getCoin(void) const noexcept {return coin_;}
+
+
+void Wallet::setInvested(const double invested)
+{
+    invested_ = invested;
+}
+void Wallet::setFiatPrice(const double fiatPrice)
+{
+    fiatPrice_ = fiatPrice;
+}
+void Wallet::setAmount(const double amount)
+{
+    amount_ = amount;
+}
+void Wallet::setFiatCoin(const double fiatCoin)
+{
+    fiatCoin_ = fiatCoin;
 }

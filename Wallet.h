@@ -12,32 +12,37 @@ class Wallet {
 public:
     Wallet() = delete;
     ~Wallet() = default;
-    Wallet(const QString &coin, double amount, double invested, double retired, double available, const QString& symbol, double fiat, const QString& exchange, int walletID) :
-    amount(amount),
-    invested(invested),
-    available(available),
-    symbol(symbol),
-    retired(retired),
-    coin(coin),
-    fiat(fiat),
-    exchange(exchange),
-    walletID(walletID){}
+    Wallet( int walletID, const QString &coin, const QString& exchange, const QString& user) :
+            coin_(coin),
+            exchange_(exchange),
+            walletID_(walletID),
+            user_(user) {};
 
     Wallet(const Wallet&) = default;
     Wallet(Wallet&&) = default;
 
     void print(void) const noexcept;
+    double getAmount(void) const noexcept;
+    double getInvested(void) const noexcept;
+    QString getCoin(void) const noexcept;
+    double getAverageCost(void) const noexcept;
+
+    void setWalletID(const double walletID);
+    void setInvested(const double invested);
+    void setFiatPrice(const double average);
+    void setAmount(const double average);
+    void setFiatCoin(const double average);
 
 private:
-    double amount;
-    double invested;
-    double available;
-    double retired;
-    double fiat;
-    QString coin;
-    QString exchange;
-    int walletID;
-    QString symbol;
+    double fiatPrice_;
+    double avgPrice_;
+    double amount_;
+    QString coin_;
+    QString exchange_;
+    QString fiatCoin_;
+    QString user_;
+    int walletID_;
+    double invested_;
 };
 
 

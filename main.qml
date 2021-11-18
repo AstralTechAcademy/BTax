@@ -22,7 +22,10 @@ Window {
 
     //OperationsModel{id: operationsModel}
 
-    Component.onCompleted: console.log(broker.getHost())
+    Component.onCompleted: {
+        console.log(broker.getHost())
+        bodyLoader.source = "WalletsBody.qml"
+    }
 
     readonly property int host_os: broker.getHost()
 

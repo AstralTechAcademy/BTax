@@ -35,7 +35,7 @@ public:
     virtual std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user) = 0;
     virtual std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) = 0;
     virtual std::tuple<bool, std::vector<Wallet*>> getWallets(const QString& user ) = 0;
-    virtual Wallet getWallet(const QString& wallet) = 0;
+    //virtual Wallet getWallet(const QString& wallet) = 0;
     virtual std::tuple<bool, std::vector<Operation*>> getOperations(void) = 0;
     virtual std::tuple<bool, std::vector<Operation*>> getOperations(const QString& exchange) = 0;
     //virtual int getInvested(const QString& user, const QString& excahnge) = 0;

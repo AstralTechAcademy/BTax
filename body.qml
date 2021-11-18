@@ -9,7 +9,6 @@ Item{
 
     id: body
 
-
         Item{
             id: inputsItem
             anchors.top: parent.top
@@ -152,12 +151,4 @@ Item{
             }
         }
 
-        Operation{
-            id: operation
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: clearButton.top
-            anchors.bottomMargin: 150
-            deposit_: "0.14556" + "~ 400€"
-            retired_: "1.56780" + "~ 460€"
-        }
 }

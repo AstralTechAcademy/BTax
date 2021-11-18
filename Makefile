@@ -398,6 +398,33 @@ Wallet.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Wallet.cpp.s
 .PHONY : Wallet.cpp.s
 
+WalletsModel.o: WalletsModel.cpp.o
+
+.PHONY : WalletsModel.o
+
+# target to build an object file
+WalletsModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/WalletsModel.cpp.o
+.PHONY : WalletsModel.cpp.o
+
+WalletsModel.i: WalletsModel.cpp.i
+
+.PHONY : WalletsModel.i
+
+# target to preprocess a source file
+WalletsModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/WalletsModel.cpp.i
+.PHONY : WalletsModel.cpp.i
+
+WalletsModel.s: WalletsModel.cpp.s
+
+.PHONY : WalletsModel.s
+
+# target to generate assembly for a file
+WalletsModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/WalletsModel.cpp.s
+.PHONY : WalletsModel.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -489,6 +516,9 @@ help:
 	@echo "... Wallet.o"
 	@echo "... Wallet.i"
 	@echo "... Wallet.s"
+	@echo "... WalletsModel.o"
+	@echo "... WalletsModel.i"
+	@echo "... WalletsModel.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
