@@ -17,8 +17,13 @@ double Wallet::getAverageCost(void) const noexcept
 }
 
 double Wallet::getAmount(void) const noexcept {return amount_;}
+int Wallet::getWalletID(void) const noexcept{return walletID_;};
 double Wallet::getInvested(void) const noexcept {return invested_;}
+QString Wallet::getUser(void) const noexcept {return user_;};
+QString Wallet::getExchange(void) const noexcept {return exchange_;};
+
 QString Wallet::getCoin(void) const noexcept {return coin_;}
+QString Wallet::getFiatCoin(void) const noexcept { return fiatCoin_;};
 
 
 void Wallet::setInvested(const double invested)

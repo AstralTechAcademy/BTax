@@ -14,6 +14,17 @@ class WalletsModel : public QAbstractListModel{
     Q_OBJECT
     Q_PROPERTY(QList<Wallet* > wallets READ wallets)
 public:
+    enum RoleNames {
+        WalletID = 1,
+        Coin ,
+        Exchange,
+        User,
+        Amount,
+        Invested,
+        Average,
+        FiatCoin
+    };
+
     WalletsModel(QObject* parent = 0){};
 
     //Expone el nombre de los atributos y los relaciona entre QML y C++
@@ -24,7 +35,10 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     void add(Wallet* wallet);
 
-        QList<Wallet*> wallets(void);
+public slots:
+    double getTotalInvested(void);
+
+    QList<Wallet*> wallets(void);
 
 private:
     QList<Wallet* > wallets_;

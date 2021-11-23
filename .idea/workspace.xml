@@ -15,17 +15,14 @@
     <list default="true" id="875a929d-9bbd-4e4e-a271-0edb23dbe0ad" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Broker" beforeDir="false" afterPath="$PROJECT_DIR$/Broker" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DBLocal.h" beforeDir="false" afterPath="$PROJECT_DIR$/DBLocal.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQLManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/SQLManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Wallet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Wallet.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Wallet.h" beforeDir="false" afterPath="$PROJECT_DIR$/Wallet.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/body.qml" beforeDir="false" afterPath="$PROJECT_DIR$/body.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wallet.qml" beforeDir="false" afterPath="$PROJECT_DIR$/Wallet.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WalletsBody.qml" beforeDir="false" afterPath="$PROJECT_DIR$/WalletsBody.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WalletsModel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WalletsModel.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WalletsModel.h" beforeDir="false" afterPath="$PROJECT_DIR$/WalletsModel.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.qml" beforeDir="false" afterPath="$PROJECT_DIR$/main.qml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qml.qrc" beforeDir="false" afterPath="$PROJECT_DIR$/qml.qrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qml.qrc.depends" beforeDir="false" afterPath="$PROJECT_DIR$/qml.qrc.depends" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qrc_qml.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/qrc_qml.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -73,11 +70,6 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.Broker">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Broker" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Broker" TARGET_NAME="Broker" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Broker" RUN_TARGET_NAME="Broker">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -134,6 +126,7 @@
       <workItem from="1636927680216" duration="2604000" />
       <workItem from="1637098795347" duration="1843000" />
       <workItem from="1637248800655" duration="6601000" />
+      <workItem from="1637701539065" duration="3780000" />
     </task>
     <servers />
   </component>

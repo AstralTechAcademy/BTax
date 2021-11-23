@@ -23,8 +23,12 @@ public:
 
     void print(void) const noexcept;
     double getAmount(void) const noexcept;
+    int getWalletID(void) const noexcept;
     double getInvested(void) const noexcept;
+    QString getUser(void) const noexcept;
+    QString getExchange(void) const noexcept;
     QString getCoin(void) const noexcept;
+    QString getFiatCoin(void) const noexcept;
     double getAverageCost(void) const noexcept;
 
     void setWalletID(const double walletID);

@@ -193,8 +193,8 @@ public:
 
                 auto id = query.value(0).toInt();
                 auto coin = query.value(1).toString();
-                auto exchange = query.value(6).toString();
-                auto user = query.value(7).toString();
+                auto exchange = query.value(5).toString();
+                auto user = query.value(6).toString();
 
                 auto wallet = new Wallet(id, coin, exchange, user);
 

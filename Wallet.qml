@@ -10,8 +10,6 @@ Rectangle{
     id: operation
     color: "#00000000"//"#A5A5A5"
     radius: 10
-    width: parent.width
-    height: 70
 
     ToolSeparator{
         width: parent.width
@@ -22,39 +20,49 @@ Rectangle{
 
 
     Text{
-        id: opType
-        text: type
-        width: 50
-        anchors.verticalCenter: parent.verticalCenter
+        id: id
+        text: coin
+        anchors.top: parent.top
+        anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 10
-        color: if(type == "Venta" || type == "Withdraw") { return "red"} else {return "green"}
-    }
-
-
-
-
-    Text{
-        text: "Ganancia"
-        font.pixelSize: 12
-        color: "black"
-        anchors.bottom: opDate.top
-        anchors.bottomMargin: 2
-        anchors.left: ganan.left
-        anchors.leftMargin: 0
     }
 
     Text{
-        id: ganan
-        text: ganancia
-        font.pixelSize: 12
-        color: if(ganancia >= 0)  { return "green"} else return "red"
-        width: 150
-        height: 20
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: opDate.right
+        id: exchangeTxt
+        text: exchange
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: id.right
         anchors.leftMargin: 10
-        enabled: if(statusCheck.state == "checked") { return false} else return true
     }
+
+    Text{
+        id: amountTxt
+        text: "Amount: " + amount
+        anchors.top: id.bottom
+        anchors.topMargin: 10
+        anchors.left: id.left
+        anchors.leftMargin: 10
+    }
+
+    Text{
+        id: investedTxt
+        text: "Invested: " + invested
+        anchors.top: amountTxt.top
+        anchors.topMargin: 0
+        anchors.left: amountTxt.right
+        anchors.leftMargin: 10
+    }
+
+    Text{
+        id: averageTxt
+        text: "Average: " + average
+        anchors.top: amountTxt.top
+        anchors.topMargin: 0
+        anchors.left: investedTxt.right
+        anchors.leftMargin: 10
+    }
+
 
 }

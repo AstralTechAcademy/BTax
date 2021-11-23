@@ -79,8 +79,12 @@ int main(int argc, char *argv[])
             std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
             std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
             std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
+            walletsModel.add(w);
         }
     }
+
+    std::cout << walletsModel.rowCount() << std::endl;
+
 
 
 
@@ -99,6 +103,8 @@ int main(int argc, char *argv[])
     invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "SOL");
 
     std::cout << "Invertido SOL: " <<  invertido << std::endl;*/
+
+
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
