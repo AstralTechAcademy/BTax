@@ -8,6 +8,7 @@
         <file>WalletsBody.qml</file>
         <file>Wallet.qml</file>
         <file>IconButton.qml</file>
+        <file>NewOperationForm.qml</file>
     </qresource>
 
     <qresource prefix="/assets">
@@ -17,5 +18,7 @@
         <file alias="schedule-white">assets/schedule_white_48dp.svg</file>
         <file alias="lock-black">assets/lock_black_48dp.svg</file>
         <file alias="lock-open-black">assets/lock_open_black_48dp.svg</file>
+        <file alias="wallets-black">assets/account_balance_wallet_black_48dp.svg</file>
+        <file alias="wallets-white">assets/account_balance_wallet_white_48dp.svg</file>
     </qresource>
 </RCC>

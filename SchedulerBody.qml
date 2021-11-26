@@ -12,6 +12,19 @@ ListView{
         console.log(operationsModel.rowCount())
     }
 
+    Button
+    {
+        id: newOperation
+        anchors.top: parent.top
+        anchors.topMargin: 50
+        anchors.left: parent.left
+        anchors.leftMargin: 20
+        text: "New Operation"
+        onClicked: {
+            formsLoader.source = "NewOperationForm.qml"
+        }
+    }
+
 
     ListView{
         id: favs
@@ -34,6 +47,10 @@ ListView{
         id: schedules
         clip: true
     }
+
+     Loader {
+        id: formsLoader
+     }
 
 
 

@@ -130,6 +130,21 @@ Window {
             }
         }
 
+        Image{
+            id: walletsButton
+            anchors.right: scheduleButton.left
+            anchors.rightMargin: 5
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:assets/wallets-white"
+            height: 30
+            width: 30
+            MouseArea{
+                id: walletMA
+                anchors.fill: parent
+                onClicked: bodyLoader.source = "WalletsBody.qml"
+            }
+        }
+
 
     }
 

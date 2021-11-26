@@ -23,7 +23,6 @@ QString Operation::getStatus(void) const noexcept{
 }
 
 QString Operation::getDate(void) const noexcept{
-    std::cout << "GET DATE" << std::endl;
     return date_;
 }
 

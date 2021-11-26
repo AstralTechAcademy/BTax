@@ -43,7 +43,7 @@ Rectangle{
 
 
 
-    ComboBox{
+    /*ComboBox{
         id: coinNameFirst
         currentIndex: 0
         model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD"]
@@ -66,7 +66,7 @@ Rectangle{
         height: 30
         enabled: if( statusCheck.state == "checked") { return false} else return true
 
-    }
+    }*/
 
     Text{
         text: pair1
@@ -84,7 +84,7 @@ Rectangle{
         color: "red"
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
-        anchors.left: coinNameSecond.right
+        anchors.left: opType.right
         anchors.leftMargin: 30
         width: 150
         height: 20

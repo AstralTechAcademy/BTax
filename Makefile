@@ -88,8 +88,8 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/home/gabridc/clion-2021.1.1/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/home/gabridc/clion-2021.1.1/bin/cmake/linux/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -181,6 +181,33 @@ Broker.s: Broker.cpp.s
 Broker.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Broker.cpp.s
 .PHONY : Broker.cpp.s
+
+BrokerManager.o: BrokerManager.cpp.o
+
+.PHONY : BrokerManager.o
+
+# target to build an object file
+BrokerManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/BrokerManager.cpp.o
+.PHONY : BrokerManager.cpp.o
+
+BrokerManager.i: BrokerManager.cpp.i
+
+.PHONY : BrokerManager.i
+
+# target to preprocess a source file
+BrokerManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/BrokerManager.cpp.i
+.PHONY : BrokerManager.cpp.i
+
+BrokerManager.s: BrokerManager.cpp.s
+
+.PHONY : BrokerManager.s
+
+# target to generate assembly for a file
+BrokerManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/BrokerManager.cpp.s
+.PHONY : BrokerManager.cpp.s
 
 Broker_autogen/mocs_compilation.o: Broker_autogen/mocs_compilation.cpp.o
 
@@ -492,6 +519,9 @@ help:
 	@echo "... Broker.o"
 	@echo "... Broker.i"
 	@echo "... Broker.s"
+	@echo "... BrokerManager.o"
+	@echo "... BrokerManager.i"
+	@echo "... BrokerManager.s"
 	@echo "... Broker_autogen/mocs_compilation.o"
 	@echo "... Broker_autogen/mocs_compilation.i"
 	@echo "... Broker_autogen/mocs_compilation.s"
