@@ -501,6 +501,19 @@ public:
         return 0.0;
     }
 
+    bool depositOperation(const int walletID, double pairAmount, double pairAmountFiat, const QString& comments, QString& date)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,walletID)"
+                       " VALUES (:amount, :retired, :available, :fiat,:walletID)");
+        query.bindValue(":amount", pairAmount);
+        query.bindValue(":fiat", pairAmountFiat);
+        query.bindValue(":retired", 0.0);
+        query.bindValue(":available", pairAmount);
+        query.bindValue(":walletID", walletID);
+        return query.exec();
+    }
+
     bool buyOperation(const int walletID1, const int walletID2, const QString& exchange, QString& pair1, QString& pair2, double pair1Amount, double pair1AmountFiat,
                                      double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString& comments, QString& type,
                                      QString& status, QString& date )

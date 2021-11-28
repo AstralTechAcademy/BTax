@@ -10,29 +10,29 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     operationsModel_ = operationsModel;
     walletsModel_ = walletsModel;
 
-    auto operations = DBLocal::GetInstance()->getOperations();
-    if(std::get<0>(operations) == true)
-    {
-        for(auto op : std::get<1>(operations))
-            operationsModel_->add(op);
-    }
+    loadOperationsFromDB();
+    loadWalletsFromDB("Gabriel");
 
-    auto result = DBLocal::GetInstance()->getWallets("Gabriel");
-    if(std::get<0>(result) == true)
-    {
-        auto wallets = std::get<1>(result);
-        for(auto w : wallets)
-        {
-            std::cout << "Wallet: " <<  w->getCoin().toStdString() << std::endl;
-            std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
-            std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
-            std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
-            walletsModel_->add(w);
-        }
-    }
-
-    std::cout << walletsModel_->rowCount() << std::endl;
 }
+bool BrokerManager::newDeposit(const QString user, const QString exchange, const QString pair, double pairAmount, double fees,
+                const QString comment, QString date)
+{
+    if(date == "")
+        date = QDateTime::currentDateTime().toString();
+
+    auto walletID = DBLocal::GetInstance()->getWalletID(user, exchange, pair);
+
+    // Si no existe la wallet de PAIR2 se crea
+    if(walletID == 0)
+    {
+        walletID = DBLocal::GetInstance()->addWallet(pair, 0.0, exchange, user);
+    }
+
+    return DBLocal::GetInstance()->depositOperation(walletID, pairAmount, 1, comment, date);
+
+
+}
+
 
 bool BrokerManager::newOperation(const QString user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
                   double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString comments, QString type,
@@ -91,4 +91,31 @@ bool BrokerManager::buyOperation(const QString user, const QString exchange, QSt
         return false;
     }
 
+}
+
+void BrokerManager::loadOperationsFromDB(void)
+{
+    auto operations = DBLocal::GetInstance()->getOperations();
+    if(std::get<0>(operations) == true)
+    {
+        for(auto op : std::get<1>(operations))
+            operationsModel_->add(op);
+    }
+}
+
+void BrokerManager::loadWalletsFromDB(const QString& user)
+{
+    auto result = DBLocal::GetInstance()->getWallets(user);
+    if(std::get<0>(result) == true)
+    {
+        auto wallets = std::get<1>(result);
+        for(auto w : wallets)
+        {
+            std::cout << "Wallet: " <<  w->getCoin().toStdString() << std::endl;
+            std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
+            std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
+            std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
+            walletsModel_->add(w);
+        }
+    }
 }

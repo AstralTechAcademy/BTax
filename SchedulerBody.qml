@@ -28,6 +28,7 @@ ListView{
 
     ListView{
         id: favs
+        maximumFlickVelocity: 1500.0
         anchors.top: parent.top
         anchors.topMargin: 100
         anchors.left: parent.left
@@ -47,10 +48,6 @@ ListView{
         id: schedules
         clip: true
     }
-
-     Loader {
-        id: formsLoader
-     }
 
 
 

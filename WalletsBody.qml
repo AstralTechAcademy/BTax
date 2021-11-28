@@ -24,17 +24,36 @@ Item
         font.pixelSize: 20
     }
 
+    Button
+    {
+        id: newDeposit
+        anchors.top: totalInvested.top
+        anchors.topMargin: 0
+        anchors.right: walletsBody.right
+        anchors.rightMargin: 20
+        text: "New Deposit"
+        onClicked: {
+            formsLoader.source = "NewDepositForm.qml"
+        }
+    }
 
 
+ScrollView
+{
+            anchors.top: totalInvested.bottom
+            anchors.topMargin: 20
+            anchors.left: walletsBody.left
+            anchors.leftMargin: 10
+            anchors.right: walletsBody.right
+            anchors.rightMargin: 10
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
+            clip: true
     Column
     {
         id: wallets
-        anchors.top: totalInvested.bottom
-        anchors.topMargin: 20
-        anchors.left: walletsBody.left
-        anchors.leftMargin: 10
-        anchors.right: walletsBody.right
-        anchors.rightMargin: 10
+        anchors.fill: parent
+
 
         Repeater
         {
@@ -51,6 +70,7 @@ Item
 
 
     }
+}
 
 
 

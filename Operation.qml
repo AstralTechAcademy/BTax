@@ -85,7 +85,7 @@ Rectangle{
         font.pixelSize: 15
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: opType.right
-        anchors.leftMargin: 30
+        anchors.leftMargin: 40
         width: 150
         height: 20
         enabled: if(statusCheck.state == "checked") { return false} else return true

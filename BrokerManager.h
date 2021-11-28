@@ -16,6 +16,8 @@ public:
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel);
 
 public slots:
+    bool newDeposit(const QString user, const QString exchange, const QString pair, double pairAmount, double fees,
+                    const QString comment, QString date);
     bool newOperation(const QString user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
                       double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString comments, QString type,
                       QString status, QString date);
@@ -26,6 +28,9 @@ public slots:
 private:
     OperationsModel* operationsModel_;
     WalletsModel* walletsModel_;
+
+    void loadOperationsFromDB(void);
+    void loadWalletsFromDB(const QString& user);
 
 };
 

@@ -148,6 +148,10 @@ Window {
 
     }
 
+         Loader {
+            id: formsLoader
+         }
+
 }
 
 /*##^##
