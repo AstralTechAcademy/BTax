@@ -82,7 +82,8 @@ Window
         anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 50
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC"]
+        currentIndex: 0
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET"]
     }
 
     MaterialTextInput
@@ -125,7 +126,7 @@ Window
         anchors.topMargin: 10
         anchors.left: pair2Txt.left
         anchors.leftMargin: 0
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC"]
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET"]
     }
 
     MaterialTextInput
@@ -167,7 +168,7 @@ Window
         anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 50
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC"]
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET"]
     }
 
     MaterialTextInput
@@ -199,6 +200,9 @@ Window
         anchors.bottomMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
+        onClicked: brokerManager.newOperation("Gabriel", exchange.currentText, pair1.currentText,
+               pair2.currentText, pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
+               feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
     }
 
 }

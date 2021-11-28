@@ -42,3 +42,22 @@ void Wallet::setFiatCoin(const double fiatCoin)
 {
     fiatCoin_ = fiatCoin;
 }
+
+void Wallet::setCoin(const QString coin)
+{
+    coin_ = coin;
+}
+void Wallet::setUser(const QString user)
+{
+    user_ = user;
+}
+
+void Wallet::setExchange(const QString exchange)
+{
+    exchange_ = exchange;
+}
+
+void Wallet::setWalletID(const int walletID)
+{
+    walletID_ =walletID;
+}

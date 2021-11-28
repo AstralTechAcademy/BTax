@@ -132,6 +132,8 @@ public:
         }
     }
 
+
+
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange)
     {
         QSqlQuery query = QSqlQuery(database);
@@ -169,6 +171,114 @@ public:
         {
             return std::tuple<bool, std::vector<Deposit*>>(false, {});
         }
+    }
+
+
+    int getWalletID(const QString& user, const QString& exchange, const QString& coin)
+    {
+        std::cout << user.toStdString() << " " << coin.toStdString() << exchange.toStdString() << std::endl;
+        QSqlQuery query = QSqlQuery(database);
+
+        query.prepare("SELECT COUNT(*) FROM Wallets"
+                      " WHERE user=:user AND coin=:coin AND exchange=:exchange");
+
+        query.bindValue(":user", user);
+        query.bindValue(":coin", coin);
+        query.bindValue(":exchange", exchange);
+        bool result = false;
+        query.exec();
+        query.next();
+        std::cout << query.value(0).toInt() << std::endl;
+        result = (query.value(0).toInt() == 1); // Existe la wallet
+        if(result)
+        {
+            query.prepare("SELECT id FROM Wallets"
+                          " WHERE user=:user AND coin=:coin AND exchange=:exchange");
+            query.bindValue(":user", user);
+            query.bindValue(":coin", coin);
+            query.bindValue(":exchange", exchange);
+            query.exec();
+            query.next();
+            return query.value(0).toInt();
+        }
+        else
+        {
+            return 0;
+        }
+
+    }
+
+    std::tuple<bool, Wallet*> getWallet(const QString& user, const QString& exchange, const QString& coin)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        std::cout << user.toStdString() << " " <<coin.toStdString() << " " <<exchange.toStdString() << std::endl;
+
+        query.prepare("SELECT COUNT(*) FROM WalletOperations WOP"
+                      " INNER JOIN Wallets W ON WOP.walletID = W.id"
+                      " WHERE W.user=:user AND W.coin=:coin AND W.exchange=:exchange");
+        query.bindValue(":user", user);
+        query.bindValue(":coin", coin);
+        query.bindValue(":exchange", exchange);
+        query.exec();
+        bool result = false;
+        query.next();
+        result = query.value(0).toInt() > 0;
+
+        std::cout << query.value(0).toInt() << std::endl;
+
+        if(result)
+        {
+            query.prepare("SELECT W.id,W.coin,W.user,W.exchange, WOP.available,WOP.fiat FROM WalletOperations WOP"
+                          " INNER JOIN Wallets W ON WOP.walletID = W.id"
+                          " WHERE W.user=:user AND W.coin=:coin AND W.exchange=:exchange");
+            query.bindValue(":user", user);
+            query.bindValue(":coin", coin);
+            query.bindValue(":exchange", exchange);
+            query.exec();
+            auto wallet = new Wallet();
+            bool first = true;
+            double amount = 0.0;
+            double invested = 0.0;
+            while (query.next())
+            {
+                if(first)
+                {
+                    wallet->setWalletID(query.value(0).toInt());
+                    wallet->setCoin(query.value(1).toString());
+                    wallet->setExchange(query.value(3).toString());
+                    wallet->setUser(query.value(2).toString());
+                }
+
+
+                amount += query.value(4).toDouble();
+                invested += (query.value(4).toDouble() * query.value(5).toDouble());
+
+                wallet->setAmount(amount);
+                wallet->setInvested(invested);
+
+            }
+            return std::tuple<bool, Wallet*> (true, wallet);
+        }
+        else
+        {
+            return std::tuple<bool, Wallet*> (false, {});
+        }
+    }
+
+    int addWallet(const QString& coin, double amount, const QString& exchange, const QString& user)
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("INSERT INTO Wallets(coin,amount,exchange,user) "
+                      " VALUES(:coin,:amount,:exchange,:user)");
+        query.bindValue(":coin", coin);
+        query.bindValue(":amount", amount);
+        query.bindValue(":exchange", exchange);
+        query.bindValue(":user", user);
+        auto res = query.exec();
+        if( res == true)
+            return query.lastInsertId().toInt() ;
+        else
+            return 0;
     }
 
     std::tuple<bool, std::vector<Wallet*>> getWallets(const QString& user)
@@ -223,6 +333,8 @@ public:
             return std::tuple<bool, std::vector<Wallet*>> (false, {});
         }
     }
+
+
 
    /* Wallet getWallet(const QString& wallet)
     {
@@ -387,6 +499,85 @@ public:
         }
 
         return 0.0;
+    }
+
+    bool buyOperation(const int walletID1, const int walletID2, const QString& exchange, QString& pair1, QString& pair2, double pair1Amount, double pair1AmountFiat,
+                                     double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString& comments, QString& type,
+                                     QString& status, QString& date )
+    {
+        QSqlQuery query = QSqlQuery(database);
+        query.prepare("SELECT id, retired, available FROM WalletOperations WOP"
+                      " WHERE WOP.walletID=:walletID");
+        query.bindValue(":walletID", walletID1);
+        query.exec();
+
+        QSqlQuery query2 = QSqlQuery(database);
+
+        auto pair1AmountAux = pair1Amount;
+
+        std::cout << pair1Amount << std::endl;
+        while(query.next() && pair1AmountAux != 0.0000)
+        {
+            auto id = query.value(0).toInt();
+            auto available = query.value(2).toDouble();
+            auto retired = query.value(1).toDouble();
+            if(available >= pair1AmountAux)
+            {
+                available -= pair1AmountAux;
+                retired += pair1AmountAux;
+                pair1AmountAux -= pair1AmountAux;
+            }
+            else
+            {
+                pair1AmountAux -= available;
+                retired += available;
+                available -= available;
+            }
+
+            std::cout <<  id  <<" Retired: " <<  retired <<  " Available: " <<  available<< std::endl;
+
+
+            //Restar la cantidad de PAIR1
+            query2.prepare("UPDATE WalletOperations"
+                          " SET retired=:retired, available=:available"
+                          " WHERE id=:id");
+            query2.bindValue(":id", id);
+            query2.bindValue(":retired", retired);
+            query2.bindValue(":available", available);
+            query2.exec();
+
+
+        }
+
+        //Nueva entrada con la cantidad de PAIR2
+        query2.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,walletID)"
+                       " VALUES (:amount, :retired, :available, :fiat,:walletID)");
+        query2.bindValue(":amount", pair2Amount);
+        query2.bindValue(":fiat", pair2AmountFiat);
+        query2.bindValue(":retired", 0.0);
+        query2.bindValue(":available", pair2Amount);
+        query2.bindValue(":walletID", walletID2);
+        query2.exec();
+
+        QSqlQuery query3 = QSqlQuery(database);
+        query3.prepare("INSERT INTO Operations(pair1,pair2,pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia, exchpair1, exchPair2)"
+                      " VALUES(:pair1,:pair2,:pair1Amount,:pair1AmountFiat,:pair2Amount,:comision,:comisionFiat,:pair2AmountFiat,:status,:date,:comments,:type,:ganancia, :exchpair1, :exchPair2)");
+        query3.bindValue(":pair1", pair1);
+        query3.bindValue(":pair2", pair2);
+        query3.bindValue(":pair1Amount", pair1Amount);
+        query3.bindValue(":pair1AmountFiat", pair1AmountFiat);
+        query3.bindValue(":pair2Amount", pair2Amount);
+        query3.bindValue(":pair2AmountFiat", pair2AmountFiat);
+        query3.bindValue(":comision", comision);
+        query3.bindValue(":comisionFiat", comisionFiat);
+        query3.bindValue(":status", status);
+        query3.bindValue(":date", date);
+        query3.bindValue(":comments", comments);
+        query3.bindValue(":type", type);
+        query3.bindValue(":ganancia", 0.0);
+        query3.bindValue(":exchpair1", exchange);
+        query3.bindValue(":exchPair2", exchange);
+        return query3.exec();
     }
 
 

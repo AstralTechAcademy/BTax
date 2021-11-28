@@ -40,8 +40,10 @@ public:
     virtual std::tuple<bool, std::vector<Operation*>> getOperations(const QString& exchange) = 0;
     //virtual int getInvested(const QString& user, const QString& excahnge) = 0;
     virtual double getInvested(const QString& user, const QString& exchange, const QString& wallet) = 0;
+    virtual int addWallet(const QString& coin, double amount, const QString& exchange, const QString& user) = 0;
+    virtual int getWalletID(const QString& user, const QString& exchange, const QString& coin) = 0 ;
 
-    const QString LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
+    const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
 
 
 };

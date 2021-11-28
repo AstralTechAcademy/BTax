@@ -10,7 +10,7 @@ class Wallet {
 
 
 public:
-    Wallet() = delete;
+    Wallet() = default;
     ~Wallet() = default;
     Wallet( int walletID, const QString &coin, const QString& exchange, const QString& user) :
             coin_(coin),
@@ -31,11 +31,14 @@ public:
     QString getFiatCoin(void) const noexcept;
     double getAverageCost(void) const noexcept;
 
-    void setWalletID(const double walletID);
+    void setWalletID(const int walletID);
     void setInvested(const double invested);
     void setFiatPrice(const double average);
     void setAmount(const double average);
+    void setExchange(const QString exchange);
     void setFiatCoin(const double average);
+    void setCoin(const QString coin);
+    void setUser(const QString user);
 
 private:
     double fiatPrice_;
