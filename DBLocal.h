@@ -514,12 +514,13 @@ public:
         return query.exec();
     }
 
-    bool buyOperation(const int walletID1, const int walletID2, const QString& exchange, QString& pair1, QString& pair2, double pair1Amount, double pair1AmountFiat,
+    bool registerOperation(const int walletID1, const int walletID2, const QString& exchange, QString& pair1, QString& pair2, double pair1Amount, double pair1AmountFiat,
                                      double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString& comments, QString& type,
                                      QString& status, QString& date )
     {
+        double ganancia = 0.0;
         QSqlQuery query = QSqlQuery(database);
-        query.prepare("SELECT id, retired, available FROM WalletOperations WOP"
+        query.prepare("SELECT id, retired, available, fiat FROM WalletOperations WOP"
                       " WHERE WOP.walletID=:walletID");
         query.bindValue(":walletID", walletID1);
         query.exec();
@@ -534,14 +535,20 @@ public:
             auto id = query.value(0).toInt();
             auto available = query.value(2).toDouble();
             auto retired = query.value(1).toDouble();
+            auto fiat = query.value(3).toDouble();
+
             if(available >= pair1AmountAux)
             {
+                if(type == "Venta")
+                    ganancia +=  ( pair1AmountAux * (pair1AmountFiat - fiat) );
                 available -= pair1AmountAux;
                 retired += pair1AmountAux;
                 pair1AmountAux -= pair1AmountAux;
             }
             else
             {
+                if(type == "Venta")
+                    ganancia += (available * fiat);
                 pair1AmountAux -= available;
                 retired += available;
                 available -= available;
@@ -572,6 +579,8 @@ public:
         query2.bindValue(":walletID", walletID2);
         query2.exec();
 
+
+
         QSqlQuery query3 = QSqlQuery(database);
         query3.prepare("INSERT INTO Operations(pair1,pair2,pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia, exchpair1, exchPair2)"
                       " VALUES(:pair1,:pair2,:pair1Amount,:pair1AmountFiat,:pair2Amount,:comision,:comisionFiat,:pair2AmountFiat,:status,:date,:comments,:type,:ganancia, :exchpair1, :exchPair2)");
@@ -587,13 +596,11 @@ public:
         query3.bindValue(":date", date);
         query3.bindValue(":comments", comments);
         query3.bindValue(":type", type);
-        query3.bindValue(":ganancia", 0.0);
+        query3.bindValue(":ganancia", ganancia);
         query3.bindValue(":exchpair1", exchange);
         query3.bindValue(":exchPair2", exchange);
         return query3.exec();
     }
-
-
 
 private:
     static DBLocal* db_;

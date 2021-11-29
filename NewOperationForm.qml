@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.14
+import es.broker.components 1.0
 import es.broker.components.material 1.0
 
 Window
@@ -9,7 +10,7 @@ Window
     id:newOperationWindow
 
     visible: true
-    height: 640
+    height: 700
     width: 800
     //visibility: "FullScreen"
     color: "#e9e7e7"
@@ -60,6 +61,17 @@ Window
         model: ["B2M", "Binance"]
     }
 
+/////// Date
+
+    DateSelector
+    {
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: p1AmountFiat.right
+        anchors.leftMargin: 50
+        width: 300
+    }
+
 
 
 
@@ -69,7 +81,7 @@ Window
     {
         id: pair1Txt
         anchors.top: type.bottom
-        anchors.topMargin: 30
+        anchors.topMargin: 80
         anchors.left: parent.left
         anchors.leftMargin: 50
         text: "Pair 1 (Without fees)"
@@ -83,7 +95,7 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         currentIndex: 0
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET"]
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
     }
 
     MaterialTextInput
@@ -126,7 +138,7 @@ Window
         anchors.topMargin: 10
         anchors.left: pair2Txt.left
         anchors.leftMargin: 0
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET"]
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
     }
 
     MaterialTextInput
@@ -168,7 +180,7 @@ Window
         anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 50
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET"]
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
     }
 
     MaterialTextInput
@@ -190,6 +202,37 @@ Window
         anchors.left: feesAmount.left
         anchors.leftMargin: 0
     }
+
+/////// Comments
+
+    Text
+    {
+        id: commentsTxt
+        anchors.top: feesTxt.top
+        anchors.topMargin: 0
+        anchors.left: pair2Amount.left
+        anchors.leftMargin: 0
+        text: "Comments"
+    }
+
+    TextArea
+    {
+        id: comments
+        anchors.top: commentsTxt.bottom
+        anchors.topMargin: 10
+        anchors.left: commentsTxt.left
+        anchors.leftMargin: 0
+        anchors.right: pair2Amount.right
+        anchors.rightMargin: 0
+        anchors.bottom: feesAmountFiat.bottom
+        anchors.bottomMargin: 0
+        height: 100
+        background: Rectangle {
+            anchors.fill: parent
+            color: "white"
+        }
+    }
+
 
 /////// Bottom
 

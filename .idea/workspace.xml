@@ -18,11 +18,9 @@
       <change beforePath="$PROJECT_DIR$/BrokerManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/BrokerManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BrokerManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/BrokerManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DBLocal.h" beforeDir="false" afterPath="$PROJECT_DIR$/DBLocal.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Operation.qml" beforeDir="false" afterPath="$PROJECT_DIR$/Operation.qml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SchedulerBody.qml" beforeDir="false" afterPath="$PROJECT_DIR$/SchedulerBody.qml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WalletsBody.qml" beforeDir="false" afterPath="$PROJECT_DIR$/WalletsBody.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NewOperationForm.qml" beforeDir="false" afterPath="$PROJECT_DIR$/NewOperationForm.qml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQLManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/SQLManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.qml" beforeDir="false" afterPath="$PROJECT_DIR$/main.qml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qml.qrc" beforeDir="false" afterPath="$PROJECT_DIR$/qml.qrc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qml.qrc.depends" beforeDir="false" afterPath="$PROJECT_DIR$/qml.qrc.depends" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qrc_qml.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/qrc_qml.cpp" afterDir="false" />
@@ -89,6 +87,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.Broker" />
       <item itemvalue="CMake Application.Broker_autogen" />
@@ -138,6 +141,8 @@
       <workItem from="1638055696022" duration="3965000" />
       <workItem from="1638099521351" duration="6131000" />
       <workItem from="1638111887185" duration="4004000" />
+      <workItem from="1638211243284" duration="3470000" />
+      <workItem from="1638219734810" duration="2489000" />
     </task>
     <servers />
   </component>
@@ -163,18 +168,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/DBLocal.h</url>
-          <line>575</line>
+          <line>584</line>
           <option name="timeStamp" value="36" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/BrokerManager.cpp</url>
-          <line>67</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/BrokerManager.cpp</url>
-          <line>70</line>
-          <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -10,6 +10,7 @@
         <file>IconButton.qml</file>
         <file>NewOperationForm.qml</file>
         <file>NewDepositForm.qml</file>
+        <file>DateSelector.qml</file>
     </qresource>
 
     <qresource prefix="/assets">

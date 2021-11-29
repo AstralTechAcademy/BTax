@@ -44,6 +44,7 @@ public:
     virtual int getWalletID(const QString& user, const QString& exchange, const QString& coin) = 0 ;
 
     const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
+    //const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker.db";
 
 
 };

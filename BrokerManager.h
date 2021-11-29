@@ -21,10 +21,6 @@ public slots:
     bool newOperation(const QString user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
                       double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString comments, QString type,
                       QString status, QString date);
-    bool buyOperation(const QString user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
-                      double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString comments, QString type,
-                      QString status = "Confirmed", QString date = QDateTime().toString());
-
 private:
     OperationsModel* operationsModel_;
     WalletsModel* walletsModel_;
