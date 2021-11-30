@@ -11,7 +11,7 @@
         <file>NewOperationForm.qml</file>
         <file>NewDepositForm.qml</file>
         <file>DateSelector.qml</file>
-        <file>WalletDataItem.qml</file>
+        <file>DataItem.qml</file>
     </qresource>
 
     <qresource prefix="/assets">

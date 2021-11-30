@@ -37,7 +37,7 @@ Rectangle{
         width: 80
     }
 
-    Components.WalletData
+    Components.Data
     {
         id: amountTxt
         anchors.verticalCenter: parent.verticalCenter
@@ -54,7 +54,7 @@ Rectangle{
         colorValue: "black"
     }
 
-    Components.WalletData
+    Components.Data
     {
         id: investedTxt
         anchors.verticalCenter: parent.verticalCenter
@@ -72,7 +72,7 @@ Rectangle{
     }
 
 
-    Components.WalletData
+    Components.Data
     {
         id: averageTxt
         anchors.verticalCenter: parent.verticalCenter
@@ -92,7 +92,7 @@ Rectangle{
 
 /////// EARNING
 
-    Components.WalletData
+    Components.Data
     {
         id: earning
         anchors.left: averageTxt.right
@@ -118,7 +118,7 @@ Rectangle{
         colorValue: if((amount * currentPriceTxt.text_ - invested) > 0 ) {return "green"} else {return "red"}
     }
 
-    Components.WalletData
+    Components.Data
     {
         id: percentage
         anchors.left: earning.right

@@ -103,7 +103,8 @@ void BrokerManager::loadWalletsFromDB(const QString& user)
             std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
             std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
             std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
-            walletsModel_->add(w);
+            if(w->getAmount() > 0.0)
+                walletsModel_->add(w);
         }
     }
 }
