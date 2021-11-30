@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:NewOperationForm.qml"), "es.broker", 1, 0, "NewOperationForm");
     qmlRegisterType(QUrl("qrc:NewDepositForm.qml"), "es.broker", 1, 0, "NewDepositForm");
     qmlRegisterType(QUrl("qrc:DateSelector.qml"), "es.broker.components", 1, 0, "DateSelector");
+    qmlRegisterType(QUrl("qrc:WalletDataItem.qml"), "es.broker.components", 1, 0, "WalletData");
 
     OperationsModel operationsModel;
     WalletsModel walletsModel;

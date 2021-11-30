@@ -10,11 +10,14 @@ Rectangle{
     height: 50
 
     signal selected()
+    signal accepted()
     property string id_
     property alias text_: textInput.text
     property bool disabled_: false
+    property var colorLine_: "#fbbb21"
 
     color: "white"
+
 
     Component.onCompleted:{
         oldValue.state = "enabled"
@@ -24,7 +27,7 @@ Rectangle{
     Rectangle
     {
         id: line
-        color: "#fbbb21"
+        color: colorLine_
         width: 5 
         height: rect.height
         anchors.left: rect.left
@@ -72,6 +75,11 @@ Rectangle{
         color: "lightgray"
         text:  text_
         verticalAlignment: TextInput.AlignVCenter
+        onAccepted: {
+            oldValue.state = "enabled"
+            textInput.state = "enabled"
+            rect.accepted()
+        }
 
         MouseArea
         {

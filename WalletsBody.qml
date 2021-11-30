@@ -57,14 +57,13 @@ ScrollView
 
         Repeater
         {
+            id: repeater
             Component.onCompleted: console.log(walletsModel.rowCount())
             model: walletsModel
             delegate: Wallet{
-            anchors.left: wallets.left
-            anchors.leftMargin: 10
-            anchors.right: wallets.right
-            anchors.rightMargin: 10
-            height: 70
+
+                height: 70
+                width: wallets.width
             }
         }
 
