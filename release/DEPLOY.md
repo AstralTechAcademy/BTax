@@ -96,9 +96,15 @@
                 - Broker
         - AppRun
         - Brokee.desktop
-        - shiba.png        
+        - shiba.png
 
-8. Run linuxdeploy since release folder
+8. Copy additional libraries: 
+
+        SVG library
+  
+        cp /home/gabridc/Qt/5.15.2/gcc_64/plugins/iconengines/libqsvgicon.so  appdir/usr/dist/pluguins/iconengines/
+
+9. Run linuxdeploy since release folder
         
         ./linuxdeployqt-5-x86_64.AppImage appdir/Broker.desktop \ 
         -appimage \ 
