@@ -5,3 +5,5 @@ Testing/
 *cmake_install*
 *Cache*
 *cbp
+doxygen/
+release/appdir/

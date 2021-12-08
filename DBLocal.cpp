@@ -6,7 +6,7 @@
 
 
 DBLocal* DBLocal::db_ = nullptr;
-QSqlDatabase DBLocal::database = QSqlDatabase();
+
 
 
 /**
@@ -23,3 +23,40 @@ DBLocal *DBLocal::GetInstance(void)
     }
     return db_;
 }
+
+
+bool DBLocal::createDatabase(void)
+{
+    bool created = false;
+    QDir dir;
+    QString kernel = QSysInfo::kernelType();
+    if(kernel == "linux")
+    {
+        databasePath = LinuxDatabasePath;
+        if(QFile(LinuxDatabasePath).exists() == false)
+        {
+            QFile db(LinuxDatabasePath);
+            db.open(QIODevice::WriteOnly);
+            db.close();
+            created = true;
+        }
+        else
+        {
+            //BD ya creada
+            std::cout << "File: DBLocal.cpp Function: createDatabase La DB ya existe" << std::endl;
+            created = true;
+        }
+    }
+
+    return created;
+};
+
+
+bool DBLocal::openDatabase(void)
+{
+    bool opened = false;
+    database = QSqlDatabase::addDatabase("QSQLITE");
+    database.setDatabaseName(databasePath);
+    opened = database.open();
+    return opened;
+};
