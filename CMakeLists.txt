@@ -87,7 +87,7 @@ add_executable(Broker
         Deposit.cpp
         Deposit.h
         Statistics.cpp
-        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h)
+        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h)
 endif()
 
 if(LINUX)

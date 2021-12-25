@@ -25,6 +25,19 @@ ListView{
         }
     }
 
+    Button
+    {
+        id: importOperation
+        anchors.top: newOperation.top
+        anchors.topMargin: 0
+        anchors.left: newOperation.right
+        anchors.leftMargin: 20
+        text: "Import"
+        onClicked: {
+            formsLoader.source = "ImportOperationForm.qml"
+        }
+    }
+
 
     ListView{
         id: favs

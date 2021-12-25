@@ -9,6 +9,7 @@
         <file>Wallet.qml</file>
         <file>IconButton.qml</file>
         <file>NewOperationForm.qml</file>
+        <file>ImportOperationForm.qml</file>
         <file>NewDepositForm.qml</file>
         <file>DateSelector.qml</file>
         <file>DataItem.qml</file>

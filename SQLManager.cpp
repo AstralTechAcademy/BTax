@@ -9,66 +9,79 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, con
                        double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString& comments, QString& type,
                        QString& status, QString& date )
 {
+
+    /*
+     * La comprobación de que la wallet origen tiene saldo suficiente debe hacerse antes de llamar a esta función
+     */
+
     double ganancia = 0.0;
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("SELECT id, retired, available, fiat FROM WalletOperations WOP"
-                  " WHERE WOP.walletID=:walletID");
-    query.bindValue(":walletID", walletID1);
-    query.exec();
 
-    QSqlQuery query2 = QSqlQuery(database);
+    // Se resta la cantidad de monedas o fiat de la wallet origen. Las operaciones de staking no son compras/ventas
+    // con wallets origen
 
-    auto pair1AmountAux = pair1Amount;
-
-    std::cout << pair1Amount << std::endl;
-    while(query.next() && pair1AmountAux != 0.0000)
+    if(type == "Venta" || type == "Compra")
     {
-        auto id = query.value(0).toInt();
-        auto available = query.value(2).toDouble();
-        auto retired = query.value(1).toDouble();
-        auto fiat = query.value(3).toDouble();
+        query.prepare("SELECT id, retired, available, fiat FROM WalletOperations WOP"
+                      " WHERE WOP.walletID=:walletID");
+        query.bindValue(":walletID", walletID1);
+        query.exec();
 
-        if(available >= pair1AmountAux)
+        QSqlQuery query2 = QSqlQuery(database);
+        auto pair1AmountAux = pair1Amount;
+
+
+
+        std::cout << pair1Amount << std::endl;
+        while(query.next() && pair1AmountAux != 0.0000)
         {
-            if(type == "Venta")
-                ganancia +=  ( pair1AmountAux * (pair1AmountFiat - fiat) );
-            available -= pair1AmountAux;
-            retired += pair1AmountAux;
-            pair1AmountAux -= pair1AmountAux;
+            auto id = query.value(0).toInt();
+            auto available = query.value(2).toDouble();
+            auto retired = query.value(1).toDouble();
+            auto fiat = query.value(3).toDouble();
+
+            if(available >= pair1AmountAux)
+            {
+                if(type == "Venta")
+                    ganancia +=  ( pair1AmountAux * (pair1AmountFiat - fiat) );
+                available -= pair1AmountAux;
+                retired += pair1AmountAux;
+                pair1AmountAux -= pair1AmountAux;
+            }
+            else
+            {
+                if(type == "Venta")
+                    ganancia += (available * fiat);
+                pair1AmountAux -= available;
+                retired += available;
+                available -= available;
+            }
+
+            std::cout <<  id  <<" Retired: " <<  retired <<  " Available: " <<  available<< std::endl;
+
+
+            //Restar la cantidad de PAIR1
+            query2.prepare("UPDATE WalletOperations"
+                           " SET retired=:retired, available=:available"
+                           " WHERE id=:id");
+            query2.bindValue(":id", id);
+            query2.bindValue(":retired", retired);
+            query2.bindValue(":available", available);
+            query2.exec();
+
+
         }
-        else
-        {
-            if(type == "Venta")
-                ganancia += (available * fiat);
-            pair1AmountAux -= available;
-            retired += available;
-            available -= available;
-        }
-
-        std::cout <<  id  <<" Retired: " <<  retired <<  " Available: " <<  available<< std::endl;
-
-
-        //Restar la cantidad de PAIR1
-        query2.prepare("UPDATE WalletOperations"
-                       " SET retired=:retired, available=:available"
-                       " WHERE id=:id");
-        query2.bindValue(":id", id);
-        query2.bindValue(":retired", retired);
-        query2.bindValue(":available", available);
-        query2.exec();
-
-
     }
 
-    //Nueva entrada con la cantidad de PAIR2
-    query2.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,walletID)"
+    // Nueva entrada con la cantidad de moneda en la wallet destino
+    query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,walletID)"
                    " VALUES (:amount, :retired, :available, :fiat,:walletID)");
-    query2.bindValue(":amount", pair2Amount);
-    query2.bindValue(":fiat", pair2AmountFiat);
-    query2.bindValue(":retired", 0.0);
-    query2.bindValue(":available", pair2Amount);
-    query2.bindValue(":walletID", walletID2);
-    query2.exec();
+    query.bindValue(":amount", pair2Amount);
+    query.bindValue(":fiat", pair2AmountFiat);
+    query.bindValue(":retired", 0.0);
+    query.bindValue(":available", pair2Amount);
+    query.bindValue(":walletID", walletID2);
+    query.exec();
 
 
 
@@ -208,9 +221,9 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& u
 }
 
 
-int SQLManager::getWalletID(const QString& user, const QString& exchange, const QString& coin)
+int SQLManager::getWalletID(const uint32_t user, const QString& exchange, const QString& coin)
 {
-    std::cout << user.toStdString() << " " << coin.toStdString() << exchange.toStdString() << std::endl;
+    std::cout << user << " " << coin.toStdString() << exchange.toStdString() << std::endl;
     QSqlQuery query = QSqlQuery(database);
 
     query.prepare("SELECT COUNT(*) FROM Wallets"
@@ -242,10 +255,10 @@ int SQLManager::getWalletID(const QString& user, const QString& exchange, const 
 
 }
 
-std::tuple<bool, Wallet*> SQLManager::getWallet(const QString& user, const QString& exchange, const QString& coin)
+std::tuple<bool, Wallet*> SQLManager::getWallet(const uint32_t user, const QString& exchange, const QString& coin)
 {
     QSqlQuery query = QSqlQuery(database);
-    std::cout << user.toStdString() << " " <<coin.toStdString() << " " <<exchange.toStdString() << std::endl;
+    std::cout << user << " " <<coin.toStdString() << " " <<exchange.toStdString() << std::endl;
 
     query.prepare("SELECT COUNT(*) FROM WalletOperations WOP"
                   " INNER JOIN Wallets W ON WOP.walletID = W.id"
@@ -299,7 +312,7 @@ std::tuple<bool, Wallet*> SQLManager::getWallet(const QString& user, const QStri
     }
 }
 
-int SQLManager::addWallet(const QString& coin, double amount, const QString& exchange, const QString& user)
+int SQLManager::addWallet(const QString& coin, double amount, const QString& exchange, const uint32_t user)
 {
     QSqlQuery query = QSqlQuery(database);
     query.prepare("INSERT INTO Wallets(coin,amount,exchange,user) "
@@ -315,12 +328,12 @@ int SQLManager::addWallet(const QString& coin, double amount, const QString& exc
         return 0;
 }
 
-std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const QString& user)
+std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t userID)
 {
     QSqlQuery query = QSqlQuery(database);
     query.prepare("SELECT * FROM Wallets W"
-                  " WHERE W.user=:user");
-    query.bindValue(":user", user);
+                  " WHERE W.user=:userID");
+    query.bindValue(":userID", userID);
     query.exec();
     bool result = false;
     query.next();
@@ -328,8 +341,8 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const QString& use
     if(result)
     {
         query.prepare("SELECT * FROM Wallets W"
-                      " WHERE W.user=:user");
-        query.bindValue(":user", user);
+                      " WHERE W.user=:userID");
+        query.bindValue(":userID", userID);
         query.exec();
         std::vector<Wallet*> wallets;
         while (query.next())
@@ -403,6 +416,55 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const QString& use
 
 
  }*/
+
+
+QList<std::tuple<uint32_t, QString>> SQLManager::getUsers(void)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT * FROM Users");
+    query.exec();
+    QList<std::tuple<uint32_t, QString>> users;
+    while(query.next())
+    {
+        users.push_back({query.value(0).toUInt(),  query.value(1).toString()});
+    }
+
+    return users;
+}
+
+uint32_t SQLManager::getUserID(const QString& username)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT COUNT(*) FROM Users WHERE username=:username" );
+    query.bindValue(":username", username);
+    query.exec();
+
+    bool result = false;
+    while (query.next()) {
+        result = query.value(0) > 0;
+    }
+
+    std::cout << result << std::endl;
+
+    if(result)
+    {
+
+        query.prepare("SELECT COUNT(*) FROM Users WHERE username=:username" );
+        query.bindValue(":username", username);
+        query.exec();
+        while(query.next())
+        {
+            std::cout << query.value(0).toUInt() << std::endl;
+            return query.value(0).toUInt();
+        }
+
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 
 std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
 {

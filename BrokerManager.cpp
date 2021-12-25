@@ -3,6 +3,9 @@
 //
 
 #include "BrokerManager.h"
+#include "UsersModel.h"
+
+uint32_t BrokerManager::userID = 0U;
 
 BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel)
 {
@@ -10,11 +13,15 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     operationsModel_ = operationsModel;
     walletsModel_ = walletsModel;
 
+    userID = std::get<0> (UsersModel::getUsers()[0]);
+
+    std::cout << "usr ID: " << userID << std::endl;
+
     loadOperationsFromDB();
-    loadWalletsFromDB("Gabriel");
+    loadWalletsFromDB(userID);
 
 }
-bool BrokerManager::newDeposit(const QString user, const QString exchange, const QString pair, double pairAmount, double fees,
+bool BrokerManager::newDeposit(const int user, const QString exchange, const QString pair, double pairAmount, double fees,
                 const QString comment, QString date)
 {
     if(date == "")
@@ -34,7 +41,7 @@ bool BrokerManager::newDeposit(const QString user, const QString exchange, const
 }
 
 
-bool BrokerManager::newOperation(const QString user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
+bool BrokerManager::newOperation(const int user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
                   double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString comments, QString type,
                   QString status, QString date)
 {
@@ -81,6 +88,55 @@ bool BrokerManager::newOperation(const QString user, const QString exchange, QSt
 
 }
 
+bool BrokerManager::importPreviewOperations(const QString& csvFilePath, const QString& type)
+{
+    std::cout << "Import Path: " << csvFilePath.toStdString() << std::endl;
+
+    importPreview.clear();
+
+    QFile file(csvFilePath.split("file://")[1]);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QStringList wordList;
+  /*  while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        QString operation = line.split(';')[0];
+        importPreview.push_back({});
+
+        if(type == "Staking" && operation.size() == IMPORT_STAKING_OP_ATRS)
+        {
+            wordList.append();
+        }
+
+    }*/
+
+    for(auto s : wordList)
+        std::cout << s.toStdString() << std::endl;
+}
+
+bool BrokerManager::importOperations(void)
+{
+    //TODO: Grabr en DB las operaciones
+
+    importPreview.clear();
+
+    /*return DBLocal::GetInstance()->registerOperation(std::get<1>(w)->getWalletID(), walletID2, exchange, pair1, pair2, pair1Amount, pair1AmountFiat, pair2Amount, pair2AmountFiat,
+                                                     comision, comisionFiat, comments, type, status, date);*/
+}
+
+
+uint32_t BrokerManager::getUserID(const QString& username)
+{
+    return DBLocal::GetInstance()->getUserID(username);
+}
+
+void BrokerManager::setUserID(const QString& username)
+{
+    userID = getUserID(username);
+}
+
 void BrokerManager::loadOperationsFromDB(void)
 {
     auto operations = DBLocal::GetInstance()->getOperations();
@@ -91,9 +147,9 @@ void BrokerManager::loadOperationsFromDB(void)
     }
 }
 
-void BrokerManager::loadWalletsFromDB(const QString& user)
+void BrokerManager::loadWalletsFromDB(const uint32_t userID)
 {
-    auto result = DBLocal::GetInstance()->getWallets(user);
+    auto result = DBLocal::GetInstance()->getWallets(userID);
     if(std::get<0>(result) == true)
     {
         auto wallets = std::get<1>(result);
@@ -108,3 +164,4 @@ void BrokerManager::loadWalletsFromDB(const QString& user)
         }
     }
 }
+

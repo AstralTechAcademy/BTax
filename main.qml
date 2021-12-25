@@ -52,6 +52,19 @@ Window {
             }
         }
     }
+
+    ComboBox{
+        id: userCombo
+        model: usersModel
+        currentIndex: 0
+        textRole: "Username"
+        anchors.top: logo.top
+        anchors.topMargin: 0
+        anchors.left: logo.right
+        anchors.leftMargin: 20
+
+        Component.onCompleted: brokerManager.setUserID(currentText)
+    }
     
 
     Item {

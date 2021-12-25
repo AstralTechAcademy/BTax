@@ -89,13 +89,33 @@ Rectangle{
         colorValue: "black"
     }
 
+    Components.Data
+    {
+        id: portfolioPercentageTxt
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: averageTxt.right
+        anchors.leftMargin: 30
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        width: 80
+        visible: true
+        title: "Portfolio %"
+        value: parseFloat( portfolioPercentage.toFixed(6) )
+        colorValue: "black"
+    }
+
+
+
+
 
 /////// EARNING
 
     Components.Data
     {
         id: earning
-        anchors.left: averageTxt.right
+        anchors.left: portfolioPercentageTxt.right
         anchors.leftMargin: 30
         anchors.verticalCenter: parent.verticalCenter
         anchors.top: parent.top

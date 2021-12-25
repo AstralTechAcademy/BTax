@@ -243,7 +243,7 @@ Window
         anchors.bottomMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
-        onClicked: brokerManager.newOperation("Gabriel", exchange.currentText, pair1.currentText,
+        onClicked: brokerManager.newOperation(1, exchange.currentText, pair1.currentText,
                pair2.currentText, pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
                feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
     }

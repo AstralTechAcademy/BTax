@@ -6,7 +6,9 @@
 #include "OperationsModel.h"
 #include "BrokerManager.h"
 #include "DBLocal.h"
+#include "DBRemote.h"
 #include "WalletsModel.h"
+#include "UsersModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +17,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     qmlRegisterType<Broker>("es.broker", 1, 0, "BrokerImpl");
+    qmlRegisterUncreatableType<UsersModel>("es.broker", 1, 0, "UsersModel", "Se crea despues");
     //qmlRegisterType<OperationsModel>("es.broker", 1, 0, "OperationsModel");
     qmlRegisterUncreatableType<OperationsModel>("es.broker", 1, 0, "OperationsModel", "OperationsModel sholud not be created in QMl");
     qmlRegisterUncreatableType<Operation>("es.broker", 1, 0, "Operation", "Operation sholud not be created in QMl");
@@ -29,17 +32,23 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:Wallet.qml"), "es.broker", 1, 0, "Wallet");
     qmlRegisterType(QUrl("qrc:NewOperationForm.qml"), "es.broker", 1, 0, "NewOperationForm");
     qmlRegisterType(QUrl("qrc:NewDepositForm.qml"), "es.broker", 1, 0, "NewDepositForm");
+    qmlRegisterType(QUrl("qrc:ImportOperationForm.qml"), "es.broker", 1, 0, "ImportOperationForm");
     qmlRegisterType(QUrl("qrc:DateSelector.qml"), "es.broker.components", 1, 0, "DateSelector");
     qmlRegisterType(QUrl("qrc:DataItem.qml"), "es.broker.components", 1, 0, "Data");
 
+
+    UsersModel usersModel;
     OperationsModel operationsModel;
     WalletsModel walletsModel;
 
 
+    //DBRemote::GetInstance()->createDatabase();
+    //std:: cout << "Remote Server: " << DBRemote::GetInstance()->openDatabase() << std::endl;
 
     DBLocal::GetInstance()->createDatabase();
     DBLocal::GetInstance()->openDatabase();
-    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel);
+    usersModel.setUsers();
+
     /*double gananciasAnuales = 0.0;
     for(auto operation : std::get<1>(DBLocal::GetInstance()->getOperations("B2M")) )
     {
@@ -94,6 +103,9 @@ int main(int argc, char *argv[])
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
+    engine.rootContext()->setContextProperty("usersModel", &usersModel);
+
+    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
     engine.load(url);
 

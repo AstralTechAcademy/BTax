@@ -51,7 +51,6 @@ bool DBLocal::createDatabase(void)
     return created;
 };
 
-
 bool DBLocal::openDatabase(void)
 {
     bool opened = false;
