@@ -36,6 +36,7 @@ public:
     //Permite leer los atributos de la clase Operation en QML
     QVariant data(const QModelIndex &index, int role) const;
     void add(Wallet* wallet);
+    void clear(void);
 
 
 public slots:

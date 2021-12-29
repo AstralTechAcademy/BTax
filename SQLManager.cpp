@@ -476,29 +476,17 @@ QList<std::tuple<uint32_t, QString>> SQLManager::getUsers(void)
 uint32_t SQLManager::getUserID(const QString& username)
 {
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("SELECT COUNT(*) FROM Users WHERE username=:username" );
+    query.prepare("SELECT * FROM Users WHERE username=:username" );
     query.bindValue(":username", username);
     query.exec();
-
-    bool result = false;
-    while (query.next()) {
-        result = query.value(0) > 0;
-    }
-
-    std::cout << result << std::endl;
-
+    bool result = query.result()->handle().isValid();
     if(result)
     {
-
-        query.prepare("SELECT COUNT(*) FROM Users WHERE username=:username" );
-        query.bindValue(":username", username);
-        query.exec();
         while(query.next())
         {
             std::cout << query.value(0).toUInt() << std::endl;
             return query.value(0).toUInt();
         }
-
     }
     else
     {

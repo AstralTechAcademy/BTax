@@ -64,6 +64,11 @@ Window {
         anchors.leftMargin: 20
 
         Component.onCompleted: brokerManager.setUserID(currentText)
+
+        popup.onClosed: {
+            console.log("User selected: " + currentText)
+            brokerManager.setUserID(currentText)
+        }
     }
     
 

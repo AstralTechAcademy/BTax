@@ -16,7 +16,12 @@ public:
             walletID_(walletID),
             coin_(coin),
             exchange_(exchange),
-            user_(user) {};
+            user_(user) {
+        amount_ = 0.0;
+        avgPrice_ = 0.0;
+        fiatPrice_ = 0.0;
+        invested_ = 0.0;
+    };
 
     Wallet(const Wallet&) = default;
     Wallet(Wallet&&) = default;

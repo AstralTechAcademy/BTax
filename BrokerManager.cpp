@@ -157,7 +157,7 @@ QStringList BrokerManager::getWalletsCBox(const QString& username)
     if(username != "")
         wallets = std::get<1>(DBLocal::GetInstance()->getWallets(getUserID(username)));
     else
-        wallets = std::get<1>(DBLocal::GetInstance()->getWallets());
+        wallets = std::get<1>(DBLocal::GetInstance()->getWallets(userID));
 
     if(wallets.empty() == false)
     {
@@ -175,6 +175,9 @@ QStringList BrokerManager::getWalletsCBox(const QString& username)
 void BrokerManager::setUserID(const QString& username)
 {
     userID = getUserID(username);
+    std::cout << "user ID: " << userID << std::endl;
+    walletsModel_->clear();
+    loadWalletsFromDB(userID);
 }
 
 void BrokerManager::loadOperationsFromDB(void)
@@ -203,6 +206,7 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
         for(auto w : wallets)
         {
             std::cout << "Wallet: " <<  w->getCoin().toStdString() << std::endl;
+            std::cout << "  User: " <<  w->getUser().toStdString() << std::endl;
             std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
             std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
             std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;

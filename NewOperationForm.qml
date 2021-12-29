@@ -97,7 +97,7 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         currentIndex: 0
-        model: brokerManager.getWalletsCBox("gabridc")
+        model: brokerManager.getWalletsCBox()
     }
 
     MaterialTextInput

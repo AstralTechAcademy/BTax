@@ -61,6 +61,12 @@ void WalletsModel::add(Wallet* wallet)
     emit layoutChanged();
 }
 
+void WalletsModel::clear(void)
+{
+    wallets_.clear(),
+    emit layoutChanged();
+}
+
 double WalletsModel::getTotalInvested(void) const
 {
     double invested = 0.0 ;
