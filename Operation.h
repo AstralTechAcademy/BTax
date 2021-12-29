@@ -76,21 +76,19 @@ public:
 
     enum class EN_OperationColumns_t {
         ID = 0,
-        PAIR1,
-        PAIR2,
+        WALLET1,
+        WALLET2,
         PAIRA1AMOUNT,
         PAIRA1AMOUNTFIAT,
         PAIR2AMOUNT,
+        PAIR2AMOUNTFIAT,
         COMISION,
         COMISIONFIAT,
-        PAIR2AMOUNTFIAT,
+        GANANCIA,
         STATUS,
         DATE,
         COMMENTS,
-        TYPE,
-        GANANCIA,
-        COMISIONCOIN
-
+        TYPE
     };
 
 private:

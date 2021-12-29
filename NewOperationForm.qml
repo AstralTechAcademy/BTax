@@ -21,6 +21,8 @@ Window
 
     Component.onCompleted: console.log("New Operation Form")
 
+    signal close()
+
     Text
     {
         id: operationTypeTxt
@@ -38,10 +40,10 @@ Window
         anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 50
-        model: ["Compra", "Venta", "Traspaso", "Staking"]
+        model: ["Compra", "Venta", "Staking"]
     }
 
-    Text
+    /*Text
     {
         id: exchangeTxt
         anchors.top: operationTypeTxt.top
@@ -59,7 +61,7 @@ Window
         anchors.left: type.right
         anchors.leftMargin: 20
         model: ["B2M", "Binance"]
-    }
+    }*/
 
 /////// Date
 
@@ -84,7 +86,7 @@ Window
         anchors.topMargin: 80
         anchors.left: parent.left
         anchors.leftMargin: 50
-        text: "Pair 1 (Without fees)"
+        text: "Wallet Origin"
     }
 
     ComboBox
@@ -95,7 +97,7 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         currentIndex: 0
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
+        model: brokerManager.getWalletsCBox("gabridc")
     }
 
     MaterialTextInput
@@ -138,7 +140,7 @@ Window
         anchors.topMargin: 10
         anchors.left: pair2Txt.left
         anchors.leftMargin: 0
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
+        model: brokerManager.getWalletsCBox("")
     }
 
     MaterialTextInput

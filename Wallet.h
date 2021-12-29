@@ -5,7 +5,7 @@
 #ifndef BROKER_WALLET_H
 #define BROKER_WALLET_H
 #include <QString>
-
+#include <iostream>
 class Wallet {
 
 
@@ -13,9 +13,9 @@ public:
     Wallet() = default;
     ~Wallet() = default;
     Wallet( int walletID, const QString &coin, const QString& exchange, const QString& user) :
+            walletID_(walletID),
             coin_(coin),
             exchange_(exchange),
-            walletID_(walletID),
             user_(user) {};
 
     Wallet(const Wallet&) = default;

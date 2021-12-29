@@ -18,57 +18,97 @@ Window
     x: Screen.width / 2 - width / 2
     y: Screen.height / 2 - height / 2
 
-    Component.onCompleted: console.log("New Deposit Form")
+    Component.onCompleted: {
+        console.log("New Deposit Form")
+    }
 
-    Text
+    signal close()
+
+    Button
     {
-        id: exchangeTxt
+        id: newWalletBtn
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.left: parent.left
         anchors.leftMargin: 50
-        text: "Exchange"
+        text: "New Wallet"
+        onClicked: {
+            newWalletsCombox.visible = true
+        }
     }
 
-    ComboBox
+    Row
     {
-        id: exchange
-        anchors.top: exchangeTxt.bottom
-        anchors.topMargin: 10
-        anchors.left: exchangeTxt.left
-        anchors.leftMargin: 0
-        model: ["B2M", "Binance"]
+        id: newWalletsCombox
+        anchors.top: newWalletBtn.top
+        anchors.topMargin: 0
+        anchors.left: newWalletBtn.right
+        anchors.leftMargin: 20
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        visible: false
+        spacing: 10
+
+        ComboBox
+        {
+            id: coins
+            model: coinsModel
+            textRole: "name"
+            popup.onClosed: console.log("Combo Cliked " + coinsModel.get(currentIndex))
+
+        }
+
+        ComboBox
+        {
+            id: exchangeCBox
+            model: ["Binance", "B2M"]
+        }
+
+        Button
+        {
+            id: acceptBtnNewWaa
+            text: "Accept"
+            onClicked: {
+                if(brokerManager.addWallet(coins.currentText.split(" ")[0], exchangeCBox.currentText) == false)
+                    console.log("Error al crear la wallet")
+                newWalletsCombox.visible = false
+            }
+        }
     }
 
-//////////PAIR 1
+
+
+
 
     Text
     {
-        id: pair1Txt
-        anchors.top: exchange.bottom
-        anchors.topMargin: 30
+        id: walletTxt
+        anchors.top: parent.top
+        anchors.topMargin: 120
         anchors.left: parent.left
         anchors.leftMargin: 50
-        text: "Pair 1 (Without fees)"
+        text: "Wallet"
     }
 
     ComboBox
     {
-        id: pair1
-        anchors.top: pair1Txt.bottom
+        id: wallet
+        anchors.top: walletTxt.bottom
         anchors.topMargin: 10
-        anchors.left: parent.left
-        anchors.leftMargin: 50
-        currentIndex: 0
-        model: ["EUR","USD"]
+        anchors.left: walletTxt.left
+        anchors.leftMargin: 0
+        width: 200
+        model: walletsModelDeposit
+        textRole: "display"
+        popup.onClosed: console.log("Combo Cliked " + walletsModelDeposit.getWalletID(currentIndex))
     }
 
     MaterialTextInput
     {
         id: pair1Amount
-        anchors.top: pair1.bottom
+        anchors.top: wallet.bottom
         anchors.topMargin: 10
-        anchors.left: pair1.left
+        anchors.left: wallet.left
         anchors.leftMargin: 0
         text_: "Amount"
     }
@@ -104,8 +144,10 @@ Window
         anchors.bottomMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
-        onClicked: brokerManager.newDeposit("Gabriel", exchange.currentText, pair1.currentText,
-               pair1Amount.text_, feesAmount.text_, "", "") //TODO: comments
+        onClicked: {
+            brokerManager.newDeposit(1,pair1Amount.text_, feesAmount.text_, "", "") //TODO: comments
+            newDeppsitWindow.close()
+        }
     }
 
 }

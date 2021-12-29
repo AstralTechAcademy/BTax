@@ -328,34 +328,61 @@ int SQLManager::addWallet(const QString& coin, double amount, const QString& exc
         return 0;
 }
 
-std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t userID)
+std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(void)
 {
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("SELECT * FROM Wallets W"
-                  " WHERE W.user=:userID");
-    query.bindValue(":userID", userID);
+    query.prepare("SELECT C.name,U.username,  W.* FROM Wallets W"
+                  " LEFT JOIN Coins C ON C.id = W.coin"
+                  " LEFT JOIN Users U ON U.id = W.user");
     query.exec();
-    bool result = false;
-    query.next();
-    result = query.value(0) > 0;
+    bool result = query.result()->handle().isValid();
     if(result)
     {
-        query.prepare("SELECT * FROM Wallets W"
-                      " WHERE W.user=:userID");
-        query.bindValue(":userID", userID);
-        query.exec();
         std::vector<Wallet*> wallets;
         while (query.next())
         {
 
-            auto id = query.value(0).toInt();
-            auto coin = query.value(1).toString();
-            auto exchange = query.value(5).toString();
-            auto user = query.value(6).toString();
+            auto id = query.value(2).toInt();
+            auto coin = query.value(0).toString();
+            auto exchange = query.value(7).toString();
+            auto user = query.value(1).toString();
+
+            auto wallet = new Wallet(id, coin, exchange, user);
+            wallets.push_back(wallet);
+        }
+        return std::tuple<bool, std::vector<Wallet*>> (true, wallets);
+    }
+    else
+    {
+        return std::tuple<bool, std::vector<Wallet*>> (false, {});
+    }
+}
+
+std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t userID)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT C.name, U.username,W.* FROM Wallets W"
+                  " LEFT JOIN Coins C ON C.id = W.coin"
+                  " LEFT JOIN Users U ON U.id = W.user"
+                  " WHERE W.user=:userID");
+    query.bindValue(":userID", userID);
+    query.exec();
+    bool result = query.result()->handle().isValid();
+    if(result)
+    {
+        std::vector<Wallet*> wallets;
+        while (query.next())
+        {
+
+            auto id = query.value(2).toInt();
+            auto coin = query.value(0).toString();
+            auto exchange = query.value(7).toString();
+            auto user = query.value(1).toString();
+            std::cout << id << " " << " " << coin.toStdString() << " " << exchange.toStdString()  << " " << user.toStdString() << std::endl;
 
             auto wallet = new Wallet(id, coin, exchange, user);
 
-            QSqlQuery query2 = QSqlQuery(database);
+            /*QSqlQuery query2 = QSqlQuery(database);
             query2.prepare("SELECT WOP.* FROM WalletOperations WOP "
                            " WHERE WOP.walletID=:id");
             query2.bindValue(":id", id);
@@ -368,7 +395,7 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
                 invested += (query2.value(3).toDouble() * query2.value(5).toDouble());
             }
             wallet->setAmount(amount);
-            wallet->setInvested(invested);
+            wallet->setInvested(invested);*/
             wallets.push_back(wallet);
 
         }
@@ -416,6 +443,20 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
 
 
  }*/
+
+QList<std::tuple<uint32_t, QString>> SQLManager::getCoins(void)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT * FROM Coins");
+    query.exec();
+    QList<std::tuple<uint32_t, QString>> coins;
+    while(query.next())
+    {
+        coins.push_back({query.value(0).toUInt(),  query.value(1).toString()});
+    }
+
+    return coins;
+}
 
 
 QList<std::tuple<uint32_t, QString>> SQLManager::getUsers(void)
@@ -469,35 +510,35 @@ uint32_t SQLManager::getUserID(const QString& username)
 std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
 {
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("SELECT COUNT(*) FROM Operations");
+    query.prepare("SELECT C.name,C2.name,O.* FROM Operations O \
+                        LEFT JOIN Wallets W1 on W1.id = O.wallet1 \
+                        LEFT JOIN Coins C on C.id = W1.coin \
+                        LEFT JOIN Wallets W2 on W2.id = O.wallet2 \
+                        LEFT JOIN Coins C2 on C2.id = W2.coin \
+                        WHERE W2.user=:user AND W1.user =:user");
+    query.bindValue(":user", getUserID("gabridc"));
     query.exec();
-    bool result = false;
-    while (query.next()) {
-        result = query.value(0) > 0;
-    }
-
+    auto result = query.result()->handle().isValid();
     if(result)
     {
         std::vector<Operation *> operations;
-        query.prepare("SELECT * FROM Operations");
-        query.exec();
         while(query.next())
         {
             operations.push_back(
-                    new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)).toInt(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR1)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)).toDouble()
+                    new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)+2).toInt(),
+                                  query.value(0).toString(),
+                                  query.value(1).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)+2).toDouble()
                     ));
         }
         return std::tuple<bool, std::vector<Operation *>>(result, operations);
@@ -513,38 +554,36 @@ std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
 std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(const QString& exchange)
 {
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("SELECT COUNT(*) FROM Operations WHERE exchpair1=:exchange OR exchpair2=:exchange");
+    query.prepare("SELECT C.name,C2.name,O.* FROM Operations O \
+                        LEFT JOIN Wallets W1 on W1.id = O.wallet1 \
+                        LEFT JOIN Coins C on C.id = W1.coin \
+                        LEFT JOIN Wallets W2 on W2.id = O.wallet2 \
+                        LEFT JOIN Coins C2 on C2.id = W2.coin \
+                        WHERE W2.user=:user AND W1.user =:user AND W2.exchange=:exchange AND  W2.exchange=:exchange");
+    query.bindValue(":user", 1);
     query.bindValue(":exchange", exchange);
     query.exec();
-    bool result = false;
-    while (query.next()) {
-        result = query.value(0) > 0;
-    }
-
+    auto result = query.result()->handle().isValid();
     if(result)
     {
         std::vector<Operation *> operations;
-        query.prepare("SELECT * FROM Operations WHERE exchpair1=:exchange OR exchpair2=:exchange");
-        query.bindValue(":exchange", exchange);
-        query.exec();
         while(query.next())
         {
-            std::cout << query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)).toInt() << std::endl;
             operations.push_back(
-                    new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)).toInt(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR1)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)).toDouble(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)).toString(),
-                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)).toDouble()
+                    new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)+2).toInt(),
+                                  query.value(0).toString(),
+                                  query.value(1).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)+2).toDouble()
                     ));
         }
         return std::tuple<bool, std::vector<Operation *>>(result, operations);
@@ -597,15 +636,16 @@ double SQLManager::getInvested(const QString& user, const QString& exchange, con
     return 0.0;
 }
 
-bool SQLManager::depositOperation(const int walletID, double pairAmount, double pairAmountFiat, const QString& comments, QString& date)
+bool SQLManager::depositOperation(const int walletID, double amount, double amountFiat,  double fees, const QString& comments, QString& date)
 {
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,walletID)"
-                  " VALUES (:amount, :retired, :available, :fiat,:walletID)");
-    query.bindValue(":amount", pairAmount);
-    query.bindValue(":fiat", pairAmountFiat);
+    query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,fees, walletID)"
+                  " VALUES (:amount, :retired, :available, :fees, :fiat,:walletID)");
+    query.bindValue(":amount", amount);
+    query.bindValue(":fiat", amountFiat);
     query.bindValue(":retired", 0.0);
-    query.bindValue(":available", pairAmount);
+    query.bindValue(":fees", fees);
+    query.bindValue(":available", amount - fees);
     query.bindValue(":walletID", walletID);
     return query.exec();
 }

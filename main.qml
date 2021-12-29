@@ -165,6 +165,12 @@ Window {
             id: formsLoader
          }
 
+         Connections{
+            target: formsLoader.item
+            function onClosing () {formsLoader.source = "" }
+            function onClose () {formsLoader.source = "" }
+         }
+
 }
 
 /*##^##

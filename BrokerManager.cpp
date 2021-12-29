@@ -7,11 +7,13 @@
 
 uint32_t BrokerManager::userID = 0U;
 
-BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel)
+BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelDeposit, CoinsModel*const coinsModel)
 {
     parent = 0;
     operationsModel_ = operationsModel;
     walletsModel_ = walletsModel;
+    walletsModelDeposit_ = walletsModelDeposit;
+    coinsModel_ = coinsModel;
 
     userID = std::get<0> (UsersModel::getUsers()[0]);
 
@@ -19,25 +21,17 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
 
     loadOperationsFromDB();
     loadWalletsFromDB(userID);
+    loadCoinsFromDB();
 
 }
-bool BrokerManager::newDeposit(const int user, const QString exchange, const QString pair, double pairAmount, double fees,
+
+bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
                 const QString comment, QString date)
 {
     if(date == "")
         date = QDateTime::currentDateTime().toString();
 
-    auto walletID = DBLocal::GetInstance()->getWalletID(user, exchange, pair);
-
-    // Si no existe la wallet de PAIR2 se crea
-    if(walletID == 0)
-    {
-        walletID = DBLocal::GetInstance()->addWallet(pair, 0.0, exchange, user);
-    }
-
-    return DBLocal::GetInstance()->depositOperation(walletID, pairAmount, 1, comment, date);
-
-
+    return DBLocal::GetInstance()->depositOperation(walletID, amount, 1, fees, comment, date);
 }
 
 
@@ -88,6 +82,30 @@ bool BrokerManager::newOperation(const int user, const QString exchange, QString
 
 }
 
+bool BrokerManager::addWallet(const QString coinName, const QString exchange)
+{
+    if(walletsModel_->rowCount() > 0)
+    {
+        bool exist = false;
+        auto wallets = walletsModel_->wallets();
+        for(auto w : wallets)
+        {
+            if(w->getCoin() == coinName && w->getExchange() == exchange)
+                exist = true;
+        }
+
+        if(exist)
+            return false;
+        else
+        {
+            return (DBLocal::GetInstance()->addWallet(coinName, 0.0, exchange, userID) > 0);
+        }
+    }
+    else
+        return  false;
+
+}
+
 bool BrokerManager::importPreviewOperations(const QString& csvFilePath, const QString& type)
 {
     std::cout << "Import Path: " << csvFilePath.toStdString() << std::endl;
@@ -132,6 +150,28 @@ uint32_t BrokerManager::getUserID(const QString& username)
     return DBLocal::GetInstance()->getUserID(username);
 }
 
+QStringList BrokerManager::getWalletsCBox(const QString& username)
+{
+    QStringList result;
+    std::vector<Wallet *> wallets;
+    if(username != "")
+        wallets = std::get<1>(DBLocal::GetInstance()->getWallets(getUserID(username)));
+    else
+        wallets = std::get<1>(DBLocal::GetInstance()->getWallets());
+
+    if(wallets.empty() == false)
+    {
+        for(auto w : wallets)
+        {
+            w->print();
+            std::cout << w->getWalletID() <<  w->getCoin().toStdString() <<  w->getExchange().toStdString()<< std::endl;
+            result.push_back(QString::number(w->getWalletID()) + " " + w->getUser() + " " + w->getCoin() + " " + w->getExchange());
+        }
+    }
+
+    return result;
+}
+
 void BrokerManager::setUserID(const QString& username)
 {
     userID = getUserID(username);
@@ -147,6 +187,13 @@ void BrokerManager::loadOperationsFromDB(void)
     }
 }
 
+void BrokerManager::loadCoinsFromDB(void)
+{
+    auto coins = DBLocal::GetInstance()->getCoins();
+    for(auto c : coins)
+        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c)));
+}
+
 void BrokerManager::loadWalletsFromDB(const uint32_t userID)
 {
     auto result = DBLocal::GetInstance()->getWallets(userID);
@@ -159,8 +206,9 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
             std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
             std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
             std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
-            if(w->getAmount() > 0.0)
-                walletsModel_->add(w);
+            //if(w->getAmount() > 0.0)
+            walletsModel_->add(w);
+            walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
         }
     }
 }

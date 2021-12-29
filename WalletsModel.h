@@ -23,7 +23,8 @@ public:
         Invested,
         Average,
         FiatCoin,
-        PortfolioPercentage
+        PortfolioPercentage,
+        DisplayText
     };
 
     WalletsModel(QObject* parent = 0){};
@@ -40,6 +41,8 @@ public:
 public slots:
     double getTotalInvested(void) const;
     double getPortfolioPercentage(const double amount) const;
+    int getWalletID(const int index);
+    //void update(const int userID);
     QList<Wallet*> wallets(void);
 
 private:
