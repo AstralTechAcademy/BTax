@@ -14,6 +14,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+#add_definitions(-DOFICIAL)
+
 if(LINUX)
     set(Qt5Core_VERSION "5.15")
     set(CMAKE_MODULE_PATH "~/Qt/5.15.2")
