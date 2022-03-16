@@ -231,9 +231,11 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
             std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
             std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
             std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
-            //if(w->getAmount() > 0.0)
-            walletsModel_->add(w);
-            walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
+            if(w->getAmount() > 0.00000000000)
+            {
+                walletsModel_->add(w);
+                walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
+            }
         }
     }
 }
