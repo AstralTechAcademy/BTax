@@ -39,11 +39,13 @@ bool DBRemote::openDatabase(void)
     database.setHostName("zendaya.astraltech.es");
     database.setDatabaseName("broker_oficial");
     database.setPassword("20greatest_Showman22");
+    server = "zendaya.astraltech.es";
 #else
     database.setPort(3306);
     database.setHostName("192.168.1.30");
     database.setDatabaseName("broker_test");
     database.setPassword("greatestShowman");
+    server = "192.168.1.30";
 #endif
     opened = database.open();
     return opened;

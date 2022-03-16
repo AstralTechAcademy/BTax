@@ -11,13 +11,15 @@
 #include "UsersModel.h"
 #include "CoinsModel.h"
 
+
+
 int main(int argc, char *argv[])
 {
-
+    QString version = "1.0.0";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
-    qmlRegisterType<Broker>("es.broker", 1, 0, "BrokerImpl");
+    qmlRegisterUncreatableType<Broker>("es.broker", 1, 0, "Broker", "App Class Instance");
     qmlRegisterUncreatableType<UsersModel>("es.broker", 1, 0, "UsersModel", "Se crea despues");
     //qmlRegisterType<OperationsModel>("es.broker", 1, 0, "OperationsModel");
     qmlRegisterUncreatableType<OperationsModel>("es.broker", 1, 0, "OperationsModel", "OperationsModel sholud not be created in QMl");
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
 
 
     //DBRemote::GetInstance()->createDatabase();
-    std:: cout << "Remote Server: " << DBRemote::GetInstance()->openDatabase() << std::endl;
+    std:: cout << "DB Server Opened: " << DBRemote::GetInstance()->openDatabase() << std::endl;
 
     //DBLocal::GetInstance()->createDatabase();
     //DBLocal::GetInstance()->openDatabase();
@@ -114,6 +116,9 @@ int main(int argc, char *argv[])
 
     BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelDeposit, &coinsModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
+
+    Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);
+    engine.rootContext()->setContextProperty("BrokerImpl", broker);
     engine.load(url);
 
 
