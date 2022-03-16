@@ -27,10 +27,23 @@ ListView{
 
     Button
     {
-        id: importOperation
+        id: newTransfer
         anchors.top: newOperation.top
         anchors.topMargin: 0
         anchors.left: newOperation.right
+        anchors.leftMargin: 20
+        text: "New Transfer"
+        onClicked: {
+            formsLoader.source = "NewTransferForm.qml"
+        }
+    }
+
+    Button
+    {
+        id: importOperation
+        anchors.top: newTransfer.top
+        anchors.topMargin: 0
+        anchors.left: newTransfer.right
         anchors.leftMargin: 20
         text: "Import"
         onClicked: {

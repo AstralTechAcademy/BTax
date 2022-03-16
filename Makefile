@@ -236,6 +236,33 @@ Broker_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Broker_autogen/mocs_compilation.cpp.s
 .PHONY : Broker_autogen/mocs_compilation.cpp.s
 
+CoinsModel.o: CoinsModel.cpp.o
+
+.PHONY : CoinsModel.o
+
+# target to build an object file
+CoinsModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/CoinsModel.cpp.o
+.PHONY : CoinsModel.cpp.o
+
+CoinsModel.i: CoinsModel.cpp.i
+
+.PHONY : CoinsModel.i
+
+# target to preprocess a source file
+CoinsModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/CoinsModel.cpp.i
+.PHONY : CoinsModel.cpp.i
+
+CoinsModel.s: CoinsModel.cpp.s
+
+.PHONY : CoinsModel.s
+
+# target to generate assembly for a file
+CoinsModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/CoinsModel.cpp.s
+.PHONY : CoinsModel.cpp.s
+
 DBLocal.o: DBLocal.cpp.o
 
 .PHONY : DBLocal.o
@@ -579,6 +606,9 @@ help:
 	@echo "... Broker_autogen/mocs_compilation.o"
 	@echo "... Broker_autogen/mocs_compilation.i"
 	@echo "... Broker_autogen/mocs_compilation.s"
+	@echo "... CoinsModel.o"
+	@echo "... CoinsModel.i"
+	@echo "... CoinsModel.s"
 	@echo "... DBLocal.o"
 	@echo "... DBLocal.i"
 	@echo "... DBLocal.s"

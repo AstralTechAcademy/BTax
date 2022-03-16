@@ -8,6 +8,7 @@
 
 void Wallet::print() const noexcept
 {
+    std::cout << getWalletID() << getCoin().toStdString() << getExchange().toStdString() << std::endl;
 }
 
 

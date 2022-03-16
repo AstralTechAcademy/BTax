@@ -14,6 +14,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+#add_definitions(-DOFICIAL)
+
 if(LINUX)
     set(Qt5Core_VERSION "5.15")
     set(CMAKE_MODULE_PATH "~/Qt/5.15.2")
@@ -87,7 +89,8 @@ add_executable(Broker
         Deposit.cpp
         Deposit.h
         Statistics.cpp
-        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h)
+        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
+        CoinsModel.cpp CoinsModel.h)
 endif()
 
 if(LINUX)

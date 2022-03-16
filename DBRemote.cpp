@@ -33,10 +33,18 @@ bool DBRemote::openDatabase(void)
 {
     bool opened = false;
     database = QSqlDatabase::addDatabase("QMYSQL");
-    database.setHostName("192.168.1.31");
-    database.setDatabaseName("broker");
-    database.setUserName("gabridc");
-    database.setPassword("20n3ptuno_P1anet21");
+    database.setUserName("zendaya");
+#ifdef OFICIAL
+    database.setPort(53306);
+    database.setHostName("zendaya.astraltech.es");
+    database.setDatabaseName("broker_oficial");
+    database.setPassword("20greatest_Showman22");
+#else
+    database.setPort(3306);
+    database.setHostName("192.168.1.30");
+    database.setDatabaseName("broker_test");
+    database.setPassword("greatestShowman");
+#endif
     opened = database.open();
     return opened;
 };
