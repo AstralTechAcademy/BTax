@@ -4,6 +4,7 @@
 
 #include "SQLManager.h"
 QSqlDatabase SQLManager::database = QSqlDatabase();
+QString SQLManager::server = "None";
 
 bool SQLManager::registerOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
                        double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString& comments, QString& type,
@@ -535,8 +536,13 @@ uint32_t SQLManager::getUserID(const QString& username)
     }
 }
 
+QString SQLManager::getServer(void) const
+{
+    return server;
+}
 
-std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
+
+/*std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
 {
     QSqlQuery query = QSqlQuery(database);
     query.prepare("SELECT C.name,C2.name,O.* FROM Operations O \
@@ -544,7 +550,8 @@ std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
                         LEFT JOIN Coins C on C.id = W1.coin \
                         LEFT JOIN Wallets W2 on W2.id = O.wallet2 \
                         LEFT JOIN Coins C2 on C2.id = W2.coin \
-                        WHERE W2.user=:user AND W1.user =:user");
+                        WHERE W2.user=:user AND W1.user =:user \
+                        ORDER BY id DESC");
     query.bindValue(":user", getUserID("gabridc"));
     query.exec();
     auto result = query.result()->handle().isValid();
@@ -578,9 +585,9 @@ std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(void)
     }
 
 
-};
+};*/
 
-std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(const QString& exchange)
+std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(const uint32_t userID)
 {
     QSqlQuery query = QSqlQuery(database);
     query.prepare("SELECT C.name,C2.name,O.* FROM Operations O \
@@ -588,8 +595,51 @@ std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(const QStrin
                         LEFT JOIN Coins C on C.id = W1.coin \
                         LEFT JOIN Wallets W2 on W2.id = O.wallet2 \
                         LEFT JOIN Coins C2 on C2.id = W2.coin \
-                        WHERE W2.user=:user AND W1.user =:user AND W2.exchange=:exchange AND  W2.exchange=:exchange");
-    query.bindValue(":user", 1);
+                        WHERE W2.user=:user AND W1.user =:user \
+                        ORDER BY id DESC");
+    query.bindValue(":user", userID);
+    query.exec();
+    auto result = query.result()->handle().isValid();
+    if(result)
+    {
+        std::vector<Operation *> operations;
+        while(query.next())
+        {
+            operations.push_back(
+                    new Operation(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)+2).toInt(),
+                                  query.value(0).toString(),
+                                  query.value(1).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)+2).toDouble(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)+2).toString(),
+                                  query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)+2).toDouble()
+                    ));
+        }
+        return std::tuple<bool, std::vector<Operation *>>(result, operations);
+    }
+    else
+    {
+        return std::tuple<bool, std::vector<Operation *>>(result, {});
+    }
+}
+std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(const uint32_t userID, const QString& exchange)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT C.name,C2.name,O.* FROM Operations O \
+                        LEFT JOIN Wallets W1 on W1.id = O.wallet1 \
+                        LEFT JOIN Coins C on C.id = W1.coin \
+                        LEFT JOIN Wallets W2 on W2.id = O.wallet2 \
+                        LEFT JOIN Coins C2 on C2.id = W2.coin \
+                        WHERE W2.user=:user AND W1.user =:user AND W2.exchange=:exchange AND  W2.exchange=:exchange \
+                        ORDER BY id DESC");
+    query.bindValue(":user", userID);
     query.bindValue(":exchange", exchange);
     query.exec();
     auto result = query.result()->handle().isValid();
@@ -689,3 +739,5 @@ bool SQLManager::depositOperation(const int walletID, double amount, double amou
 
     return query.exec();
 }
+
+

@@ -100,6 +100,14 @@ void OperationsModel::add(Operation* operation)
     endInsertRows();                                          // kindly provided by superclass
 }
 
+void OperationsModel::clear(void)
+{
+    operations_.clear();
+    emit dataChanged(index(0,0), index(rowCount(), 0));
+    emit countChanged();
+    emit layoutChanged();
+}
+
 QList<Operation*> OperationsModel::operations(void)
 {
     return operations_;

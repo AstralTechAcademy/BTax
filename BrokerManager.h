@@ -47,7 +47,7 @@ private:
     std::vector<Operation*> importPreview;
 
 
-    void loadOperationsFromDB(void);
+    void loadOperationsFromDB(const uint32_t userID);
     void loadWalletsFromDB(const uint32_t userID);
     void loadCoinsFromDB(void);
 

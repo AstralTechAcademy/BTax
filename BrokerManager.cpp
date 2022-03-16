@@ -19,7 +19,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
 
     std::cout << "usr ID: " << userID << std::endl;
 
-    loadOperationsFromDB();
+    loadOperationsFromDB(userID);
     loadWalletsFromDB(userID);
     loadCoinsFromDB();
 
@@ -194,12 +194,14 @@ void BrokerManager::setUserID(const QString& username)
     userID = getUserID(username);
     std::cout << "user ID: " << userID << std::endl;
     walletsModel_->clear();
+    operationsModel_->clear();
     loadWalletsFromDB(userID);
+    loadOperationsFromDB(userID);
 }
 
-void BrokerManager::loadOperationsFromDB(void)
+void BrokerManager::loadOperationsFromDB(const uint32_t userID)
 {
-    auto operations = DBLocal::GetInstance()->getOperations();
+    auto operations = DBLocal::GetInstance()->getOperations(userID);
     if(std::get<0>(operations) == true)
     {
         for(auto op : std::get<1>(operations))
