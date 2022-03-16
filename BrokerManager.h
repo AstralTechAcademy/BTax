@@ -21,13 +21,16 @@ public:
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel,WalletsModel*const walletsModelDeposit, CoinsModel*const coinsModel);
     static uint32_t userID ;
 
+signals:
+    void depositCompleted(void);
+
 
 
 public slots:
     bool newDeposit(const int walletID, double pairAmount, double fees,
                     const QString comment, QString date);
-    bool newOperation(const int user, const QString exchange, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
-                      double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString comments, QString type,
+    bool newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
+                      double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
                       QString status, QString date);
     bool addWallet(const QString coinName, const QString exchange);
     bool importOperations(void);

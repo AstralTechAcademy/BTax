@@ -86,7 +86,7 @@ Window
         anchors.topMargin: 80
         anchors.left: parent.left
         anchors.leftMargin: 50
-        text: "Wallet Origin"
+        text: "Wallet Origin (Without fees)"
     }
 
     ComboBox
@@ -97,7 +97,7 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         currentIndex: 0
-        model: brokerManager.getWalletsCBox()
+        model: brokerManager.getWalletsCBox("")
     }
 
     MaterialTextInput
@@ -130,7 +130,7 @@ Window
         anchors.topMargin: 0
         anchors.left: p1AmountFiat.right
         anchors.leftMargin: 30
-        text: "Pair 2 (Without fees)"
+        text: "Wallet Destination (Without fees)"
     }
 
     ComboBox
@@ -183,6 +183,8 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
+        currentIndex: 0
+
     }
 
     MaterialTextInput
@@ -245,9 +247,11 @@ Window
         anchors.bottomMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
-        onClicked: brokerManager.newOperation(1, exchange.currentText, pair1.currentText,
-               pair2.currentText, pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
-               feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
+        onClicked: {
+            var res = brokerManager.newOperation(walletsModel.getWalletID(pair1.currentIndex), walletsModel.getWalletID(pair2.currentIndex), pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
+                        fees.textAt(fees.currentIndex), feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
+                        console.log(res)
+        }
     }
 
 }

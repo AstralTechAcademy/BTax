@@ -28,7 +28,6 @@
         - usr
             - bin
                 - binary_file
-        - AppRun
         - *.desktop
         - icon.png
 
@@ -94,7 +93,6 @@
         - usr
             - bin
                 - Broker
-        - AppRun
         - Brokee.desktop
         - shiba.png
 

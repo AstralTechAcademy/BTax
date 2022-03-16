@@ -12,6 +12,7 @@
 class WalletsModel : public QAbstractListModel{
 
     Q_OBJECT
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(QList<Wallet* > wallets READ wallets)
 public:
     enum RoleNames {
@@ -27,7 +28,7 @@ public:
         DisplayText
     };
 
-    WalletsModel(QObject* parent = 0){};
+    WalletsModel(QAbstractListModel* parent = 0){};
 
     //Expone el nombre de los atributos y los relaciona entre QML y C++
     QHash<int, QByteArray> roleNames() const;
@@ -37,6 +38,10 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     void add(Wallet* wallet);
     void clear(void);
+    int count() const;
+
+signals:
+    void countChanged();
 
 
 public slots:

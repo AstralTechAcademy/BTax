@@ -58,12 +58,18 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
 void WalletsModel::add(Wallet* wallet)
 {
     wallets_.push_back(wallet);
+    emit dataChanged(index(0,0), index(rowCount(), 0));
+    emit countChanged();
     emit layoutChanged();
+
+
 }
 
 void WalletsModel::clear(void)
 {
     wallets_.clear(),
+    emit dataChanged(index(0,0), index(rowCount(), 0));
+    emit countChanged();
     emit layoutChanged();
 }
 
@@ -87,4 +93,9 @@ double WalletsModel::getPortfolioPercentage(const double invested) const
 int WalletsModel::getWalletID(const int index)
 {
     return (*wallets_.at(index)).getWalletID();
+}
+
+int WalletsModel::count() const
+{
+    return rowCount();
 }

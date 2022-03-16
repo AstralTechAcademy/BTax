@@ -6,7 +6,7 @@ import es.broker.components.material 1.0
 
 Window
 {
-    id:newDeppsitWindow
+    id:newDepositWindow
 
     visible: true
     height: 640
@@ -103,12 +103,22 @@ Window
         popup.onClosed: console.log("Combo Cliked " + walletsModelDeposit.getWalletID(currentIndex))
     }
 
-    MaterialTextInput
+    Text
     {
-        id: pair1Amount
+        id: pair1AmountTxt
         anchors.top: wallet.bottom
         anchors.topMargin: 10
         anchors.left: wallet.left
+        anchors.leftMargin: 0
+        text: "Amount (discounting fees)"
+    }
+
+    MaterialTextInput
+    {
+        id: pair1Amount
+        anchors.top: pair1AmountTxt.bottom
+        anchors.topMargin: 10
+        anchors.left: pair1AmountTxt.left
         anchors.leftMargin: 0
         text_: "Amount"
     }
@@ -145,8 +155,8 @@ Window
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
         onClicked: {
-            brokerManager.newDeposit(1,pair1Amount.text_, feesAmount.text_, "", "") //TODO: comments
-            newDeppsitWindow.close()
+            brokerManager.newDeposit(walletsModelDeposit.getWalletID(wallet.currentIndex),pair1Amount.text_, feesAmount.text_, "", "") //TODO: comments
+            newDepositWindow.close()
         }
     }
 

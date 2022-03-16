@@ -41,6 +41,7 @@ public:
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
     std::tuple<bool, Wallet*> getWallet(const uint32_t user, const QString& exchange, const QString& coin);
+    std::tuple<bool, Wallet*> getWallet(const uint32_t walletID);
     //virtual Wallet getWallet(const QString& wallet) = 0;
     std::tuple<bool, std::vector<Operation*>> getOperations(void);
     std::tuple<bool, std::vector<Operation*>> getOperations(const QString& exchange);
@@ -49,10 +50,10 @@ public:
     double getInvested(const QString& user, const QString& exchange, const QString& wallet);
     int addWallet(const QString& coin, double amount, const QString& exchange, const uint32_t user);
     int getWalletID(const uint32_t user, const QString& exchange, const QString& coin);
-    bool registerOperation(const int walletID1, const int walletID2, const QString& exchange, QString& pair1, QString& pair2, double pair1Amount, double pair1AmountFiat,
-                                       double pair2Amount, double pair2AmountFiat, double comision, double comisionFiat, QString& comments, QString& type,
-                                       QString& status, QString& date );
-
+    bool registerOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
+                           double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString& comments, QString& type,
+                           QString& status, QString& date );
+    void setWalletData(Wallet& wallet);
     const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
     //const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker.db";
 
