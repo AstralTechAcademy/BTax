@@ -15,7 +15,7 @@
 
 int main(int argc, char *argv[])
 {
-    QString version = "1.0.0";
+    QString version = "1.0.1";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
