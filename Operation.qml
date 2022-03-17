@@ -15,12 +15,12 @@ Rectangle{
 
     signal dataChanged(var role, var value)
 
-    ToolSeparator{
+    /*ToolSeparator{
         width: parent.width
         orientation: Qt.Horizontal
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
-    }
+    }*/
 
     //property int id_: 0
     //property alias price_ : precioCompra.text

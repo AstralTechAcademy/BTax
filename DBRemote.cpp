@@ -3,6 +3,7 @@
 //
 
 #include "DBRemote.h"
+#include "DBCredential_NotPush.h"
 
 DBRemote* DBRemote::db_ = nullptr;
 
@@ -33,10 +34,13 @@ bool DBRemote::openDatabase(void)
 {
     bool opened = false;
     database = QSqlDatabase::addDatabase("QMYSQL");
-    database.setHostName("192.168.1.31");
-    database.setDatabaseName("broker");
-    database.setUserName("gabridc");
-    database.setPassword("20n3ptuno_P1anet21");
+    database.setUserName(USERNAME);
+    database.setPort(PORT);
+    database.setHostName(SERVER);
+    database.setDatabaseName(DATABASENAME);
+    database.setPassword(PASSWORD);
+    server = SERVER;
+
     opened = database.open();
     return opened;
 };

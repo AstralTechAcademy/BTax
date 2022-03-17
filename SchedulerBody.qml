@@ -27,10 +27,23 @@ ListView{
 
     Button
     {
-        id: importOperation
+        id: newTransfer
         anchors.top: newOperation.top
         anchors.topMargin: 0
         anchors.left: newOperation.right
+        anchors.leftMargin: 20
+        text: "New Transfer"
+        onClicked: {
+            formsLoader.source = "NewTransferForm.qml"
+        }
+    }
+
+    Button
+    {
+        id: importOperation
+        anchors.top: newTransfer.top
+        anchors.topMargin: 0
+        anchors.left: newTransfer.right
         anchors.leftMargin: 20
         text: "Import"
         onClicked: {
@@ -41,7 +54,7 @@ ListView{
 
     ListView{
         id: favs
-        maximumFlickVelocity: 1500.0
+        maximumFlickVelocity: 1200.0
         anchors.top: parent.top
         anchors.topMargin: 100
         anchors.left: parent.left

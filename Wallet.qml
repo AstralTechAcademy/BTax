@@ -12,12 +12,12 @@ Rectangle{
     color: "#00000000"//"#A5A5A5"
     radius: 10
 
-    ToolSeparator{
+    /*ToolSeparator{
         width: parent.width
         orientation: Qt.Horizontal
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
-    }
+    }*/
 
 
     Text{

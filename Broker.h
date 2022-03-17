@@ -12,7 +12,7 @@ class Broker : public QObject
     Q_OBJECT
 
 public:
-    explicit Broker(QObject *parent = nullptr);
+    explicit Broker(const QString& server, const QString& version, QObject *parent = nullptr);
 
 
     enum class HOSTS{
@@ -25,9 +25,13 @@ public:
 
 public slots:
     int getHost(void) const;
+    QString getServer(void) const;
+    QString getVersion(void) const;
 
 private:
     static HOSTS host_;
+    static QString server_;
+    static QString version_;
 };
 
 
