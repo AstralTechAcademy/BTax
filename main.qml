@@ -15,19 +15,26 @@ Window {
     color: "#e9e7e7"
     title: qsTr("Broker")
 
-    BrokerImpl{
-        id: broker
-    }
-
 
     //OperationsModel{id: operationsModel}
 
     Component.onCompleted: {
-        console.log(broker.getHost())
+        console.log(BrokerImpl.getHost())
         bodyLoader.source = "WalletsBody.qml"
+        console.log("Server: " + BrokerImpl.getServer())
     }
 
-    readonly property int host_os: broker.getHost()
+    readonly property int host_os: BrokerImpl.getHost()
+
+    Text{
+
+        text: "Server: " + BrokerImpl.getServer() + "  Version: " + BrokerImpl.getVersion()
+        anchors.top: parent.top
+        anchors.topMargin: 2
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+
+    }
 
     Item {
         id: logo
@@ -50,6 +57,24 @@ Window {
                 source: ""
                 fillMode: Image.PreserveAspectFit
             }
+        }
+    }
+
+    ComboBox{
+        id: userCombo
+        model: usersModel
+        currentIndex: 0
+        textRole: "Username"
+        anchors.top: logo.top
+        anchors.topMargin: 0
+        anchors.left: logo.right
+        anchors.leftMargin: 20
+
+        Component.onCompleted: brokerManager.setUserID(currentText)
+
+        popup.onClosed: {
+            console.log("User selected: " + currentText)
+            brokerManager.setUserID(currentText)
         }
     }
     
@@ -150,6 +175,12 @@ Window {
 
          Loader {
             id: formsLoader
+         }
+
+         Connections{
+            target: formsLoader.item
+            function onClosing () {formsLoader.source = "" }
+            function onClose () {formsLoader.source = "" }
          }
 
 }

@@ -88,8 +88,8 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/home/gabridc/clion-2021.1.1/bin/cmake/linux/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/home/gabridc/clion-2021.1.1/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -236,6 +236,33 @@ Broker_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Broker_autogen/mocs_compilation.cpp.s
 .PHONY : Broker_autogen/mocs_compilation.cpp.s
 
+CoinsModel.o: CoinsModel.cpp.o
+
+.PHONY : CoinsModel.o
+
+# target to build an object file
+CoinsModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/CoinsModel.cpp.o
+.PHONY : CoinsModel.cpp.o
+
+CoinsModel.i: CoinsModel.cpp.i
+
+.PHONY : CoinsModel.i
+
+# target to preprocess a source file
+CoinsModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/CoinsModel.cpp.i
+.PHONY : CoinsModel.cpp.i
+
+CoinsModel.s: CoinsModel.cpp.s
+
+.PHONY : CoinsModel.s
+
+# target to generate assembly for a file
+CoinsModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/CoinsModel.cpp.s
+.PHONY : CoinsModel.cpp.s
+
 DBLocal.o: DBLocal.cpp.o
 
 .PHONY : DBLocal.o
@@ -262,6 +289,33 @@ DBLocal.s: DBLocal.cpp.s
 DBLocal.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBLocal.cpp.s
 .PHONY : DBLocal.cpp.s
+
+DBRemote.o: DBRemote.cpp.o
+
+.PHONY : DBRemote.o
+
+# target to build an object file
+DBRemote.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBRemote.cpp.o
+.PHONY : DBRemote.cpp.o
+
+DBRemote.i: DBRemote.cpp.i
+
+.PHONY : DBRemote.i
+
+# target to preprocess a source file
+DBRemote.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBRemote.cpp.i
+.PHONY : DBRemote.cpp.i
+
+DBRemote.s: DBRemote.cpp.s
+
+.PHONY : DBRemote.s
+
+# target to generate assembly for a file
+DBRemote.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/DBRemote.cpp.s
+.PHONY : DBRemote.cpp.s
 
 Deposit.o: Deposit.cpp.o
 
@@ -398,6 +452,33 @@ Statistics.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/Statistics.cpp.s
 .PHONY : Statistics.cpp.s
 
+UsersModel.o: UsersModel.cpp.o
+
+.PHONY : UsersModel.o
+
+# target to build an object file
+UsersModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/UsersModel.cpp.o
+.PHONY : UsersModel.cpp.o
+
+UsersModel.i: UsersModel.cpp.i
+
+.PHONY : UsersModel.i
+
+# target to preprocess a source file
+UsersModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/UsersModel.cpp.i
+.PHONY : UsersModel.cpp.i
+
+UsersModel.s: UsersModel.cpp.s
+
+.PHONY : UsersModel.s
+
+# target to generate assembly for a file
+UsersModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Broker.dir/build.make CMakeFiles/Broker.dir/UsersModel.cpp.s
+.PHONY : UsersModel.cpp.s
+
 Wallet.o: Wallet.cpp.o
 
 .PHONY : Wallet.o
@@ -525,9 +606,15 @@ help:
 	@echo "... Broker_autogen/mocs_compilation.o"
 	@echo "... Broker_autogen/mocs_compilation.i"
 	@echo "... Broker_autogen/mocs_compilation.s"
+	@echo "... CoinsModel.o"
+	@echo "... CoinsModel.i"
+	@echo "... CoinsModel.s"
 	@echo "... DBLocal.o"
 	@echo "... DBLocal.i"
 	@echo "... DBLocal.s"
+	@echo "... DBRemote.o"
+	@echo "... DBRemote.i"
+	@echo "... DBRemote.s"
 	@echo "... Deposit.o"
 	@echo "... Deposit.i"
 	@echo "... Deposit.s"
@@ -543,6 +630,9 @@ help:
 	@echo "... Statistics.o"
 	@echo "... Statistics.i"
 	@echo "... Statistics.s"
+	@echo "... UsersModel.o"
+	@echo "... UsersModel.i"
+	@echo "... UsersModel.s"
 	@echo "... Wallet.o"
 	@echo "... Wallet.i"
 	@echo "... Wallet.s"

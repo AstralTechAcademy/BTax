@@ -5,3 +5,6 @@ Testing/
 *cmake_install*
 *Cache*
 *cbp
+doxygen/
+release/appdir/
+DBCredential_NotPush.h

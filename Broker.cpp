@@ -7,10 +7,14 @@
 #include <iostream>
 
 Broker::HOSTS Broker::host_  = Broker::HOSTS::LINUX;
+QString Broker::server_ = "None";
+QString Broker::version_ = "0.0.0";
 
-Broker::Broker(QObject *parent) : QObject(parent)
+Broker::Broker(const QString& server, const QString& version, QObject *parent) : QObject(parent)
 {
     std::cout << "File: Broker.cpp Func: Broker " << QSysInfo::kernelType().toStdString() << std::endl;
+    server_ = server;
+    version_ = version;
     if(QSysInfo::productType() == "linux")
     {
         host_ = HOSTS::LINUX;
@@ -34,4 +38,13 @@ int Broker::getHost(void) const
 {
     std::cout << "File: Broker.cpp Func: Broker " << QSysInfo::kernelType().toStdString() << std::endl;
     return int(host_);
+}
+
+QString Broker::getServer(void) const
+{
+    return server_;
+}
+QString Broker::getVersion(void) const
+{
+    return version_;
 }

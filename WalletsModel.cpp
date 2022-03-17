@@ -16,6 +16,8 @@ QHash<int, QByteArray> WalletsModel::roleNames() const
     roles[Invested] = "invested";
     roles[Average] = "average";
     roles[FiatCoin] = "fiatcoin";
+    roles[PortfolioPercentage] = "portfolioPercentage";
+    roles[DisplayText] = "display";
     return roles;
 }
 int WalletsModel::rowCount(const QModelIndex &parent) const{return wallets_.size();}
@@ -45,6 +47,10 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
             return wallets_.at(row)->getAverageCost();
         case FiatCoin:
             return wallets_.at(row)->getFiatCoin();
+        case PortfolioPercentage:
+            return getPortfolioPercentage(wallets_.at(row)->getInvested());
+        case DisplayText:
+            return QString::number(wallets_.at(row)->getWalletID()) + " " + wallets_.at(row)->getUser() + " " + wallets_.at(row)->getCoin() + " "+wallets_.at(row)->getExchange();
         default:
             return QVariant();
     }
@@ -52,9 +58,22 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
 void WalletsModel::add(Wallet* wallet)
 {
     wallets_.push_back(wallet);
+    emit dataChanged(index(0,0), index(rowCount(), 0));
+    emit countChanged();
+    emit layoutChanged();
+
+
 }
 
-double WalletsModel::getTotalInvested(void)
+void WalletsModel::clear(void)
+{
+    wallets_.clear(),
+    emit dataChanged(index(0,0), index(rowCount(), 0));
+    emit countChanged();
+    emit layoutChanged();
+}
+
+double WalletsModel::getTotalInvested(void) const
 {
     double invested = 0.0 ;
     for(auto w : wallets_)
@@ -65,3 +84,18 @@ double WalletsModel::getTotalInvested(void)
 
 
 QList<Wallet*> WalletsModel::wallets(void){return wallets_;}
+
+double WalletsModel::getPortfolioPercentage(const double invested) const
+{
+    return (invested * 100) / getTotalInvested();
+}
+
+int WalletsModel::getWalletID(const int index)
+{
+    return (*wallets_.at(index)).getWalletID();
+}
+
+int WalletsModel::count() const
+{
+    return rowCount();
+}

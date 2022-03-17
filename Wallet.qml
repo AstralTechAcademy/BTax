@@ -12,12 +12,12 @@ Rectangle{
     color: "#00000000"//"#A5A5A5"
     radius: 10
 
-    ToolSeparator{
+    /*ToolSeparator{
         width: parent.width
         orientation: Qt.Horizontal
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
-    }
+    }*/
 
 
     Text{
@@ -89,13 +89,33 @@ Rectangle{
         colorValue: "black"
     }
 
+    Components.Data
+    {
+        id: portfolioPercentageTxt
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: averageTxt.right
+        anchors.leftMargin: 30
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        width: 80
+        visible: true
+        title: "Portfolio %"
+        value: parseFloat( portfolioPercentage.toFixed(6) )
+        colorValue: "black"
+    }
+
+
+
+
 
 /////// EARNING
 
     Components.Data
     {
         id: earning
-        anchors.left: averageTxt.right
+        anchors.left: portfolioPercentageTxt.right
         anchors.leftMargin: 30
         anchors.verticalCenter: parent.verticalCenter
         anchors.top: parent.top

@@ -6,17 +6,25 @@
 #include "OperationsModel.h"
 #include "BrokerManager.h"
 #include "DBLocal.h"
+#include "DBRemote.h"
 #include "WalletsModel.h"
+#include "UsersModel.h"
+#include "CoinsModel.h"
+
+
 
 int main(int argc, char *argv[])
 {
-
+    QString version = "1.0.0";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
-    qmlRegisterType<Broker>("es.broker", 1, 0, "BrokerImpl");
+    qmlRegisterUncreatableType<Broker>("es.broker", 1, 0, "Broker", "App Class Instance");
+    qmlRegisterUncreatableType<UsersModel>("es.broker", 1, 0, "UsersModel", "Se crea despues");
     //qmlRegisterType<OperationsModel>("es.broker", 1, 0, "OperationsModel");
     qmlRegisterUncreatableType<OperationsModel>("es.broker", 1, 0, "OperationsModel", "OperationsModel sholud not be created in QMl");
+    qmlRegisterUncreatableType<Coin>("es.broker", 1, 0, "Coin", "OperationsModel sholud not be created in QMl");
+    qmlRegisterUncreatableType<CoinsModel>("es.broker", 1, 0, "CoinsModel", "OperationsModel sholud not be created in QMl");
     qmlRegisterUncreatableType<Operation>("es.broker", 1, 0, "Operation", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsModel", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<BrokerManager>("es.broker", 1, 0, "BrokerManager", "Operation sholud not be created in QMl");
@@ -29,17 +37,25 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:Wallet.qml"), "es.broker", 1, 0, "Wallet");
     qmlRegisterType(QUrl("qrc:NewOperationForm.qml"), "es.broker", 1, 0, "NewOperationForm");
     qmlRegisterType(QUrl("qrc:NewDepositForm.qml"), "es.broker", 1, 0, "NewDepositForm");
+    qmlRegisterType(QUrl("qrc:ImportOperationForm.qml"), "es.broker", 1, 0, "ImportOperationForm");
     qmlRegisterType(QUrl("qrc:DateSelector.qml"), "es.broker.components", 1, 0, "DateSelector");
     qmlRegisterType(QUrl("qrc:DataItem.qml"), "es.broker.components", 1, 0, "Data");
 
+
+    UsersModel usersModel;
     OperationsModel operationsModel;
     WalletsModel walletsModel;
+    WalletsModel walletsModelDeposit;
+    CoinsModel coinsModel;
 
 
+    //DBRemote::GetInstance()->createDatabase();
+    std:: cout << "DB Server Opened: " << DBRemote::GetInstance()->openDatabase() << std::endl;
 
-    DBLocal::GetInstance()->createDatabase();
-    DBLocal::GetInstance()->openDatabase();
-    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel);
+    //DBLocal::GetInstance()->createDatabase();
+    //DBLocal::GetInstance()->openDatabase();
+    usersModel.setUsers();
+
     /*double gananciasAnuales = 0.0;
     for(auto operation : std::get<1>(DBLocal::GetInstance()->getOperations("B2M")) )
     {
@@ -94,7 +110,15 @@ int main(int argc, char *argv[])
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
+    engine.rootContext()->setContextProperty("walletsModelDeposit", &walletsModelDeposit);
+    engine.rootContext()->setContextProperty("usersModel", &usersModel);
+    engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
+
+    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelDeposit, &coinsModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
+
+    Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);
+    engine.rootContext()->setContextProperty("BrokerImpl", broker);
     engine.load(url);
 
 

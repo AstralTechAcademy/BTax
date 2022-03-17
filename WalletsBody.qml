@@ -44,28 +44,36 @@ Item
 
 ScrollView
 {
-            anchors.top: totalInvested.bottom
-            anchors.topMargin: 50
-            anchors.left: walletsBody.left
-            anchors.leftMargin: 10
-            anchors.right: walletsBody.right
-            anchors.rightMargin: 10
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
-            clip: true
+    anchors.top: totalInvested.bottom
+    anchors.topMargin: 50
+    anchors.left: walletsBody.left
+    anchors.leftMargin: 10
+    anchors.right: walletsBody.right
+    anchors.rightMargin: 10
+    anchors.bottom: parent.bottom
+    anchors.bottomMargin: 10
+    clip: true
+
+    Connections
+    {
+        target: brokerManager
+
+       function onDepositCompleted() {
+            console.log("Deposit done")
+       }
+    }
+
     Column
     {
         id: wallets
         anchors.fill: parent
 
-
         Repeater
         {
             id: repeater
-            Component.onCompleted: console.log(walletsModel.rowCount())
+            Component.onCompleted: console.log("Number Wallets: " + walletsModel.rowCount())
             model: walletsModel
             delegate: Wallet{
-
                 height: 70
                 width: wallets.width
             }

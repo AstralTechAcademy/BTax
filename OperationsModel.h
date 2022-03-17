@@ -38,11 +38,15 @@ public:
     //Permite leer los atributos de la clase Operation en QML
     QVariant data(const QModelIndex &index, int role) const;
     void add(Operation* operation);
+    void clear(void);
     QList<Operation*> operations(void);
     void setOperations(QList<Operation*> operations);
 
     // Esta función permite modificar los parametros de la clase Operation desde QML
     bool setData(const QModelIndex &index, const QVariant &value, int role);
+
+signals:
+    void countChanged();
 private:
     QList<Operation*> operations_;
 
