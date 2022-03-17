@@ -37,7 +37,7 @@ public:
     QList<std::tuple<uint32_t, QString>> getCoins(void);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(void);
-    std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user);
+    std::tuple<bool, std::vector<Deposit*>> getDeposits(const uint32_t user);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) ;
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );

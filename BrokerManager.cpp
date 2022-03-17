@@ -22,6 +22,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     loadOperationsFromDB(userID);
     loadWalletsFromDB(userID);
     loadCoinsFromDB();
+    loadDepositsFromDB(userID);
 
 }
 
@@ -238,5 +239,15 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
             }
         }
     }
+}
+
+void BrokerManager::loadDepositsFromDB(const uint32_t userID)
+{
+    double totalInvested = 0.0;
+    auto [r,deposits] = DBLocal::GetInstance()->getDeposits(userID);
+
+    for(auto d : deposits)
+        totalInvested += d->getAmount();
+    std::cout << "Total Invested " << totalInvested << std::endl;
 }
 

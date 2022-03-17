@@ -50,6 +50,7 @@ private:
     void loadOperationsFromDB(const uint32_t userID);
     void loadWalletsFromDB(const uint32_t userID);
     void loadCoinsFromDB(void);
+    void loadDepositsFromDB(const uint32_t userID);
 
 };
 

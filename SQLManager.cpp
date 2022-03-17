@@ -132,7 +132,6 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(void)
                     query.value(0).toString(),
                     query.value(1).toDouble(),
                     query.value(2).toDouble(),
-                    query.value(3).toDouble(),
                     QDate::fromString("01/01/1999 00:00:00"),
                     query.value(5).toString(),
                     query.value(6).toString()
@@ -146,10 +145,14 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(void)
     }
 }
 
-std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& user)
+std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const uint32_t user)
 {
     QSqlQuery query = QSqlQuery(database);
-    query.prepare("SELECT COUNT(*) FROM Deposits WHERE user=:user");
+    query.prepare("SELECT COUNT(*) FROM Deposits D"
+                  " LEFT JOIN Wallets W on W.id = D.wallet"
+                  " LEFT JOIN Coins C on C.id = W.coin"
+                  " WHERE W.user=:user");
+
     query.bindValue(":user", user);
     query.exec();
     bool result = false;
@@ -157,25 +160,29 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& u
         result = query.value(0) > 0;
     }
 
+    std::cout << "RES: " << result << std::endl;
+
     if(result)
     {
         std::vector<Deposit*> deposits;
-        query.prepare("SELECT * FROM Deposits WHERE user=:user");
+        query.prepare("SELECT C.name, W.exchange, W.user, D.* FROM Deposits D"
+                      " LEFT JOIN Wallets W on W.id = D.wallet"
+                      " LEFT JOIN Coins C on C.id = W.coin"
+                      " WHERE W.user=:user");
         query.bindValue(":user", user);
         query.exec();
         while(query.next())
         {
             deposits.push_back(new Deposit(
                     query.value(0).toString(),
-                    query.value(1).toDouble(),
-                    query.value(2).toDouble(),
-                    query.value(3).toDouble(),
-                    QDate::fromString("01/01/1999 00:00:00"),
-                    query.value(5).toString(),
-                    query.value(6).toString()
+                    query.value(5).toDouble(),
+                    query.value(6).toDouble(),
+                    QDate::fromString(query.value(7).toString()),
+                    query.value(1).toString(),
+                    query.value(2).toString()
             ));
         }
-        return std::tuple<bool, std::vector<Deposit*>>(false, deposits);
+        return std::tuple<bool, std::vector<Deposit*>>(true, deposits);
     }
     else
     {
@@ -245,7 +252,6 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& u
                     query.value(0).toString(),
                     query.value(1).toDouble(),
                     query.value(2).toDouble(),
-                    query.value(3).toDouble(),
                     QDate::fromString("01/01/1999 00:00:00"),
                     query.value(5).toString(),
                     query.value(6).toString()

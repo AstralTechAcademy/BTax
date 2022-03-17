@@ -12,11 +12,10 @@ class Deposit {
 public:
     Deposit() = delete;
     ~Deposit() = default;
-    Deposit(const QString &coin, double amount, double comision, double available, const QDate &date,
+    Deposit(const QString &coin, double amount, double comision, const QDate &date,
                      const QString &exchange, const QString &user) :
                      coin(coin), amount(amount),
                      comision(comision),
-                     available(available),
                      date(date),
                      exchange(exchange),
                      user(user) {}
