@@ -98,6 +98,7 @@ void OperationsModel::add(Operation* operation)
     beginInsertRows(QModelIndex(), rowCount(), rowCount());   // kindly provided by superclass
     operations_.push_back(operation);
     endInsertRows();                                          // kindly provided by superclass
+    calculateEarnings();
 }
 
 void OperationsModel::clear(void)
@@ -151,4 +152,17 @@ bool OperationsModel::setData(const QModelIndex &index, const QVariant &value, i
     }
 
     return true;
+}
+
+double OperationsModel::totalEarnings(void) const
+{
+    return totalEarnings_;
+}
+
+void OperationsModel::calculateEarnings(void)
+{
+    totalEarnings_ = 0.0;
+    for(auto o : operations_)
+        totalEarnings_ += o->getGanancia();
+    emit totalEarningsChanged(totalEarnings_);
 }

@@ -37,6 +37,7 @@ public slots:
     uint32_t getUserID(const QString& username);
     QStringList getWalletsCBox(const QString& username);
     void setUserID(const QString& username);
+    void setYear(const QString& year);
     bool importPreviewOperations(const QString& csvFilePath, const QString& type);
 
 private:

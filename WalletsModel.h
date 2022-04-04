@@ -11,6 +11,9 @@
 
 class WalletsModel : public QAbstractListModel{
 
+
+
+
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(QList<Wallet* > wallets READ wallets)
@@ -28,6 +31,20 @@ public:
         DisplayText
     };
 
+    enum class Order {
+        ASC = 0,
+        DESC,
+        FIAT_FIRST,
+        CRYPTO_FIRST
+    };
+
+    enum class Attribute {
+        TYPE = 0,
+        PORTFOLIO,
+        INVESTED,
+        EARNINGS
+    };
+
     WalletsModel(QAbstractListModel* parent = 0){};
 
     //Expone el nombre de los atributos y los relaciona entre QML y C++
@@ -39,6 +56,8 @@ public:
     void add(Wallet* wallet);
     void clear(void);
     int count() const;
+
+    void orderBy(Attribute atr,  Order o) noexcept;
 
 signals:
     void countChanged();

@@ -48,7 +48,7 @@ Window {
             color: "#00000000"
             anchors.fill: parent
             border.width: 3
-            border.color: "black"
+            border.color: "#00000000"
 
             Image {
                 id: image
@@ -74,6 +74,23 @@ Window {
         popup.onClosed: {
             console.log("User selected: " + currentText)
             brokerManager.setUserID(currentText)
+        }
+    }
+
+    ComboBox{
+        id: yearCombo
+        model: [2021, 2022, 2023]
+        currentIndex: 0
+        anchors.top: logo.top
+        anchors.topMargin: 0
+        anchors.left: userCombo.right
+        anchors.leftMargin: 20
+
+        Component.onCompleted: console.log(currentText)//brokerManager.setUserID(currentText)
+
+        popup.onClosed: {
+            console.log("Year selected: " + currentText)
+            brokerManager.setYear(currentText)
         }
     }
     

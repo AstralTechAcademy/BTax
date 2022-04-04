@@ -12,7 +12,7 @@ class Broker : public QObject
     Q_OBJECT
 
 public:
-    explicit Broker(const QString& server, const QString& version, QObject *parent = nullptr);
+        explicit Broker(const QString& server, const QString& version, QObject *parent = nullptr);
 
 
     enum class HOSTS{

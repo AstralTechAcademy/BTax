@@ -61,7 +61,7 @@ Window
         ComboBox
         {
             id: exchangeCBox
-            model: ["Binance", "B2M"]
+            model: ["Binance", "B2M", "Coinbase", "Crypto", "Solflare", "Phantom"]
         }
 
         Button
@@ -75,10 +75,6 @@ Window
             }
         }
     }
-
-
-
-
 
     Text
     {
@@ -97,7 +93,7 @@ Window
         anchors.topMargin: 10
         anchors.left: walletTxt.left
         anchors.leftMargin: 0
-        width: 200
+        width: 250
         model: walletsModelDeposit
         textRole: "display"
         popup.onClosed: console.log("Combo Cliked " + walletsModelDeposit.getWalletID(currentIndex))

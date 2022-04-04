@@ -27,6 +27,20 @@ Item
         colorValue: "black"
     }
 
+    Components.Data
+    {
+        id: totalEarnings
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.left: totalInvested.right
+        anchors.leftMargin: 60
+        width: 80
+        visible: true
+        title: "Total Earnings"
+        value: parseFloat( operationsModel.totalEarnings.toFixed(6) ) + " " + "EUR"
+        colorValue: "black"
+    }
+
 
     Button
     {

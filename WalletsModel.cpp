@@ -99,3 +99,35 @@ int WalletsModel::count() const
 {
     return rowCount();
 }
+
+void WalletsModel::orderBy(Attribute atr,  Order o) noexcept
+{
+    if (atr == Attribute::PORTFOLIO && ( o == Order::CRYPTO_FIRST || o == Order::FIAT_FIRST ) )
+        return;
+    if (atr == Attribute::TYPE && ( o == Order::ASC || o == Order::DESC ) )
+        return;
+
+    switch(atr)
+    {
+        case  Attribute::PORTFOLIO:
+            std::sort(wallets_.begin(), wallets_.end(), [&](Wallet* w1, Wallet* w2){
+                if( o == Order::ASC )
+                    return getPortfolioPercentage(w1->getInvested()) > getPortfolioPercentage(w2->getInvested());
+                else
+                    return getPortfolioPercentage(w1->getInvested()) < getPortfolioPercentage(w2->getInvested());
+            });
+
+            break;
+        case Attribute::TYPE:
+            std::sort(wallets_.begin(), wallets_.end(), [&](Wallet* w1, Wallet* w2){
+                if ( o == Order::FIAT_FIRST )
+                    return w1->getCoin() == "EUR" ;
+                else return w1->getCoin() != "EUR" ;
+            });
+            break;
+        default:
+            return;
+    }
+
+    emit layoutChanged();
+}

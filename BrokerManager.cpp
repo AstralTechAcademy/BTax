@@ -168,6 +168,7 @@ uint32_t BrokerManager::getUserID(const QString& username)
     return DBLocal::GetInstance()->getUserID(username);
 }
 
+
 QStringList BrokerManager::getWalletsCBox(const QString& username)
 {
     QStringList result;
@@ -198,6 +199,14 @@ void BrokerManager::setUserID(const QString& username)
     operationsModel_->clear();
     loadWalletsFromDB(userID);
     loadOperationsFromDB(userID);
+}
+
+void BrokerManager::setYear(const QString& year)
+{
+    //walletsModel_->clear();
+    //operationsModel_->clear();
+    //loadWalletsFromDB(userID, year);
+    //loadOperationsFromDB(userID, year);
 }
 
 void BrokerManager::loadOperationsFromDB(const uint32_t userID)
@@ -235,10 +244,12 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
             if(w->getAmount() > 0.00000000000)
             {
                 walletsModel_->add(w);
-                walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
             }
+            walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
         }
     }
+    walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
+    walletsModelDeposit_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 }
 
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
@@ -250,4 +261,6 @@ void BrokerManager::loadDepositsFromDB(const uint32_t userID)
         totalInvested += d->getAmount();
     std::cout << "Total Invested " << totalInvested << std::endl;
 }
+
+
 

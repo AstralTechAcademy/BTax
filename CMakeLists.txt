@@ -33,9 +33,26 @@ if(ANDROID)
     set(ANDROID_ABIS "armeabi-v7a")
     #set(ANDROID_ABIS "arm64-v8a")
     set(ANDROID_ARM_NEON "ON")
+    set(ANDROID_PACKAGE_SOURCE_DIR /home/gabridc/Repositorio/Broker/android_files)
+    set(ANDROID_ABI "arm64-v8a")
+
+    set(CMAKE_TOOLCHAIN_FILE "/home/gabridc/Android/Sdk/ndk/build/cmake/android.toolchain.cmake")
+    set(CMAKE_BUILD_TYPE "Debug")
+    set(CMAKE_PROJECT_INCLUDE_BEFORE "/home/gabridc/Qt/Tools/QtCreator/share/qtcreator/package-manager/auto-setup.cmake")
+    set(QT_QMAKE_EXECUTABLE "/home/gabridc/Qt/5.15.2/android/bin/qmake")
+    set(CMAKE_PREFIX_PATH "~/Qt/5.15.2/android/lib/cmake/Qt5,/home/gabridc/Qt/5.15.2/android")
+    set(ANDROID_NDK "/home/gabridc/Android/Sdk/ndk")
+    set(CMAKE_TOOLCHAIN_FILE "/home/gabridc/Android/Sdk/ndk/build/cmake/android.toolchain.cmake")
+    set(ANDROID_STL "c++_shared")
+    set(CMAKE_FIND_ROOT_PATH "/home/gabridc/Qt/5.15.2/android")
+    set(QT_HOST_PATH "/home/gabridc/Qt/5.15.2/android")
+    set(ANDROID_SDK_ROOT "/home/gabridc/Android/Sdk")
+    set(JAVA_HOME "/usr/lib/jvm/java-1.8.0-openjdk-amd64")
+    set(QT_ANDROID_SDK_ROOT "/home/gabridc/Android/Sdk")
+    set(ANDROID_DEPLOY_QT "/home/gabridc/Qt/5.15.2/android/bin/android1")
+
     set(Qt5Core_VERSION "5.15")
     set(CMAKE_MODULE_PATH "~/Qt/5.15.2")
-    set(CMAKE_PREFIX_PATH "~/Qt/5.15.2/android/lib/cmake/Qt5")
     set(Qt5_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5")
     set(Qt5Qml_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5Qml")
     set(Qt5Network_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5Network")
@@ -61,15 +78,24 @@ qt5_add_resources(RESOURCES ./qml.qrc)
 if(ANDROID)
     add_library(Broker SHARED
             main.cpp
-            Broker.cpp
-            Broker.h
             Wallet.cpp
             Wallet.h
             SQLManager.cpp
             SQLManager.h
-            DBLocal.h
             DBLocal.cpp
+            DBLocal.h
+            Broker.cpp
+            Broker.h
+            OperationsModel.cpp
+            OperationsModel.h
+            Operation.cpp
+            Operation.h
+            Deposit.cpp
+            Deposit.h
+            Statistics.cpp
             DBCredential_NotPush.h
+            Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
+            CoinsModel.cpp CoinsModel.h
             ${RESOURCES})
 else()
 add_executable(Broker

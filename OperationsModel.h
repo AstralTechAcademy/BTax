@@ -11,7 +11,9 @@
 class OperationsModel : public QAbstractListModel{
 
     Q_OBJECT
-   Q_PROPERTY(QList<Operation*> operations READ operations WRITE setOperations)
+    //Q_PROPERTY(QList<Operation*> operations READ operations WRITE setOperations)
+
+    Q_PROPERTY(double totalEarnings READ totalEarnings NOTIFY totalEarningsChanged)
 public:
     enum OperationRoles {
         id = Qt::UserRole + 1,
@@ -29,7 +31,10 @@ public:
         type,
         ganancia,
     };
-    OperationsModel(QObject *parent = 0){};
+    OperationsModel(QObject *parent = 0)
+    {
+        totalEarnings_ = 0.0;
+    };
 
     //Expone el nombre de los atributos y los relaciona entre QML y C++
     QHash<int, QByteArray> roleNames() const;
@@ -45,10 +50,21 @@ public:
     // Esta función permite modificar los parametros de la clase Operation desde QML
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
+
+public slots:
+    double totalEarnings(void) const;
+
+
 signals:
     void countChanged();
+    void totalEarningsChanged(double);
 private:
     QList<Operation*> operations_;
+    double totalEarnings_;
+
+    void calculateEarnings(void);
+
+
 
 };
 
