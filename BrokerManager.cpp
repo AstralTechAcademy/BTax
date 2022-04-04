@@ -245,10 +245,12 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
             {
                 walletsModel_->add(w);
             }
+
             walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
         }
     }
-    walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
+     walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
+    //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
     walletsModelDeposit_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 }
 

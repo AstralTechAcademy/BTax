@@ -97,7 +97,9 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         currentIndex: 0
-        model: brokerManager.getWalletsCBox("")
+        model: walletsModel
+        textRole: "display"
+        popup.onClosed: console.log("Combo Cliked " + walletsModel.getWalletID(currentIndex))
     }
 
     MaterialTextInput
@@ -108,6 +110,7 @@ Window
         anchors.left: pair1.left
         anchors.leftMargin: 0
         text_: "Amount"
+
     }
 
     MaterialTextInput
@@ -140,7 +143,9 @@ Window
         anchors.topMargin: 10
         anchors.left: pair2Txt.left
         anchors.leftMargin: 0
-        model: brokerManager.getWalletsCBox("")
+        model: walletsModel
+        textRole: "display"
+        popup.onClosed: console.log("Combo Cliked " + walletsModel.getWalletID(currentIndex))
     }
 
     MaterialTextInput
@@ -248,6 +253,7 @@ Window
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
         onClicked: {
+            console.log(pair1.currentIndex)
             var res = brokerManager.newOperation(walletsModel.getWalletID(pair1.currentIndex), walletsModel.getWalletID(pair2.currentIndex), pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
                         fees.textAt(fees.currentIndex), feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
                         console.log(res)
