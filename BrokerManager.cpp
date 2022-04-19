@@ -7,12 +7,13 @@
 
 uint32_t BrokerManager::userID = 0U;
 
-BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelDeposit, CoinsModel*const coinsModel)
+BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelDeposit,  WalletsPercModel*const walletsPercModel,CoinsModel*const coinsModel)
 {
     parent = 0;
     operationsModel_ = operationsModel;
     walletsModel_ = walletsModel;
     walletsModelDeposit_ = walletsModelDeposit;
+    walletsModelPerc_ = walletsPercModel;
     coinsModel_ = coinsModel;
 
     userID = std::get<0> (UsersModel::getUsers()[0]);
@@ -223,7 +224,7 @@ void BrokerManager::loadCoinsFromDB(void)
 {
     auto coins = DBLocal::GetInstance()->getCoins();
     for(auto c : coins)
-        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c)));
+        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c)));
 }
 
 void BrokerManager::loadWalletsFromDB(const uint32_t userID)
@@ -236,7 +237,8 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
         auto wallets = std::get<1>(result);
         for(auto w : wallets)
         {
-            std::cout << "Wallet: " <<  w->getCoin().toStdString() << std::endl;
+            std::cout << "Wallet: " <<  w->getWalletID() << std::endl;
+            std::cout << "  Coin: " <<  w->getCoin().toStdString() << std::endl;
             std::cout << "  User: " <<  w->getUser().toStdString() << std::endl;
             std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
             std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
@@ -246,12 +248,15 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
                 walletsModel_->add(w);
             }
 
-            walletsModelDeposit_->add(w); // En el arranque se inicializan con los mismos datos
+            walletsModelDeposit_->add(w);
         }
     }
+
      walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
     //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
     walletsModelDeposit_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
+
+    groupCoinBySymbol();
 }
 
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
@@ -262,6 +267,33 @@ void BrokerManager::loadDepositsFromDB(const uint32_t userID)
     for(auto d : deposits)
         totalInvested += d->getAmount();
     std::cout << "Total Invested " << totalInvested << std::endl;
+}
+
+void BrokerManager::groupCoinBySymbol(void)
+{
+    walletsModelPerc_->clear();
+    auto index = 0;
+    for(index = 0; index <  walletsModel_->count() ; index++ )
+    {
+        bool exist = false;
+        auto index2 = 0;
+        for(index2 = 0; index2 <  walletsModelPerc_->count() && exist == false ; index2++ )
+        {
+            exist = walletsModelPerc_->getCoin(index2) == walletsModel_->getCoin(index);
+        }
+
+        std::cout << "Index: " << index << "Coin: " << walletsModel_->getCoin(index).toStdString() << " Index2: " << index2 << std::endl;
+
+        if(exist)
+            walletsModelPerc_->addPercValue(index2-1, walletsModel_->getPortfolioPercentage(index));
+        else
+            walletsModelPerc_->add(new WalletPercItem {walletsModel_->getCoin(index),
+                                    walletsModel_->getPortfolioPercentage(index),
+                                    "",
+                                    coinsModel_->getColor(walletsModel_->getCoin(index))});
+    }
+    walletsModelPerc_->orderBy(WalletsPercModel::Order::ASC);
+
 }
 
 

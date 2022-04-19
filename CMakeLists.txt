@@ -95,6 +95,7 @@ if(ANDROID)
             Statistics.cpp
             DBCredential_NotPush.h
             Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
+            WalletsPercModel.cpp WalletsPercModel.h
             CoinsModel.cpp CoinsModel.h
             ${RESOURCES})
 else()
@@ -117,6 +118,7 @@ add_executable(Broker
         Deposit.h
         Statistics.cpp
         DBCredential_NotPush.h
+        WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h)
 endif()

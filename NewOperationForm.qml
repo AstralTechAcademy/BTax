@@ -97,9 +97,9 @@ Window
         anchors.left: parent.left
         anchors.leftMargin: 50
         currentIndex: 0
-        model: walletsModel
+        model: walletsModelDeposit
         textRole: "display"
-        popup.onClosed: console.log("Combo Cliked " + walletsModel.getWalletID(currentIndex))
+        popup.onClosed: console.log("Combo Cliked " + walletsModelDeposit.getWalletID(currentIndex))
     }
 
     MaterialTextInput
@@ -143,9 +143,9 @@ Window
         anchors.topMargin: 10
         anchors.left: pair2Txt.left
         anchors.leftMargin: 0
-        model: walletsModel
+        model: walletsModelDeposit
         textRole: "display"
-        popup.onClosed: console.log("Combo Cliked " + walletsModel.getWalletID(currentIndex))
+        popup.onClosed: console.log("Combo Cliked " + walletsModelDeposit.getWalletID(currentIndex))
     }
 
     MaterialTextInput
@@ -187,7 +187,7 @@ Window
         anchors.topMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 50
-        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA"]
+        model: ["ADA", "AVAX", "BNB", "BTC", "ETH", "EUR", "SOL", "USD", "B2M", "DOT", "MATIC", "VET", "IOTA", "CRO"]
         currentIndex: 0
 
     }
@@ -253,10 +253,9 @@ Window
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
         onClicked: {
-            console.log(pair1.currentIndex)
-            var res = brokerManager.newOperation(walletsModel.getWalletID(pair1.currentIndex), walletsModel.getWalletID(pair2.currentIndex), pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
+            var res = brokerManager.newOperation(walletsModelDeposit.getWalletID(pair1.currentIndex), walletsModelDeposit.getWalletID(pair2.currentIndex), pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
                         fees.textAt(fees.currentIndex), feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
-                        console.log(res)
+            console.log(res)
         }
     }
 

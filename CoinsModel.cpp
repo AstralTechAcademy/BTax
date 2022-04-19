@@ -3,6 +3,7 @@
 //
 
 #include "CoinsModel.h"
+#include <iostream>
 
 //Expone el nombre de los atributos y los relaciona entre QML y C++
 QHash<int, QByteArray> CoinsModel::roleNames() const
@@ -45,4 +46,20 @@ void CoinsModel::add(Coin *coin) {
 int CoinsModel::getID(const int index)
 {
     return (*coins_.at(index)).id();
+}
+
+QString CoinsModel::getColor(const QString& name) const
+{
+    for(auto i = 0; i < coins_.size(); i++)
+    {
+
+        if(coins_.at(i)->name() ==  name)
+        {
+            std::cout << "GET COL: " << coins_.at(i)->name().toStdString() << " " <<  coins_.at(i)->color().toStdString() <<std::endl;
+            return coins_.at(i)->color();
+        }
+
+    }
+
+    return "black";
 }

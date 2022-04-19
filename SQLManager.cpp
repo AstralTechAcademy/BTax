@@ -492,15 +492,15 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
 
  }*/
 
-QList<std::tuple<uint32_t, QString>> SQLManager::getCoins(void)
+QList<std::tuple<uint32_t, QString, QString>> SQLManager::getCoins(void)
 {
     QSqlQuery query = QSqlQuery(database);
     query.prepare("SELECT * FROM Coins");
     query.exec();
-    QList<std::tuple<uint32_t, QString>> coins;
+    QList<std::tuple<uint32_t, QString, QString>> coins;
     while(query.next())
     {
-        coins.push_back({query.value(0).toUInt(),  query.value(1).toString()});
+        coins.push_back({query.value(0).toUInt(),  query.value(1).toString(), query.value(3).toString()});
     }
 
     return coins;

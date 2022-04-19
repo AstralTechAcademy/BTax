@@ -8,6 +8,7 @@
 #include "DBLocal.h"
 #include "DBRemote.h"
 #include "WalletsModel.h"
+#include "WalletsPercModel.h"
 #include "UsersModel.h"
 #include "CoinsModel.h"
 
@@ -27,6 +28,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<CoinsModel>("es.broker", 1, 0, "CoinsModel", "OperationsModel sholud not be created in QMl");
     qmlRegisterUncreatableType<Operation>("es.broker", 1, 0, "Operation", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsModel", "Operation sholud not be created in QMl");
+    qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsPercModel", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<BrokerManager>("es.broker", 1, 0, "BrokerManager", "Operation sholud not be created in QMl");
     //qmlRegisterType(QUrl("qrc:Broker.qml"), "es.broker", 1, 0, "Broker");
     qmlRegisterType(QUrl("qrc:MaterialTextInput.qml"), "es.broker.components.material", 1, 0, "TextInput");
@@ -46,6 +48,7 @@ int main(int argc, char *argv[])
     OperationsModel operationsModel;
     WalletsModel walletsModel;
     WalletsModel walletsModelDeposit;
+    WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
 
 
@@ -111,10 +114,11 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
     engine.rootContext()->setContextProperty("walletsModelDeposit", &walletsModelDeposit);
+    engine.rootContext()->setContextProperty("walletsPercModel", &walletsPercModel);
     engine.rootContext()->setContextProperty("usersModel", &usersModel);
     engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
 
-    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelDeposit, &coinsModel);
+    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelDeposit, &walletsPercModel, &coinsModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
 
     Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);

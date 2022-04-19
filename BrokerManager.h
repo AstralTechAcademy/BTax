@@ -7,6 +7,7 @@
 #include <QObject>
 #include "OperationsModel.h"
 #include "WalletsModel.h"
+#include "WalletsPercModel.h"
 #include "CoinsModel.h"
 #include "DBLocal.h"
 #include "DBRemote.h"
@@ -18,7 +19,7 @@ public:
     const uint8_t IMPORT_STAKING_OP_ATRS = 3;
     const uint8_t IMPORT_OP_ATRS = 9;
 
-    BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel,WalletsModel*const walletsModelDeposit, CoinsModel*const coinsModel);
+    BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel,WalletsModel*const walletsModelDeposit, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
     static uint32_t userID ;
 
 signals:
@@ -44,6 +45,7 @@ private:
     OperationsModel* operationsModel_;
     WalletsModel* walletsModel_;
     WalletsModel* walletsModelDeposit_;
+    WalletsPercModel* walletsModelPerc_;
     CoinsModel* coinsModel_;
     std::vector<Operation*> importPreview;
 
@@ -52,6 +54,7 @@ private:
     void loadWalletsFromDB(const uint32_t userID);
     void loadCoinsFromDB(void);
     void loadDepositsFromDB(const uint32_t userID);
+    void groupCoinBySymbol(void);
 
 };
 

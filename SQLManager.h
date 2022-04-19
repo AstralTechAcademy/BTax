@@ -34,7 +34,7 @@ public:
     virtual bool openDatabase(void) = 0;
     uint32_t getUserID(const QString& username);
     QString getServer(void) const;
-    QList<std::tuple<uint32_t, QString>> getCoins(void);
+    QList<std::tuple<uint32_t, QString, QString>> getCoins(void);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(void);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const uint32_t user);

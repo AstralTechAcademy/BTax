@@ -65,8 +65,10 @@ signals:
 
 public slots:
     double getTotalInvested(void) const;
-    double getPortfolioPercentage(const double amount) const;
-    int getWalletID(const int index);
+    double calculatePortfolioPercentage(const double amount) const;
+    double getPortfolioPercentage(const int index) const;
+    int getWalletID(const int index) const;
+    QString getCoin(const int index) const;
     //void update(const int userID);
     QList<Wallet*> wallets(void);
 

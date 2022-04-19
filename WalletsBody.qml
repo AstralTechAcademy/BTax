@@ -55,11 +55,48 @@ Item
         }
     }
 
+    Item
+    {
+        id: percentageBar
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        anchors.top: totalInvested.bottom
+        anchors.topMargin: 50
+        height: 20
+
+        Row
+        {
+            Repeater
+            {
+                id: repeaterPerc
+                model: walletsPercModel
+                delegate: Rectangle {
+                    id: percentageItem
+                    height: percentageBar.height - 5
+                    width: portfolioPercentage * percentageBar.width / 100
+                    color: coinColor
+
+                    Text
+                    {
+                        id: nameCoin
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.bottom
+                        anchors.topMargin: 3
+                        text: coin
+                        visible: true
+                    }
+                }
+            }
+        }
+    }
+
 
 ScrollView
 {
-    anchors.top: totalInvested.bottom
-    anchors.topMargin: 50
+    anchors.top: percentageBar.bottom
+    anchors.topMargin: 10
     anchors.left: walletsBody.left
     anchors.leftMargin: 10
     anchors.right: walletsBody.right
@@ -92,8 +129,6 @@ ScrollView
                 width: wallets.width
             }
         }
-
-
     }
 }
 

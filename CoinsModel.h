@@ -12,17 +12,21 @@ class Coin : public QObject
     Q_OBJECT
     Q_PROPERTY(int id READ id)
     Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(QString color READ color)
 public:
-    Coin(int id, const QString& name) :
+    Coin(int id, const QString& name, const QString& color) :
         id_(id),
-        name_(name){};
+        name_(name),
+        color_(color){};
 
     int id(void) const noexcept {return id_;};
     QString name(void) const noexcept {return name_;};
+    QString color(void) const noexcept {return color_;};
 
 private:
     int id_;
     QString name_;
+    QString color_;
 };
 
 
@@ -47,6 +51,7 @@ public:
 
     QList<Coin*> coins(void);
     void add(Coin* coin);
+    QString getColor(const QString& name) const;
 public slots:
     int getID(const int index);
 

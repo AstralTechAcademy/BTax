@@ -48,7 +48,7 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
         case FiatCoin:
             return wallets_.at(row)->getFiatCoin();
         case PortfolioPercentage:
-            return getPortfolioPercentage(wallets_.at(row)->getInvested());
+            return calculatePortfolioPercentage(wallets_.at(row)->getInvested());
         case DisplayText:
             return QString::number(wallets_.at(row)->getWalletID()) + " " + wallets_.at(row)->getUser() + " " + wallets_.at(row)->getCoin() + " "+wallets_.at(row)->getExchange();
         default:
@@ -85,14 +85,24 @@ double WalletsModel::getTotalInvested(void) const
 
 QList<Wallet*> WalletsModel::wallets(void){return wallets_;}
 
-double WalletsModel::getPortfolioPercentage(const double invested) const
+double WalletsModel::calculatePortfolioPercentage(const double invested) const
 {
     return (invested * 100) / getTotalInvested();
 }
 
-int WalletsModel::getWalletID(const int index)
+double WalletsModel::getPortfolioPercentage(const int index) const
+{
+    return (wallets_.at(index)->getInvested() * 100) / getTotalInvested();
+}
+
+int WalletsModel::getWalletID(const int index) const
 {
     return (*wallets_.at(index)).getWalletID();
+}
+
+QString WalletsModel::getCoin(const int index) const
+{
+    return (*wallets_.at(index)).getCoin();
 }
 
 int WalletsModel::count() const
@@ -112,18 +122,40 @@ void WalletsModel::orderBy(Attribute atr,  Order o) noexcept
         case  Attribute::PORTFOLIO:
             std::sort(wallets_.begin(), wallets_.end(), [&](Wallet* w1, Wallet* w2){
                 if( o == Order::ASC )
-                    return getPortfolioPercentage(w1->getInvested()) > getPortfolioPercentage(w2->getInvested());
+                    return calculatePortfolioPercentage(w1->getInvested()) > calculatePortfolioPercentage(w2->getInvested());
                 else
-                    return getPortfolioPercentage(w1->getInvested()) < getPortfolioPercentage(w2->getInvested());
+                    return calculatePortfolioPercentage(w1->getInvested()) < calculatePortfolioPercentage(w2->getInvested());
             });
 
             break;
         case Attribute::TYPE:
-            std::sort(wallets_.begin(), wallets_.end(), [&](Wallet* w1, Wallet* w2){
+        {
+            QList<Wallet* > walletsAux_;
+            QList<Wallet* > walletsAux2_;
+
+            // Copy only items that match the order filter
+            std::copy_if(wallets_.begin(), wallets_.end(), std::back_inserter(walletsAux2_), [&](Wallet* w1){
                 if ( o == Order::FIAT_FIRST )
                     return w1->getCoin() == "EUR" ;
                 else return w1->getCoin() != "EUR" ;
             });
+            walletsAux_ = walletsAux2_;
+            walletsAux2_.clear();
+
+            // Copy the rest of items that not match the filter
+            std::copy_if(wallets_.begin(), wallets_.end(), std::back_inserter(walletsAux2_), [&](Wallet* w1){
+                if ( o != Order::FIAT_FIRST )
+                    return w1->getCoin() == "EUR" ;
+                else return w1->getCoin() != "EUR" ;
+            });
+
+            // Add the rest of items behind the items that match the order filter
+            for(auto a : walletsAux2_)
+                walletsAux_.push_back(a);
+            wallets_ = walletsAux_;
+            walletsAux_.clear();
+            walletsAux2_.clear();
+        }
             break;
         default:
             return;

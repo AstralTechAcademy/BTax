@@ -14,7 +14,10 @@ void Wallet::print() const noexcept
 
 double Wallet::getAverageCost(void) const noexcept
 {
-    return invested_ / amount_;
+    if(invested_ > 0.0000000 && amount_ > 0.0000000)
+        return invested_ / amount_;
+    else
+        return 0.0000000;
 }
 
 double Wallet::getAmount(void) const noexcept {return amount_;}
