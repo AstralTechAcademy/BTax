@@ -104,8 +104,5 @@
 
 9. Run linuxdeploy since release folder
         
-        ./linuxdeployqt-5-x86_64.AppImage appdir/Broker.desktop \ 
-        -appimage \ 
-        -qmake="/home/gabridc/Qt/5.15.2/gcc_64/bin/qmake" \ 
-        -qmldir="/home/gabridc/Qt/5.15.2/gcc_64/qml/"
+        ./linuxdeployqt-5-x86_64.AppImage appdir/Broker.desktop -appimage -qmake="/home/gabridc/Qt/5.15.2/gcc_64/bin/qmake" -qmldir="/home/gabridc/Qt/5.15.2/gcc_64/qml/"
        

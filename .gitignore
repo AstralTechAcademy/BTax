@@ -7,4 +7,6 @@ Testing/
 *cbp
 doxygen/
 release/appdir/
+android_files/
+android-build/
 DBCredential_NotPush.h
