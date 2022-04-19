@@ -94,9 +94,9 @@ Window
         anchors.left: walletTxt.left
         anchors.leftMargin: 0
         width: 250
-        model: walletsModelDeposit
+        model: walletsModelAll
         textRole: "display"
-        popup.onClosed: console.log("Combo Cliked " + walletsModelDeposit.getWalletID(currentIndex))
+        popup.onClosed: console.log("Combo Cliked " + walletsModelAll.getWalletID(currentIndex))
     }
 
     Text
@@ -151,7 +151,7 @@ Window
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
         onClicked: {
-            brokerManager.newDeposit(walletsModelDeposit.getWalletID(wallet.currentIndex),pair1Amount.text_, feesAmount.text_, "", "") //TODO: comments
+            brokerManager.newDeposit(walletsModelAll.getWalletID(wallet.currentIndex),pair1Amount.text_, feesAmount.text_, "", "") //TODO: comments
             newDepositWindow.close()
         }
     }

@@ -7,12 +7,12 @@
 
 uint32_t BrokerManager::userID = 0U;
 
-BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelDeposit,  WalletsPercModel*const walletsPercModel,CoinsModel*const coinsModel)
+BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel)
 {
     parent = 0;
     operationsModel_ = operationsModel;
     walletsModel_ = walletsModel;
-    walletsModelDeposit_ = walletsModelDeposit;
+    walletsModelAll_ = walletsModelAll;
     walletsModelPerc_ = walletsPercModel;
     coinsModel_ = coinsModel;
 
@@ -230,7 +230,7 @@ void BrokerManager::loadCoinsFromDB(void)
 void BrokerManager::loadWalletsFromDB(const uint32_t userID)
 {
     walletsModel_->clear();
-    walletsModelDeposit_->clear();
+    walletsModelAll_->clear();
     auto result = DBLocal::GetInstance()->getWallets(userID);
     if(std::get<0>(result) == true)
     {
@@ -248,13 +248,13 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
                 walletsModel_->add(w);
             }
 
-            walletsModelDeposit_->add(w);
+            walletsModelAll_->add(w);
         }
     }
 
      walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
     //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
-    walletsModelDeposit_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
+    walletsModelAll_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 
     groupCoinBySymbol();
 }

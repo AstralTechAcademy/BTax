@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     UsersModel usersModel;
     OperationsModel operationsModel;
     WalletsModel walletsModel;
-    WalletsModel walletsModelDeposit;
+    WalletsModel walletsModelAll;
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
 
@@ -113,12 +113,12 @@ int main(int argc, char *argv[])
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
-    engine.rootContext()->setContextProperty("walletsModelDeposit", &walletsModelDeposit);
+    engine.rootContext()->setContextProperty("walletsModelAll", &walletsModelAll);
     engine.rootContext()->setContextProperty("walletsPercModel", &walletsPercModel);
     engine.rootContext()->setContextProperty("usersModel", &usersModel);
     engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
 
-    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelDeposit, &walletsPercModel, &coinsModel);
+    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
 
     Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);

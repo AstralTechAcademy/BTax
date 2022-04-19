@@ -19,7 +19,7 @@ public:
     const uint8_t IMPORT_STAKING_OP_ATRS = 3;
     const uint8_t IMPORT_OP_ATRS = 9;
 
-    BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel,WalletsModel*const walletsModelDeposit, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
+    BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
     static uint32_t userID ;
 
 signals:
@@ -44,7 +44,7 @@ public slots:
 private:
     OperationsModel* operationsModel_;
     WalletsModel* walletsModel_;
-    WalletsModel* walletsModelDeposit_;
+    WalletsModel* walletsModelAll_;
     WalletsPercModel* walletsModelPerc_;
     CoinsModel* coinsModel_;
     std::vector<Operation*> importPreview;
