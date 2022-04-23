@@ -3,6 +3,8 @@
 //
 
 #include "SQLManager.h"
+#include <unistd.h>
+
 QSqlDatabase SQLManager::database = QSqlDatabase();
 QString SQLManager::server = "None";
 
@@ -24,8 +26,7 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
     if(r1 and r2)
     {
 
-        // Se resta la cantidad de monedas o fiat de la wallet origen. Las operaciones de staking no son compras/ventas
-        // con wallets origen
+        // Se resta la cantidad de monedas o fiat de la wallet origen. Las operaciones de staking/cashback se aplican cambios en wallets origen
         if(type == "Venta" || type == "Compra")
         {
             query.prepare("SELECT id, retired, available, fiat FROM WalletOperations WOP"
@@ -61,7 +62,7 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
                     available -= available;
                 }
 
-                std::cout <<  id  <<" Retired: " <<  retired <<  " Available: " <<  available<< std::endl;
+                //std::cout <<  id  <<" Retired: " <<  retired <<  " Available: " <<  available<< std::endl;
 
 
                 //Restar la cantidad de PAIR1
@@ -73,6 +74,10 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
                 query2.bindValue(":available", available);
                 query2.exec();
             }
+        }
+        else if(type == "Stacking" || type == "Cashback")
+        {
+            ganancia = pair2Amount * pair2AmountFiat;
         }
         // Nueva entrada con la cantidad de moneda en la wallet destino
         query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,wallet)"
@@ -440,7 +445,6 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
             auto coin = query.value(0).toString();
             auto exchange = query.value(4).toString();
             auto user = query.value(1).toString();
-            std::cout << "HOLA: " << id << " " << " " << coin.toStdString() << " " << exchange.toStdString()  << " " << user.toStdString() << std::endl;
 
             auto wallet = new Wallet(id, coin, exchange, user);
             setWalletData(*wallet);
@@ -745,5 +749,6 @@ bool SQLManager::depositOperation(const int walletID, double amount, double amou
 
     return query.exec();
 }
+
 
 

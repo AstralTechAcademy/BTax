@@ -46,6 +46,10 @@ double Operation::getPair2AmountFiat() const {
     return pair2AmountFiat_;
 }
 
+QString Operation::getFeesCoin() const {
+    return feesCoin_;
+}
+
 double Operation::getComision() const {
     return comision_;
 }
@@ -76,6 +80,11 @@ void Operation::setPair2Amount(double pair2Amount) {
 
 void Operation::setPair2AmountFiat(double pair2AmountFiat) {
     pair2AmountFiat_ = pair2AmountFiat;
+}
+
+void Operation::setFeesCoin(QString feesCoin)
+{
+    feesCoin_ = feesCoin;
 }
 
 void Operation::setComision(double comision) {

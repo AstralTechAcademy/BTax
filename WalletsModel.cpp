@@ -163,3 +163,24 @@ void WalletsModel::orderBy(Attribute atr,  Order o) noexcept
 
     emit layoutChanged();
 }
+
+std::optional<Wallet> WalletsModel::find(const QString& exchange,  const QString& coin) noexcept
+{
+    auto it = std::find_if(wallets_.begin(), wallets_.end(), [&](Wallet* w){
+       if(w->getCoin() == coin && w->getExchange() == exchange)
+           return true;
+       else
+           return false;
+
+    });
+
+    if(it != wallets_.end())
+    {
+        std::cout << "Wallet FOUND  Exchanhge: " << exchange.toStdString() << " Coin: " <<  coin.toStdString() << " ";
+        std::cout   << (*it)->getWalletID() << std::endl;
+
+        return **it;
+    }
+    else
+        return std::nullopt;
+}

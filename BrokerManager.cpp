@@ -53,8 +53,8 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
 
     double totalAmount = 0.0;
 
-    std::cout << type.toStdString() << date.toStdString() << std::endl;
-    std::cout << walletID1<< walletID2 << std::endl;
+    //std::cout << type.toStdString() << date.toStdString() << std::endl;
+    //std::cout << walletID1<< walletID2 << std::endl;
 
 
 
@@ -64,18 +64,18 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
 
     if(r1 and r2)
     {
-        std::cout << "Wallet Found "<< wallet1->getWalletID() << " " << wallet1->getAmount() << " " << pair1Amount  << std::endl;
+        //std::cout << "Wallet Found "<< wallet1->getWalletID() << " " << wallet1->getAmount() << " " << pair1Amount  << std::endl;
 
-        std::cout << feesCoin.toStdString() << " " ; wallet1->print();
+        //std::cout << feesCoin.toStdString() << " " ; wallet1->print();
 
         if(feesCoin == wallet1->getCoin())
         {
-            std::cout << "Same coin fees"<< std::endl;
+            //std::cout << "Same coin fees"<< std::endl;
             totalAmount = pair1Amount + comision;
         }
         else
         {
-            std::cout << "Not same coin fees. Calculation to same coin: " << (comision * comisionFiat) / pair1AmountFiat << std::endl;
+            //std::cout << "Not same coin fees. Calculation to same coin: " << (comision * comisionFiat) / pair1AmountFiat << std::endl;
             totalAmount = pair1Amount + (comision * comisionFiat) / pair1AmountFiat;
         }
         std::cout << "Total Amount: " << totalAmount << std::endl;
@@ -294,6 +294,11 @@ void BrokerManager::groupCoinBySymbol(void)
     }
     walletsModelPerc_->orderBy(WalletsPercModel::Order::ASC);
 
+}
+
+std::optional<Wallet> BrokerManager::findWallet(const QString& exchange, const QString& coin)
+{
+    return walletsModelAll_->find(exchange, coin);
 }
 
 

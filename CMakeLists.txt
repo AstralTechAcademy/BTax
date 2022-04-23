@@ -120,7 +120,9 @@ add_executable(Broker
         DBCredential_NotPush.h
         WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
-        CoinsModel.cpp CoinsModel.h)
+        CoinsModel.cpp CoinsModel.h
+        IfExchanges/IExchange.cpp IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
+        IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h)
 endif()
 
 if(LINUX)

@@ -6,6 +6,7 @@
 #define BROKER_WALLETSMODEL_H
 #include <QAbstractListModel>
 #include <QList>
+#include <memory>
 #include "Wallet.h"
 
 
@@ -58,6 +59,7 @@ public:
     int count() const;
 
     void orderBy(Attribute atr,  Order o) noexcept;
+    std::optional<Wallet> find(const QString& exchange,  const QString& coin) noexcept;
 
 signals:
     void countChanged();

@@ -3,6 +3,7 @@
 //
 
 #include "DBRemote.h"
+#include <future>
 #include "DBCredential_NotPush.h"
 
 DBRemote* DBRemote::db_ = nullptr;
@@ -40,6 +41,9 @@ bool DBRemote::openDatabase(void)
     database.setDatabaseName(DATABASENAME);
     database.setPassword(PASSWORD);
     server = SERVER;
+
+
+
 
     opened = database.open();
     return opened;

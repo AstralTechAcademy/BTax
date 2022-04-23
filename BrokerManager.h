@@ -21,6 +21,7 @@ public:
 
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
     static uint32_t userID ;
+    std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
 
 signals:
     void depositCompleted(void);

@@ -43,6 +43,24 @@ public:
               comments_(comments),
               type_(type),
               ganancia_(ganancia){};
+    Operation(int id, QString pair1, QString pair2, double pair1Amount, double pair1AmountFiat,
+              double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat,
+              QString status, QString date, QString comments, QString type, double ganancia):
+            id_(id),
+            pair1_(pair1),
+            pair2_(pair2),
+            pair1Amount_(pair1Amount),
+            pair1AmountFiat_(pair1AmountFiat),
+            pair2Amount_(pair2Amount),
+            pair2AmountFiat_(pair2AmountFiat),
+            feesCoin_(feesCoin),
+            comision_(comision),
+            comisionFiat_(comisionFiat),
+            status_(status),
+            date_(date),
+            comments_(comments),
+            type_(type),
+            ganancia_(ganancia){};
 
     int getID(void) const noexcept;
     QString getPair1(void) const noexcept;
@@ -54,6 +72,7 @@ public:
     double getPair1AmountFiat() const;
     double getPair2Amount() const;
     double getPair2AmountFiat() const;
+    QString getFeesCoin() const;
     double getComision() const;
     double getComisionFiat() const;
     QString getType() const;
@@ -69,6 +88,7 @@ public:
     void setPair1AmountFiat(double pair1AmountFiat);
     void setPair2Amount(double pair2Amount);
     void setPair2AmountFiat(double pair2AmountFiat);
+    void setFeesCoin(QString feesCoin);
     void setComision(double comision);
     void setComisionFiat(double comisionFiat);
     void setType(const QString &type);
@@ -106,6 +126,7 @@ private:
     QString comments_;
     QString type_;
     double ganancia_;
+    QString feesCoin_;
 
 };
 

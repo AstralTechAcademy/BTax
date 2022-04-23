@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <future>
+#include <unistd.h>
 #include "Broker.h"
 #include "OperationsModel.h"
 #include "BrokerManager.h"
@@ -11,13 +13,21 @@
 #include "WalletsPercModel.h"
 #include "UsersModel.h"
 #include "CoinsModel.h"
+#include "IfExchanges/Importer.h"
 
+void timeout(void)
+{
+    sleep(5);
+    std::cout << "TIMEOUT" << std::endl;
+}
 
 
 int main(int argc, char *argv[])
 {
     QString version = "1.0.1";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+
 
     QApplication app(argc, argv);
     qmlRegisterUncreatableType<Broker>("es.broker", 1, 0, "Broker", "App Class Instance");
@@ -30,6 +40,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsModel", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsPercModel", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<BrokerManager>("es.broker", 1, 0, "BrokerManager", "Operation sholud not be created in QMl");
+    qmlRegisterUncreatableType<Importer>("es.broker", 1, 0, "Importer", "Importer sholud not be created in QMl");
     //qmlRegisterType(QUrl("qrc:Broker.qml"), "es.broker", 1, 0, "Broker");
     qmlRegisterType(QUrl("qrc:MaterialTextInput.qml"), "es.broker.components.material", 1, 0, "TextInput");
     qmlRegisterType(QUrl("qrc:IconButton.qml"), "es.broker.components", 1, 0, "IconButton");
@@ -53,7 +64,12 @@ int main(int argc, char *argv[])
 
 
     //DBRemote::GetInstance()->createDatabase();
-    std:: cout << "DB Server Opened: " << DBRemote::GetInstance()->openDatabase() << std::endl;
+    /*auto future = std::async(std::launch::async, [](){
+        sleep(5);
+        std::cout << "TIMEOUT" << std::endl;
+    });*/
+    auto dbOpened = DBRemote::GetInstance()->openDatabase();
+    std:: cout << "DB Server Opened: " <<  dbOpened<< std::endl;
 
     //DBLocal::GetInstance()->createDatabase();
     //DBLocal::GetInstance()->openDatabase();
@@ -124,6 +140,9 @@ int main(int argc, char *argv[])
     Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
     engine.load(url);
+
+    Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
+    auto r = importer->import("Crypto", "/home/gabridc/Documentos/crypto_transactions_record_20220422_125541.csv");
 
 
 
