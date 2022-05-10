@@ -64,10 +64,6 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
 
     if(r1 and r2)
     {
-        //std::cout << "Wallet Found "<< wallet1->getWalletID() << " " << wallet1->getAmount() << " " << pair1Amount  << std::endl;
-
-        //std::cout << feesCoin.toStdString() << " " ; wallet1->print();
-
         if(feesCoin == wallet1->getCoin())
         {
             //std::cout << "Same coin fees"<< std::endl;
@@ -183,8 +179,6 @@ QStringList BrokerManager::getWalletsCBox(const QString& username)
     {
         for(auto w : wallets)
         {
-            w->print();
-            std::cout << w->getWalletID() <<  w->getCoin().toStdString() <<  w->getExchange().toStdString()<< std::endl;
             result.push_back(QString::number(w->getWalletID()) + " " + w->getUser() + " " + w->getCoin() + " " + w->getExchange());
         }
     }
@@ -282,8 +276,6 @@ void BrokerManager::groupCoinBySymbol(void)
             exist = walletsModelPerc_->getCoin(index2) == walletsModel_->getCoin(index);
         }
 
-        std::cout << "Index: " << index << "Coin: " << walletsModel_->getCoin(index).toStdString() << " Index2: " << index2 << std::endl;
-
         if(exist)
             walletsModelPerc_->addPercValue(index2-1, walletsModel_->getPortfolioPercentage(index));
         else
@@ -294,6 +286,11 @@ void BrokerManager::groupCoinBySymbol(void)
     }
     walletsModelPerc_->orderBy(WalletsPercModel::Order::ASC);
 
+}
+
+std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& coin)
+{
+    return walletsModelAll_->find(coin);
 }
 
 std::optional<Wallet> BrokerManager::findWallet(const QString& exchange, const QString& coin)
