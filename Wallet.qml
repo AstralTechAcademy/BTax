@@ -40,7 +40,6 @@ Rectangle{
     Components.Data
     {
         id: amountTxt
-        anchors.verticalCenter: parent.verticalCenter
         anchors.left: exchangeTxt.right
         anchors.leftMargin: 30
         anchors.top: parent.top
@@ -57,7 +56,6 @@ Rectangle{
     Components.Data
     {
         id: investedTxt
-        anchors.verticalCenter: parent.verticalCenter
         anchors.left: amountTxt.right
         anchors.leftMargin: 30
         anchors.top: parent.top
@@ -75,7 +73,6 @@ Rectangle{
     Components.Data
     {
         id: averageTxt
-        anchors.verticalCenter: parent.verticalCenter
         anchors.left: investedTxt.right
         anchors.leftMargin: 30
         anchors.top: parent.top
@@ -91,9 +88,25 @@ Rectangle{
 
     Components.Data
     {
-        id: portfolioPercentageTxt
-        anchors.verticalCenter: parent.verticalCenter
+        id: globalAverage
         anchors.left: averageTxt.right
+        anchors.leftMargin: 30
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        width: 80
+        visible: true
+        title: "Global Average"
+        value: parseFloat ( gAverage.toFixed(6))
+
+        colorValue: "black"
+    }
+
+    Components.Data
+    {
+        id: portfolioPercentageTxt
+        anchors.left: globalAverage.right
         anchors.leftMargin: 30
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -117,7 +130,6 @@ Rectangle{
         id: earning
         anchors.left: portfolioPercentageTxt.right
         anchors.leftMargin: 30
-        anchors.verticalCenter: parent.verticalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.bottom: parent.bottom
@@ -143,7 +155,6 @@ Rectangle{
         id: percentage
         anchors.left: earning.right
         anchors.leftMargin: 30
-        anchors.verticalCenter: parent.verticalCenter
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.bottom: parent.bottom
@@ -163,6 +174,9 @@ Rectangle{
         }
         colorValue: if((amount * currentPriceTxt.text_ - invested) > 0 ) {return "green"} else {return "red"}
     }
+
+
+
 
 
 

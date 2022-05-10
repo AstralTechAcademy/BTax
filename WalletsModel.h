@@ -27,6 +27,7 @@ public:
         Amount,
         Invested,
         Average,
+        GlobalAverage,
         FiatCoin,
         PortfolioPercentage,
         DisplayText
@@ -59,6 +60,7 @@ public:
     int count() const;
 
     void orderBy(Attribute atr,  Order o) noexcept;
+    std::optional<std::vector<Wallet*>> find(const QString& coin) const noexcept;
     std::optional<Wallet> find(const QString& exchange,  const QString& coin) noexcept;
 
 signals:
@@ -68,6 +70,7 @@ signals:
 public slots:
     double getTotalInvested(void) const;
     double calculatePortfolioPercentage(const double amount) const;
+    double calculateGlobalAverageCost(const QString& coin) const;
     double getPortfolioPercentage(const int index) const;
     int getWalletID(const int index) const;
     QString getCoin(const int index) const;
@@ -76,7 +79,6 @@ public slots:
 
 private:
     QList<Wallet* > wallets_;
-
 };
 
 

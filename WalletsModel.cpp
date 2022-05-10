@@ -15,6 +15,7 @@ QHash<int, QByteArray> WalletsModel::roleNames() const
     roles[Amount] = "amount";
     roles[Invested] = "invested";
     roles[Average] = "average";
+    roles[GlobalAverage] = "gAverage";
     roles[FiatCoin] = "fiatcoin";
     roles[PortfolioPercentage] = "portfolioPercentage";
     roles[DisplayText] = "display";
@@ -45,6 +46,8 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
             return wallets_.at(row)->getInvested();
         case Average:
             return wallets_.at(row)->getAverageCost();
+        case GlobalAverage:
+            return calculateGlobalAverageCost(wallets_.at(row)->getCoin());
         case FiatCoin:
             return wallets_.at(row)->getFiatCoin();
         case PortfolioPercentage:
@@ -164,6 +167,24 @@ void WalletsModel::orderBy(Attribute atr,  Order o) noexcept
     emit layoutChanged();
 }
 
+std::optional<std::vector<Wallet*>> WalletsModel::find(const QString& coin) const noexcept
+{
+    std::vector<Wallet*> wallets;
+
+    auto it = wallets_.begin();
+    while ((it = std::find_if(it, wallets_.end(), [&] (Wallet* w) { return w->getCoin() == coin; }))
+           != wallets_.end())
+    {
+        wallets.push_back(wallets_[std::distance(wallets_.begin(), it)]);
+        it++;
+    }
+
+    if(wallets.empty() == false)
+        return wallets;
+    else
+        return std::nullopt;
+}
+
 std::optional<Wallet> WalletsModel::find(const QString& exchange,  const QString& coin) noexcept
 {
     auto it = std::find_if(wallets_.begin(), wallets_.end(), [&](Wallet* w){
@@ -176,11 +197,29 @@ std::optional<Wallet> WalletsModel::find(const QString& exchange,  const QString
 
     if(it != wallets_.end())
     {
-        std::cout << "Wallet FOUND  Exchanhge: " << exchange.toStdString() << " Coin: " <<  coin.toStdString() << " ";
-        std::cout   << (*it)->getWalletID() << std::endl;
-
         return **it;
     }
     else
         return std::nullopt;
+}
+
+double WalletsModel::calculateGlobalAverageCost(const QString& coin) const
+{
+    auto wallets = find(coin);
+    auto average = 0.0;
+
+
+    if(wallets == std::nullopt)
+        return (double) average;
+
+    for(auto w : wallets.value())
+    {
+        average += w->getAverageCost();
+    }
+
+    //std::cout << "File: WalletsModel Function: getGlobalAverageCost Description: Coin: " << coin.toStdString() << std::endl <<
+      //          "       Total: " << average << "        Size: " << wallets.value().size() << "      Global Average: " << average / wallets.value().size() << std::endl;
+
+    return average / wallets.value().size();
+
 }
