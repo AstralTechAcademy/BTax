@@ -2,17 +2,17 @@
 // Created by gabridc on 19/4/22.
 //
 
-#ifndef BROKER_B2M_H
-#define BROKER_B2M_H
+#ifndef BROKER_BINANCE_H
+#define BROKER_BINANCE_H
 #include "IExchange.h"
 
-class B2m : public IExchange {
+class Binance : public IExchange {
 
 public:
-    B2m(void);
+    Binance(void);
     virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath);
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
 };
 
 
-#endif //BROKER_B2M_H
+#endif //BROKER_BINANCE_H

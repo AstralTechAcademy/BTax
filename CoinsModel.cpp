@@ -55,7 +55,6 @@ QString CoinsModel::getColor(const QString& name) const
 
         if(coins_.at(i)->name() ==  name)
         {
-            std::cout << "GET COL: " << coins_.at(i)->name().toStdString() << " " <<  coins_.at(i)->color().toStdString() <<std::endl;
             return coins_.at(i)->color();
         }
 

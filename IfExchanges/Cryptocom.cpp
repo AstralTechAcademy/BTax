@@ -18,7 +18,7 @@ std::optional<QList<std::shared_ptr<Operation>>> Cryptocom::import(const QString
     }
 }
 
-QList<std::shared_ptr<Operation>> Cryptocom::parse(QFile& csv)
+std::optional<QList<std::shared_ptr<Operation>>> Cryptocom::parse(QFile& csv)
 {
     csv.open(QIODevice::ReadOnly);
     uint8_t firstLine = 0;
@@ -72,5 +72,9 @@ QList<std::shared_ptr<Operation>> Cryptocom::parse(QFile& csv)
 
         firstLine = 1;
     }
-    return operations;
+
+    if(operations.size() > 0)
+        return operations;
+    else
+        return std::nullopt;
 }

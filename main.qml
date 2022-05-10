@@ -15,6 +15,8 @@ Window {
     color: "#e9e7e7"
     title: qsTr("Broker")
 
+
+
     //OperationsModel{id: operationsModel}
 
     Component.onCompleted: {

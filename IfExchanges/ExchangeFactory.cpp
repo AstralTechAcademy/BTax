@@ -5,14 +5,17 @@
 #include "ExchangeFactory.h"
 #include "Cryptocom.h"
 #include "B2m.h"
+#include "Binance.h"
 
 
 std::shared_ptr<IExchange> ExchangeFactory::createExchange(const QString& exchange) noexcept
 {
-    if("Crypto")
+    std::cout << exchange.toStdString() << std::endl;
+    if("Crypto" == exchange)
         return std::make_shared<Cryptocom>();
-    else if("B2m")
+    else if("B2M" == exchange)
         return std::make_shared<B2m>();
-
+    else if("Binance" == exchange)
+        return std::make_shared<Binance>();
     return nullptr;
 }

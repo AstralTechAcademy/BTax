@@ -18,9 +18,11 @@ class BrokerManager : public QObject{
 public:
     const uint8_t IMPORT_STAKING_OP_ATRS = 3;
     const uint8_t IMPORT_OP_ATRS = 9;
+    inline static QString DEF_FIAT = "EUR";
 
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
     static uint32_t userID ;
+    std::optional<std::vector<Wallet*>> findWallets(const QString& coin);
     std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
 
 signals:

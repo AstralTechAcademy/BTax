@@ -10,11 +10,12 @@
 #include <QDateTime>
 #include <QMap>
 #include "Operation.h"
+#include "BrokerManager.h"
 
 class IExchange {
 public:
     virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath) = 0;
-    virtual QList<std::shared_ptr<Operation>> parse(QFile& csv) = 0;
+    virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv) = 0;
 };
 
 
