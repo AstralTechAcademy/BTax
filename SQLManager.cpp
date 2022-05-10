@@ -225,7 +225,6 @@ void SQLManager::setWalletData(Wallet& wallet)
 
             wallet.setAmount(amount);
             wallet.setInvested(invested);
-            std::cout << "Wallet ID: " << wallet.getWalletID() << "Amount: " << wallet.getAmount() << std::endl;
         }
     }
 }

@@ -65,6 +65,18 @@ protected:
     static QSqlDatabase database;
     static QString server;
 
+private:
+    QString query_view_operations = "SELECT OP.date, OP.type, OP.wallet1, W1.exchange, C1.name, OP.pair1Amount, OP.pair1AmountFiat,"
+                                    "    OP.wallet2, W2.exchange, C2.name, OP.pair2Amount, OP.pair2AmountFiat,"
+                                    "    OP.comision, OP.comisionFiat, OP.ganancia"
+                                    "    FROM Operations OP"
+                                    "    LEFT JOIN Wallets W1 ON W1.id = OP.wallet1"
+                                    "    LEFT JOIN Coins C1 ON C1.id = W1.coin"
+                                    "    LEFT JOIN Users U1 ON U1.id = W1.user"
+                                    "    LEFT JOIN Wallets W2 ON W2.id = OP.wallet1"
+                                    "    LEFT JOIN Coins C2 ON C2.id = W2.coin"
+                                    "    LEFT JOIN Users U2 ON U2.id = W2.user";
+
 };
 
 
