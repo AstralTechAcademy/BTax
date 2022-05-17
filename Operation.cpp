@@ -102,3 +102,9 @@ void Operation::setType(const QString &type) {
 void Operation::setGanancia(double ganancia) {
     ganancia_ = ganancia;
 }
+
+void Operation::print(void) const
+{
+    std::cout << "Operation Data: " << id_ << " "  << pair1Amount_  << " " << pair1AmountFiat_ << " " << pair2Amount_ << " " << pair2AmountFiat_ << " " <<comision_ << " " <<comisionFiat_  << " " << status_.toStdString() << " " << date_.toStdString() << " " <<comments_.toStdString() << " " << type_.toStdString() << " " << ganancia_ << " "  << std::endl;
+
+}

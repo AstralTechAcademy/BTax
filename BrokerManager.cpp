@@ -56,8 +56,6 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
     //std::cout << type.toStdString() << date.toStdString() << std::endl;
     //std::cout << walletID1<< walletID2 << std::endl;
 
-
-
     auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID1);
     auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(walletID2);
 
@@ -74,7 +72,6 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
             //std::cout << "Not same coin fees. Calculation to same coin: " << (comision * comisionFiat) / pair1AmountFiat << std::endl;
             totalAmount = pair1Amount + (comision * comisionFiat) / pair1AmountFiat;
         }
-        std::cout << "Total Amount: " << totalAmount << std::endl;
 
         //Se comprueba que haya saldo suficiente para la compra antes de proceder
         if(wallet1->getAmount() >= totalAmount)
@@ -94,12 +91,37 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
     else
     {
         std::cout << "La wallet origen no existe." << std::endl;
+        return false;
+    }
+}
 
+bool BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operation> operation)
+{
+    auto ops = operationsModel_->operations();
+    auto exist = std::find_if(ops.begin(), ops.end(),
+                    [&](Operation* op){return *op == *operation.get();});
+    if(exist != ops.end())
+    {
+        std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
         return false;
     }
 
+    auto walletPair1 = findWallet(exchange, operation->getPair1());
+    auto walletPair2 = findWallet(exchange, operation->getPair2());
 
-
+    return newOperation(walletPair1->getWalletID(),
+                 walletPair2->getWalletID(),
+                 operation->getPair1Amount(),
+                 operation->getPair1AmountFiat(),
+                 operation->getPair2Amount(),
+                 operation->getPair2AmountFiat(),
+                 operation->getFeesCoin(),
+                 operation->getComision(),
+                 operation->getComisionFiat(),
+                 operation->getComments(),
+                 operation->getType(),
+                 operation->getStatus(),
+                 operation->getDate());
 }
 
 bool BrokerManager::addWallet(const QString coinName, const QString exchange)

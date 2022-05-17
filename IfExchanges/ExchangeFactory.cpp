@@ -2,13 +2,13 @@
 // Created by gabridc on 19/4/22.
 //
 
-#include "ExchangeFactory.h"
+#include "MarketDataFactory.h"
 #include "Cryptocom.h"
 #include "B2m.h"
 #include "Binance.h"
 
 
-std::shared_ptr<IExchange> ExchangeFactory::createExchange(const QString& exchange) noexcept
+std::shared_ptr<IExchange> MarketDataFactory::createExchange(const QString& exchange) noexcept
 {
     std::cout << exchange.toStdString() << std::endl;
     if("Crypto" == exchange)

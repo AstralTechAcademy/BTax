@@ -105,9 +105,6 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
         query.bindValue(":type", type);
         ganancia -= (comision * comisionFiat);
         query.bindValue(":ganancia", ganancia);
-
-        std::cout << "operation data: " << walletID1 << " "  << walletID2 << " "  << pair1Amount  << " " << pair1AmountFiat << " " <<pair2Amount << " " << pair2AmountFiat << " " <<comision << " " <<comisionFiat  << " " <<status.toStdString() << " " << date.toStdString() << " " <<comments.toStdString() << " " << type.toStdString() << " " << ganancia << " "  << std::endl;
-
         return query.exec();
     }
     else

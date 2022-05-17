@@ -93,6 +93,15 @@ public:
     void setComisionFiat(double comisionFiat);
     void setType(const QString &type);
     void setGanancia(double ganancia);
+    void print(void) const;
+
+    bool operator==(Operation& rhs)
+    {
+        return date_ == rhs.getDate() &&
+                pair1_ == rhs.getPair1() && pair1Amount_ == rhs.getPair1Amount() &&
+                pair2_ == rhs.getPair2() && pair2Amount_== rhs.getPair2Amount() &&
+                type_ == rhs.getType();
+    }
 
     enum class EN_OperationColumns_t {
         ID = 0,

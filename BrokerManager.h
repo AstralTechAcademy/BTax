@@ -36,6 +36,7 @@ public slots:
     bool newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
                       double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
                       QString status, QString date);
+    bool newOperation(const QString& exchange, const std::shared_ptr<Operation> operation);
     bool addWallet(const QString coinName, const QString exchange);
     bool importOperations(void);
     uint32_t getUserID(const QString& username);

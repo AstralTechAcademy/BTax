@@ -10,7 +10,6 @@ B2m::B2m(void){};
 
 std::optional<QList<std::shared_ptr<Operation>>> B2m::import(const QString& csvPath)
 {
-    std::cout << "Import";
     QFile csv(csvPath);
 
     if(csv.exists() == false)
@@ -36,7 +35,7 @@ std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
             for(auto index = 0; index < columns.size(); index++)
             {
 
-                if(columns[index] == "DATE UNIX")
+                if(columns[index] == "DATE")
                     header.insert("DATE", index);
                 if(columns[index] == "METHOD")
                     header.insert("TYPE", index);
@@ -63,7 +62,6 @@ std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
             auto lineV = line.split(',');
             if(lineV[header["TYPE"]] == "earn")
             {
-                //std::cout << line.toStdString() << std::endl;
                 operations.push_back(std::make_shared<Operation>(0, lineV[header["PAIR1"]], lineV[header["PAIR2"]], 0.0, 1.0,
                                                                  lineV[header["PAIR2_AMOUNT"]].toDouble(),
                                                                  lineV[header["PAIR2_AMOUNT_FIAT"]].toDouble(),
