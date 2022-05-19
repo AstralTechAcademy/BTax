@@ -11,6 +11,7 @@ QHash<int, QByteArray> CoinsModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles[CoinID] = "coinID";
     roles[CoinName] = "name";
+    roles[CurrentPrice] = "currentPrice";
     return roles;
 }
 
@@ -29,6 +30,8 @@ QVariant CoinsModel::data(const QModelIndex &index, int role) const
             return coins_.at(row)->id();
         case CoinName:
             return QString::number(coins_.at(row)->id()) + " " + coins_.at(row)->name();
+        case CurrentPrice:
+            return coins_.at(row)->currentPrice();
         default:
             return coins_.at(row)->name();
     }

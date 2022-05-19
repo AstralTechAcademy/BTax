@@ -54,7 +54,9 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
             return calculatePortfolioPercentage(wallets_.at(row)->getInvested());
         case DisplayText:
             return QString::number(wallets_.at(row)->getWalletID()) + " " + wallets_.at(row)->getUser() + " " + wallets_.at(row)->getCoin() + " "+wallets_.at(row)->getExchange();
-        default:
+        case CurrentPrice:
+            return wallets_.at(row)->getCurPrice();
+            default:
             return QVariant();
     }
 }

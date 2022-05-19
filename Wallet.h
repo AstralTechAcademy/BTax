@@ -6,6 +6,8 @@
 #define BROKER_WALLET_H
 #include <QString>
 #include <iostream>
+#include "CoinsModel.h"
+
 class Wallet {
 
 
@@ -35,6 +37,7 @@ public:
     QString getCoin(void) const noexcept;
     QString getFiatCoin(void) const noexcept;
     double getAverageCost(void) const noexcept;
+    double getCurPrice(void) const noexcept;
 
     void setWalletID(const int walletID);
     void setInvested(const double invested);
@@ -44,6 +47,8 @@ public:
     void setFiatCoin(const double average);
     void setCoin(const QString coin);
     void setUser(const QString user);
+
+    Coin* getpCoin(void) const noexcept;
 
 private:
     double fiatPrice_;

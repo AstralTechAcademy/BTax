@@ -13,20 +13,26 @@ class Coin : public QObject
     Q_PROPERTY(int id READ id)
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString color READ color)
+    Q_PROPERTY(double currentPrice READ currentPrice WRITE setCurrentPrice)
 public:
     Coin(int id, const QString& name, const QString& color) :
         id_(id),
         name_(name),
-        color_(color){};
+        color_(color),
+        currentPrice_(-0.1){};
 
     int id(void) const noexcept {return id_;};
     QString name(void) const noexcept {return name_;};
     QString color(void) const noexcept {return color_;};
+    double currentPrice(void) const noexcept {return currentPrice_;};
+
+    void setCurrentPrice(const double price) noexcept {currentPrice_ = price;};
 
 private:
     int id_;
     QString name_;
     QString color_;
+    double currentPrice_;
 };
 
 
@@ -37,7 +43,8 @@ class CoinsModel : public QAbstractListModel{
 public:
     enum RoleNames {
         CoinID = 1,
-        CoinName
+        CoinName,
+        CurrentPrice
     };
 
     CoinsModel(QObject* parent = 0){};

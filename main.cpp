@@ -63,10 +63,6 @@ int main(int argc, char *argv[])
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
 
-    Coingecko coingecko;
-    coingecko.getCurrentPrice("cardano");
-
-
     //DBRemote::GetInstance()->createDatabase();
     /*auto future = std::async(std::launch::async, [](){
         sleep(5);
@@ -145,10 +141,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
     engine.load(url);
 
-    Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
+    //Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
     //auto r = importer->import("Binance", "/home/gabridc/Documentos/Binance_01_01_2022_31_03_2022.csv");
     //r = importer->import("Crypto", "/home/gabridc/Documentos/crypto_transactions_record_20220422_125541.csv");
-    auto r = importer->import("B2M", "/home/gabridc/Documentos/B2M_01_01_2021_31_12_2021.csv");
+    //auto r = importer->import("B2M", "/home/gabridc/Documentos/B2M_01_01_2021_31_12_2021.csv");
 
     return app.exec();
 }

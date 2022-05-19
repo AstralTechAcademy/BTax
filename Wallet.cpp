@@ -27,6 +27,7 @@ QString Wallet::getUser(void) const noexcept {return user_;};
 QString Wallet::getExchange(void) const noexcept {return exchange_;};
 
 QString Wallet::getCoin(void) const noexcept {return coin_;}
+double Wallet::getCurPrice(void) const noexcept {return 0.0;}
 QString Wallet::getFiatCoin(void) const noexcept { return fiatCoin_;};
 
 

@@ -11,6 +11,7 @@
 #include "CoinsModel.h"
 #include "DBLocal.h"
 #include "DBRemote.h"
+#include "IMarketData/Coingecko.h"
 
 class BrokerManager : public QObject{
     Q_OBJECT
@@ -18,12 +19,15 @@ class BrokerManager : public QObject{
 public:
     const uint8_t IMPORT_STAKING_OP_ATRS = 3;
     const uint8_t IMPORT_OP_ATRS = 9;
+
+    bool FINISHED = false;
     inline static QString DEF_FIAT = "EUR";
 
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
     static uint32_t userID ;
     std::optional<std::vector<Wallet*>> findWallets(const QString& coin);
     std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
+    Coin* findCoin(const QString& coin);
 
 signals:
     void depositCompleted(void);
@@ -44,6 +48,7 @@ public slots:
     void setUserID(const QString& username);
     void setYear(const QString& year);
     bool importPreviewOperations(const QString& csvFilePath, const QString& type);
+    void updateCurrentPrice(void);
 
 private:
     OperationsModel* operationsModel_;

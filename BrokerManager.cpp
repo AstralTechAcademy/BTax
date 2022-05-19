@@ -3,6 +3,8 @@
 //
 
 #include "BrokerManager.h"
+#include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 #include "UsersModel.h"
 
 uint32_t BrokerManager::userID = 0U;
@@ -241,6 +243,15 @@ void BrokerManager::loadCoinsFromDB(void)
     auto coins = DBLocal::GetInstance()->getCoins();
     for(auto c : coins)
         coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c)));
+
+    auto future = QtConcurrent::run(this, &BrokerManager::updateCurrentPrice);
+
+    while(FINISHED == false){}
+
+    for(auto c : coinsModel_->coins())
+    {
+        std::cout << "Coin " << c->name().toStdString() << " Cur.Price: " << c->currentPrice() << std::endl;
+    }
 }
 
 void BrokerManager::loadWalletsFromDB(const uint32_t userID)
@@ -318,6 +329,38 @@ std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& co
 std::optional<Wallet> BrokerManager::findWallet(const QString& exchange, const QString& coin)
 {
     return walletsModelAll_->find(exchange, coin);
+}
+
+Coin* BrokerManager::findCoin(const QString& coin)
+{
+
+    auto coins = coinsModel_->coins();
+    auto it = std::find_if (coins.begin(), coins.end(), [&](Coin* c){
+        return c->name() == coin;
+    });
+
+    if(it != coins.end())
+        return *it;
+}
+
+void BrokerManager::updateCurrentPrice(void)
+{
+    Coingecko coingecko;
+
+    auto prices = coingecko.getCurrentPrices();
+    if(prices == std::nullopt)
+    {
+        std::cout << "Error: Prices information not provided" << std::endl;
+        return;
+    }
+
+    for (auto wallet : walletsModel_->wallets())
+    {
+        auto coin = findCoin(wallet->getCoin());
+        if(prices->find(coin->name().toLower()) != prices->end())
+            coin->setCurrentPrice(prices->at(coin->name().toLower()));
+    }
+    FINISHED = true;
 }
 
 

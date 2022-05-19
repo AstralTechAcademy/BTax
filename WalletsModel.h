@@ -30,7 +30,8 @@ public:
         GlobalAverage,
         FiatCoin,
         PortfolioPercentage,
-        DisplayText
+        DisplayText,
+        CurrentPrice
     };
 
     enum class Order {

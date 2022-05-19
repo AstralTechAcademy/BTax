@@ -121,9 +121,9 @@ add_executable(Broker
         WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h
-        IfExchanges/IExchange.cpp IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
+        IfExchanges/IMarketData.cpp IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
-        IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h)
+        IfExchanges/ExchangeFactory.cpp IfExchanges/MarketDataFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h IMarketData/Coingecko.cpp IMarketData/Coingecko.h)
 endif()
 
 if(LINUX)

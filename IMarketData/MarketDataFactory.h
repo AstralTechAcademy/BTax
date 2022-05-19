@@ -4,14 +4,14 @@
 
 #ifndef BROKER_MARKETDATAFACTORY_H
 #define BROKER_MARKETDATAFACTORY_H
-#include "IExchange.h"
+#include "IMarketData.h"
 #include <memory>
+
 class MarketDataFactory {
 
 public:
-    static std::shared_ptr<IExchange> createExchange(const QString& exchange) noexcept;
+    static std::shared_ptr<IMarketData> createMarketData(const QString& market) noexcept;
 
 };
-
 
 #endif //BROKER_MARKETDATAFACTORY_H
