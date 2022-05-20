@@ -67,12 +67,12 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
         if(feesCoin == wallet1->getCoin())
         {
             //std::cout << "Same coin fees"<< std::endl;
-            totalAmount = pair1Amount + comision;
+            totalAmount = pair1Amount + comision;  // Formula reviwed. OK.
         }
         else
         {
             //std::cout << "Not same coin fees. Calculation to same coin: " << (comision * comisionFiat) / pair1AmountFiat << std::endl;
-            totalAmount = pair1Amount + (comision * comisionFiat) / pair1AmountFiat;
+            totalAmount = pair1Amount + (comision * comisionFiat) / pair1AmountFiat; // Formula reviwed. OK.
         }
 
         //Se comprueba que haya saldo suficiente para la compra antes de proceder

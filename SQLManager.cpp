@@ -25,20 +25,16 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
     //Ambas wallets existen
     if(r1 and r2)
     {
-
         // Se resta la cantidad de monedas o fiat de la wallet origen. Las operaciones de staking/cashback se aplican cambios en wallets origen
         if(type == "Venta" || type == "Compra")
         {
             query.prepare("SELECT id, retired, available, fiat FROM WalletOperations WOP"
-                          " WHERE WOP.wallet=:walletID");
+                          " WHERE WOP.wallet=:walletID"); // Obtiene todas las compras en esa wallet
             query.bindValue(":walletID", walletID1);
             query.exec();
 
-            QSqlQuery query2 = QSqlQuery(database);
             auto pair1AmountAux = pair1Amount;
-
-
-            while(query.next() && pair1AmountAux != 0.0000)
+            while(query.next() && pair1AmountAux != 0.0000)  // Minetras haya compras y no se haya llegado a la cantidad vendida en la operacion
             {
                 auto id = query.value(0).toInt();
                 auto available = query.value(2).toDouble();
@@ -48,24 +44,22 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
                 if(available >= pair1AmountAux)
                 {
                     if(type == "Venta")
-                        ganancia +=  ( pair1AmountAux * (pair1AmountFiat - fiat) );
-                    available -= pair1AmountAux;
-                    retired += pair1AmountAux;
-                    pair1AmountAux -= pair1AmountAux;
+                        ganancia +=  ( pair1AmountAux * (pair1AmountFiat - fiat)); // Formula reviwed. OK.
+                    available -= pair1AmountAux; // Formula reviwed. OK.
+                    retired += pair1AmountAux; // Formula reviwed. OK.
+                    pair1AmountAux -= pair1AmountAux; // Formula reviwed. OK.
                 }
-                else
+                else // Se vende lo que resta porque si no hubiera cantidad sufiente se detecta en la funcion newOperation
                 {
                     if(type == "Venta")
-                        ganancia += (available * fiat);
-                    pair1AmountAux -= available;
-                    retired += available;
-                    available -= available;
+                        ganancia += (available * fiat); // Formula reviwed. OK.
+                    pair1AmountAux -= available; // Formula reviwed. OK.
+                    retired += available; // Formula reviwed. OK.
+                    available -= available; // Formula reviwed. OK.
                 }
 
-                //std::cout <<  id  <<" Retired: " <<  retired <<  " Available: " <<  available<< std::endl;
-
-
                 //Restar la cantidad de PAIR1
+                QSqlQuery query2 = QSqlQuery(database);
                 query2.prepare("UPDATE WalletOperations"
                                " SET retired=:retired, available=:available"
                                " WHERE id=:id");
@@ -75,10 +69,11 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
                 query2.exec();
             }
         }
-        else if(type == "Stacking" || type == "Cashback")
+        else if(type == "Stacking" || type == "Cashback") // Siempre genera una ganacia porque se considera como una venta desde 0€
         {
             ganancia = pair2Amount * pair2AmountFiat;
         }
+        
         // Nueva entrada con la cantidad de moneda en la wallet destino
         query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,wallet)"
                       " VALUES (:amount, :retired, :available, :fiat,:walletID)");
