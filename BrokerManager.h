@@ -49,6 +49,7 @@ public slots:
     void setYear(const QString& year);
     bool importPreviewOperations(const QString& csvFilePath, const QString& type);
     void updateCurrentPrice(void);
+    std::optional<double>  getCurrentPrice(Coin* coin);
 
 private:
     OperationsModel* operationsModel_;

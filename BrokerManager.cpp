@@ -244,9 +244,20 @@ void BrokerManager::loadCoinsFromDB(void)
     for(auto c : coins)
         coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c)));
 
-    auto future = QtConcurrent::run(this, &BrokerManager::updateCurrentPrice);
+    updateCurrentPrice();
 
-    while(FINISHED == false){}
+    for (auto wallet : walletsModel_->wallets())
+    {
+            auto coin = findCoin(wallet->getCoin());
+            if(coin->currentPrice() < 0.0)
+            {
+                std::cout << "gadom " << coin->name().toStdString() << std::endl;
+                // Buscar la moneda individualmente
+                auto price = getCurrentPrice(coin);
+                if(price != std::nullopt)
+                    coin->setCurrentPrice(price.value());
+            }
+    }
 
     for(auto c : coinsModel_->coins())
     {
@@ -361,6 +372,15 @@ void BrokerManager::updateCurrentPrice(void)
             coin->setCurrentPrice(prices->at(coin->name().toLower()));
     }
     FINISHED = true;
+}
+
+std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
+{
+    Coingecko coingecko;
+    auto c = coingecko.getCoinID("Binance", coin->name().toLower());
+    if(c == std::nullopt)
+        return std::nullopt;
+    return coingecko.getCurrentPrice(c.value());
 }
 
 
