@@ -23,8 +23,8 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     std::cout << "usr ID: " << userID << std::endl;
 
     loadOperationsFromDB(userID);
-    loadWalletsFromDB(userID);
     loadCoinsFromDB();
+    loadWalletsFromDB(userID);
     loadDepositsFromDB(userID);
 
 }
@@ -295,6 +295,7 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
     walletsModelAll_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 
     groupCoinBySymbol();
+    setCoinPtrInWallets();
 }
 
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
@@ -332,6 +333,17 @@ void BrokerManager::groupCoinBySymbol(void)
 
 }
 
+void BrokerManager::setCoinPtrInWallets()
+{
+    for(auto w : walletsModel_->wallets())
+    {
+        auto coin = findCoin(w->getCoin());
+        if(coin)
+            w->setCoin(coin);
+    }
+
+}
+
 std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& coin)
 {
     return walletsModelAll_->find(coin);
@@ -352,6 +364,8 @@ Coin* BrokerManager::findCoin(const QString& coin)
 
     if(it != coins.end())
         return *it;
+    else
+        return nullptr;
 }
 
 void BrokerManager::updateCurrentPrice(void)

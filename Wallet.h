@@ -7,22 +7,23 @@
 #include <QString>
 #include <iostream>
 #include "CoinsModel.h"
+#include <memory>
 
 class Wallet {
-
 
 public:
     Wallet() = default;
     ~Wallet() = default;
     Wallet( int walletID, const QString &coin, const QString& exchange, const QString& user) :
             walletID_(walletID),
-            coin_(coin),
+            coinName_(coin),
             exchange_(exchange),
             user_(user) {
         amount_ = 0.0;
         avgPrice_ = 0.0;
         fiatPrice_ = 0.0;
         invested_ = 0.0;
+        coin_ = nullptr;
     };
 
     Wallet(const Wallet&) = default;
@@ -47,6 +48,7 @@ public:
     void setFiatCoin(const double average);
     void setCoin(const QString coin);
     void setUser(const QString user);
+    void setCoin(Coin* coin);
 
     Coin* getpCoin(void) const noexcept;
 
@@ -54,12 +56,13 @@ private:
     double fiatPrice_;
     double avgPrice_;
     double amount_;
-    QString coin_;
+    QString coinName_;
     QString exchange_;
     QString fiatCoin_;
     QString user_;
     int walletID_;
     double invested_;
+    Coin* coin_;
 };
 
 

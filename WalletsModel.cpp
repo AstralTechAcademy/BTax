@@ -18,6 +18,7 @@ QHash<int, QByteArray> WalletsModel::roleNames() const
     roles[GlobalAverage] = "gAverage";
     roles[FiatCoin] = "fiatcoin";
     roles[PortfolioPercentage] = "portfolioPercentage";
+    roles[CurrentPrice] = "currentPrice";
     roles[DisplayText] = "display";
     return roles;
 }
@@ -33,30 +34,31 @@ QVariant WalletsModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
         case WalletID:
-            return wallets_.at(row)->getWalletID();
+            return wallets_.at(row)->getWalletID();break;
         case Coin:
-            return wallets_.at(row)->getCoin();
+            return wallets_.at(row)->getCoin();break;
         case Exchange:
-            return wallets_.at(row)->getExchange();
+            return wallets_.at(row)->getExchange();break;
         case User:
-            return wallets_.at(row)->getUser();
+            return wallets_.at(row)->getUser();break;
         case Amount:
-            return wallets_.at(row)->getAmount();
+            return wallets_.at(row)->getAmount();break;
         case Invested:
-            return wallets_.at(row)->getInvested();
+            return wallets_.at(row)->getInvested();break;
         case Average:
-            return wallets_.at(row)->getAverageCost();
+            return wallets_.at(row)->getAverageCost();break;
         case GlobalAverage:
-            return calculateGlobalAverageCost(wallets_.at(row)->getCoin());
+            return calculateGlobalAverageCost(wallets_.at(row)->getCoin());break;
         case FiatCoin:
-            return wallets_.at(row)->getFiatCoin();
+            return wallets_.at(row)->getFiatCoin();break;
         case PortfolioPercentage:
-            return calculatePortfolioPercentage(wallets_.at(row)->getInvested());
+            return calculatePortfolioPercentage(wallets_.at(row)->getInvested());break;
         case DisplayText:
             return QString::number(wallets_.at(row)->getWalletID()) + " " + wallets_.at(row)->getUser() + " " + wallets_.at(row)->getCoin() + " "+wallets_.at(row)->getExchange();
+            break;
         case CurrentPrice:
-            return wallets_.at(row)->getCurPrice();
-            default:
+            return wallets_.at(row)->getCurPrice(); break;
+        default:
             return QVariant();
     }
 }

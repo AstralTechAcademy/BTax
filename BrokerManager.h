@@ -28,6 +28,12 @@ public:
     std::optional<std::vector<Wallet*>> findWallets(const QString& coin);
     std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
     Coin* findCoin(const QString& coin);
+    static BrokerManager* getInstance(OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel) {
+        if (!instance)
+            instance = new BrokerManager(0, operationsModel, walletsModel, walletsModelAll, walletsPercModel, coinsModel);
+        return instance;
+    }
+
 
 signals:
     void depositCompleted(void);
@@ -59,12 +65,15 @@ private:
     CoinsModel* coinsModel_;
     std::vector<Operation*> importPreview;
 
+    inline static BrokerManager *instance;
+
 
     void loadOperationsFromDB(const uint32_t userID);
     void loadWalletsFromDB(const uint32_t userID);
     void loadCoinsFromDB(void);
     void loadDepositsFromDB(const uint32_t userID);
     void groupCoinBySymbol(void);
+    void setCoinPtrInWallets();
 
 };
 

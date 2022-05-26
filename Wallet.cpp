@@ -4,7 +4,6 @@
 
 #include "Wallet.h"
 #include <iostream>
-#include "DBLocal.h"
 
 void Wallet::print() const noexcept
 {
@@ -26,8 +25,8 @@ double Wallet::getInvested(void) const noexcept {return invested_;}
 QString Wallet::getUser(void) const noexcept {return user_;};
 QString Wallet::getExchange(void) const noexcept {return exchange_;};
 
-QString Wallet::getCoin(void) const noexcept {return coin_;}
-double Wallet::getCurPrice(void) const noexcept {return 0.0;}
+QString Wallet::getCoin(void) const noexcept {return coinName_;}
+double Wallet::getCurPrice(void) const noexcept {return coin_ ? coin_->currentPrice() : 0.0;}
 QString Wallet::getFiatCoin(void) const noexcept { return fiatCoin_;};
 
 
@@ -50,11 +49,15 @@ void Wallet::setFiatCoin(const double fiatCoin)
 
 void Wallet::setCoin(const QString coin)
 {
-    coin_ = coin;
+    coinName_ = coin;
 }
 void Wallet::setUser(const QString user)
 {
     user_ = user;
+}
+void Wallet::setCoin(Coin* coin)
+{
+    coin_ = coin;
 }
 
 void Wallet::setExchange(const QString exchange)

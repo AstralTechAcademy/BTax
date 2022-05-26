@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("usersModel", &usersModel);
     engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
 
-    BrokerManager* brokerManager = new BrokerManager(0, &operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel);
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
 
     Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);

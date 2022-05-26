@@ -135,19 +135,10 @@ Rectangle{
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         width: 80
-        visible: false
-        title: "Earning"
-        value: {
-          if((amount * currentPriceTxt.text_ - invested) > 0 )
-          {
-               return "+" +  parseFloat( ( (amount * currentPriceTxt.text_) - invested ).toFixed(3) )
-          }
-          else
-          {
-               return "-" +  parseFloat( ( (amount * currentPriceTxt.text_) - invested ).toFixed(3) )
-          }
-        }
-        colorValue: if((amount * currentPriceTxt.text_ - invested) > 0 ) {return "green"} else {return "red"}
+        visible: true
+        title: "CurrentPrice" //"Earning"
+        value: currentPrice
+        colorValue: if((amount * currentPrice - invested) > 0 ) {return "green"} else {return "red"}
     }
 
     Components.Data
