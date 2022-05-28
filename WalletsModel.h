@@ -49,7 +49,6 @@ public:
     };
 
     WalletsModel(QAbstractListModel* parent = 0){};
-
     //Expone el nombre de los atributos y los relaciona entre QML y C++
     QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -59,6 +58,7 @@ public:
     void add(Wallet* wallet);
     void clear(void);
     int count() const;
+    void updateLayout(void){emit layoutChanged();};
 
     void orderBy(Attribute atr,  Order o) noexcept;
     std::optional<std::vector<Wallet*>> find(const QString& coin) const noexcept;

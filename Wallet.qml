@@ -119,6 +119,22 @@ Rectangle{
         colorValue: "black"
     }
 
+    Components.Data
+    {
+        id: curPrice
+        anchors.left: portfolioPercentageTxt.right
+        anchors.leftMargin: 30
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        width: 80
+        visible: true
+        title: "CurrentPrice"
+        value: parseFloat( currentPrice.toFixed(6) )
+        colorValue: "black"
+    }
+
 
 
 
@@ -128,7 +144,7 @@ Rectangle{
     Components.Data
     {
         id: earning
-        anchors.left: portfolioPercentageTxt.right
+        anchors.left: curPrice.right
         anchors.leftMargin: 30
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -136,8 +152,8 @@ Rectangle{
         anchors.bottomMargin: 10
         width: 80
         visible: true
-        title: "CurrentPrice" //"Earning"
-        value: currentPrice
+        title: "Earning"
+        value: parseFloat( amount * currentPrice - invested).toFixed(6)
         colorValue: if((amount * currentPrice - invested) > 0 ) {return "green"} else {return "red"}
     }
 
@@ -151,27 +167,22 @@ Rectangle{
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         width: 80
-        visible: false
+        visible: true
         title: "Percentage"
         value: {
-          if((amount * currentPriceTxt.text_ - invested) > 0 )
+          if((amount * currentPrice - invested) > 0 )
           {
-               return "+" +  parseFloat( ( (amount * currentPriceTxt.text_ * 100) / invested).toFixed(3) )+ "%"
+               return "+" +  parseFloat( ( (amount * currentPrice * 100) / invested).toFixed(6) )+ "%"
           }
           else
           {
-               return "-" + parseFloat(( (amount * currentPriceTxt.text_)  / invested).toFixed(3) )+ "%"
+               return "-" + parseFloat( 100 -  (  (amount * currentPrice)  / invested)).toFixed(6)+ "%"
           }
         }
-        colorValue: if((amount * currentPriceTxt.text_ - invested) > 0 ) {return "green"} else {return "red"}
+        colorValue: if((amount * currentPrice - invested) > 0 ) {return "green"} else {return "red"}
     }
 
-
-
-
-
-
-    Material.TextInput{
+    /*Material.TextInput{
         id: currentPriceTxt
         text_: "Price (€)"
         anchors.right: parent.right
@@ -184,7 +195,7 @@ Rectangle{
             earning.visible = true
             percentage.visible = true
         }
-    }
+    }*/
 
 
 }

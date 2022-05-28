@@ -25,6 +25,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     loadOperationsFromDB(userID);
     loadCoinsFromDB();
     loadWalletsFromDB(userID);
+    updateCurrentPrice();
     loadDepositsFromDB(userID);
 
 }
@@ -243,26 +244,6 @@ void BrokerManager::loadCoinsFromDB(void)
     auto coins = DBLocal::GetInstance()->getCoins();
     for(auto c : coins)
         coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c)));
-
-    updateCurrentPrice();
-
-    for (auto wallet : walletsModel_->wallets())
-    {
-            auto coin = findCoin(wallet->getCoin());
-            if(coin->currentPrice() < 0.0)
-            {
-                std::cout << "gadom " << coin->name().toStdString() << std::endl;
-                // Buscar la moneda individualmente
-                auto price = getCurrentPrice(coin);
-                if(price != std::nullopt)
-                    coin->setCurrentPrice(price.value());
-            }
-    }
-
-    for(auto c : coinsModel_->coins())
-    {
-        std::cout << "Coin " << c->name().toStdString() << " Cur.Price: " << c->currentPrice() << std::endl;
-    }
 }
 
 void BrokerManager::loadWalletsFromDB(const uint32_t userID)
@@ -341,7 +322,7 @@ void BrokerManager::setCoinPtrInWallets()
         if(coin)
             w->setCoin(coin);
     }
-
+    walletsModel_->updateLayout();
 }
 
 std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& coin)
@@ -386,6 +367,24 @@ void BrokerManager::updateCurrentPrice(void)
             coin->setCurrentPrice(prices->at(coin->name().toLower()));
     }
     FINISHED = true;
+
+    for (auto wallet : walletsModel_->wallets())
+    {
+        auto coin = findCoin(wallet->getCoin());
+        if(coin->currentPrice() < 0.0)
+        {
+            std::cout << "gadom " << coin->name().toStdString() << std::endl;
+            // Buscar la moneda individualmente
+            auto price = getCurrentPrice(coin);
+            if(price != std::nullopt)
+                coin->setCurrentPrice(price.value());
+        }
+    }
+
+    for(auto c : coinsModel_->coins())
+    {
+        std::cout << "Coin " << c->name().toStdString() << " Cur.Price: " << c->currentPrice() << std::endl;
+    }
 }
 
 std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
