@@ -7,7 +7,12 @@
 
 void Wallet::print() const noexcept
 {
-    std::cout << getWalletID() << getCoin().toStdString() << getExchange().toStdString() << std::endl;
+    std::cout << "Wallet: " <<  walletID_ << std::endl;
+    std::cout << "  Coin: " <<  coinName_.toStdString() << std::endl;
+    std::cout << "  User: " <<  user_.toStdString() << std::endl;
+    std::cout << "  Cantidad de monedas: " <<  amount_  << std::endl;
+    std::cout << "  Invertido: " <<  invested_  << std::endl;
+    std::cout << "  Average Cost: " <<  avgPrice_ << std::endl;
 }
 
 

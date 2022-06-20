@@ -7,7 +7,6 @@
 #include <QtConcurrent/QtConcurrent>
 #include "UsersModel.h"
 
-uint32_t BrokerManager::userID = 0U;
 
 BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel)
 {
@@ -19,6 +18,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     coinsModel_ = coinsModel;
 
     userID = std::get<0> (UsersModel::getUsers()[0]);
+    year_ = 2022;
 
     std::cout << "usr ID: " << userID << std::endl;
 
@@ -223,10 +223,13 @@ void BrokerManager::setUserID(const QString& username)
 
 void BrokerManager::setYear(const QString& year)
 {
-    //walletsModel_->clear();
-    //operationsModel_->clear();
-    //loadWalletsFromDB(userID, year);
-    //loadOperationsFromDB(userID, year);
+    year_ = year.toUInt();
+    if(userID != 0U && year_ > 0)
+    {
+        operationsModel_->clear();
+        loadOperationsFromDB(userID, year_);
+    }
+
 }
 
 void BrokerManager::loadOperationsFromDB(const uint32_t userID)
@@ -236,6 +239,20 @@ void BrokerManager::loadOperationsFromDB(const uint32_t userID)
     {
         for(auto op : std::get<1>(operations))
             operationsModel_->add(op);
+    }
+}
+
+void BrokerManager::loadOperationsFromDB(const uint32_t userID, const uint32_t year)
+{
+    auto operations = DBLocal::GetInstance()->getOperations(userID);
+    if(std::get<0>(operations) == true)
+    {
+        for(auto op : std::get<1>(operations))
+        {
+            if(op->getDate().contains("/") == false && QDateTime::fromString(op->getDate()).date().year() == year)
+                operationsModel_->add(op);
+        }
+
     }
 }
 
@@ -256,17 +273,11 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
         auto wallets = std::get<1>(result);
         for(auto w : wallets)
         {
-            std::cout << "Wallet: " <<  w->getWalletID() << std::endl;
-            std::cout << "  Coin: " <<  w->getCoin().toStdString() << std::endl;
-            std::cout << "  User: " <<  w->getUser().toStdString() << std::endl;
-            std::cout << "  Cantidad de monedas: " <<  w->getAmount()  << std::endl;
-            std::cout << "  Invertido: " <<  w->getInvested()  << std::endl;
-            std::cout << "  Average Cost: " <<  w->getAverageCost() << std::endl;
+            //w->print();
             if(w->getAmount() > 0.00000000000)
             {
                 walletsModel_->add(w);
             }
-
             walletsModelAll_->add(w);
         }
     }

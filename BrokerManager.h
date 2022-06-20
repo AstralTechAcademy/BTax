@@ -24,7 +24,8 @@ public:
     inline static QString DEF_FIAT = "EUR";
 
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel);
-    static uint32_t userID ;
+    inline static uint32_t userID ;
+    inline static uint32_t year_;
     std::optional<std::vector<Wallet*>> findWallets(const QString& coin);
     std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
     Coin* findCoin(const QString& coin);
@@ -69,6 +70,7 @@ private:
 
 
     void loadOperationsFromDB(const uint32_t userID);
+    void loadOperationsFromDB(const uint32_t userID, const uint32_t year);
     void loadWalletsFromDB(const uint32_t userID);
     void loadCoinsFromDB(void);
     void loadDepositsFromDB(const uint32_t userID);

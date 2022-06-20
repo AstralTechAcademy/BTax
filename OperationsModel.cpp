@@ -104,6 +104,7 @@ void OperationsModel::add(Operation* operation)
 void OperationsModel::clear(void)
 {
     operations_.clear();
+    totalEarnings_ = 0.0;
     emit dataChanged(index(0,0), index(rowCount(), 0));
     emit countChanged();
     emit layoutChanged();

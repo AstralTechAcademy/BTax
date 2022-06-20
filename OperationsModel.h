@@ -61,7 +61,6 @@ signals:
 private:
     QList<Operation*> operations_;
     double totalEarnings_;
-
     void calculateEarnings(void);
 
 
