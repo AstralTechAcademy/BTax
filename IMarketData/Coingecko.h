@@ -13,6 +13,7 @@ public:
     virtual std::optional<double> getCurrentPrice(const QString& coin);
     virtual std::optional<std::unordered_map<QString, double>> getCurrentPrices(void);
     std::optional<QString> getCoinID(const QString& exchange, const QString& coin);
+    std::optional<double> getPrice(const QString& coin, const QDateTime& date);
 
 };
 

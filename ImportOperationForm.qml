@@ -14,37 +14,19 @@ Window
     width: 800
     //visibility: "FullScreen"
     color: "#e9e7e7"
-    title: qsTr("New Operation")
+    title: qsTr("Import")
 
     x: Screen.width / 2 - width / 2
     y: Screen.height / 2 - height / 2
 
     Component.onCompleted: console.log("Import Operation Form")
 
-    Text
-    {
-        id: operationTypeTxt
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.left: parent.left
-        anchors.leftMargin: 50
-        text: "Operation"
-    }
-
-    ComboBox
-    {
-        id: type
-        anchors.top: operationTypeTxt.bottom
-        anchors.topMargin: 10
-        anchors.left: parent.left
-        anchors.leftMargin: 50
-        model: ["Compra", "Venta", "Traspaso", "Staking"]
-    }
+    signal close()
 
     Text
     {
         id: exchangeTxt
-        anchors.top: operationTypeTxt.top
+        anchors.top: parent.top
         anchors.topMargin: 0
         anchors.left: exchange.left
         anchors.leftMargin: 0
@@ -54,9 +36,9 @@ Window
     ComboBox
     {
         id: exchange
-        anchors.top: type.top
+        anchors.top: parent.top
         anchors.topMargin: 0
-        anchors.left: type.right
+        anchors.left: exchange.right
         anchors.leftMargin: 20
         model: ["B2M", "Binance"]
     }
@@ -99,51 +81,19 @@ Window
 TextArea
 {
     id: importPre
-    anchors.top: type.bottom
+    anchors.top: importOperation.bottom
     anchors.topMargin: 20
-    anchors.left: type.left
-    anchors.leftMargin: 0
+    anchors.left: parent.left
+    anchors.leftMargin: 20
     anchors.right: parent.right
     anchors.rightMargin: 20
-    anchors.bottom: commentsTxt.top
+    anchors.bottom: accept.top
     anchors.bottomMargin: 20
     background: Rectangle {
         anchors.fill: parent
         color: "white"
     }
 }
-
-
-
-/////// Comments
-
-    Text
-    {
-        id: commentsTxt
-        anchors.bottom: comments.top
-        anchors.bottomMargin: 10
-        anchors.left: type.left
-        anchors.leftMargin: 0
-        text: "Comments"
-    }
-
-    TextArea
-    {
-        id: comments
-        anchors.left: type.left
-        anchors.leftMargin: 0
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        anchors.bottom: accept.top
-        anchors.bottomMargin: 20
-        height: 100
-        background: Rectangle {
-            anchors.fill: parent
-            color: "white"
-        }
-    }
-
-
 /////// Bottom
 
     Button
@@ -166,7 +116,15 @@ TextArea
         selectFolder: false
         selectMultiple: false
         onAccepted: {
-            brokerManager.importPreviewOperations(type.currentText, importFileDialog.fileUrl)
+            var res = importer.import(exchange.currentText, importFileDialog.fileUrl)
+            console.log("Import operation result = " + res)
+
+            console.log("Import Details:")
+            console.log("   Added: " + importer.opsAdded.length)
+            console.log("   Already:" + importer.opsAlrdyAdded.length)
+            console.log("   Error: " + importer.opsWithError.length)
+
+
         }
         onRejected: {
             //console.log("Canceled")

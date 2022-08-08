@@ -10,7 +10,6 @@ class Binance : public IExchange {
 
 public:
     Binance(void);
-    virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath);
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
 };
 

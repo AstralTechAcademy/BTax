@@ -10,7 +10,13 @@
 class MarketDataFactory {
 
 public:
-    static std::shared_ptr<IMarketData> createMarketData(const QString& market) noexcept;
+    static std::shared_ptr<IMarketData> createMarketData(const QString& market) noexcept
+    {
+        std::cout << market.toStdString() << std::endl;
+        if("Coingecko" == market)
+            return std::make_shared<Coingecko>();
+        return nullptr;
+    }
 
 };
 

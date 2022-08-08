@@ -2,11 +2,11 @@
 // Created by gabridc on 19/4/22.
 //
 
-#ifndef BROKER_MARKETDATAFACTORY_H
-#define BROKER_MARKETDATAFACTORY_H
+#ifndef BROKER_EXCHANGEFACTORY_H
+#define BROKER_EXCHANGEFACTORY_H
 #include "IExchange.h"
 #include <memory>
-class MarketDataFactory {
+class ExchangeFactory {
 
 public:
     static std::shared_ptr<IExchange> createExchange(const QString& exchange) noexcept;
@@ -14,4 +14,4 @@ public:
 };
 
 
-#endif //BROKER_MARKETDATAFACTORY_H
+#endif //BROKER_EXCHANGEFACTORY_H

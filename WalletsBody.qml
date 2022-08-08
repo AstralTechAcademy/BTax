@@ -12,14 +12,27 @@ Item
     id: walletsBody
     anchors.fill: parent
 
+    Components.Data
+    {
+        id: cryptoInvested
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.left: walletsBody.left
+        anchors.leftMargin: 40
+        width: 80
+        visible: true
+        title: "Crypto Invested"
+        value: parseFloat( walletsModel.getCryptoInvested().toFixed(6) ) + " " + "EUR"
+        colorValue: "black"
+    }
 
     Components.Data
     {
         id: totalInvested
         anchors.top: parent.top
         anchors.topMargin: 20
-        anchors.left: walletsBody.left
-        anchors.leftMargin: 40
+        anchors.left: cryptoInvested.right
+        anchors.leftMargin: 60
         width: 80
         visible: true
         title: "Total Invested"
@@ -52,6 +65,19 @@ Item
         text: "New Deposit"
         onClicked: {
             formsLoader.source = "NewDepositForm.qml"
+        }
+    }
+
+    Button
+    {
+        id: newAsset
+        anchors.top: totalInvested.top
+        anchors.topMargin: 0
+        anchors.right: newDeposit.left
+        anchors.rightMargin: 20
+        text: "New Asset"
+        onClicked: {
+            formsLoader.source = "NewAssetForm.qml"
         }
     }
 

@@ -7,21 +7,9 @@
 
 B2m::B2m(void){};
 
-
-std::optional<QList<std::shared_ptr<Operation>>> B2m::import(const QString& csvPath)
-{
-    QFile csv(csvPath);
-
-    if(csv.exists() == false)
-        return std::nullopt;
-    else
-    {
-        return parse(csv);
-    }
-}
-
 std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
 {
+    qDebug() << "File: B2m.cpp Func: Parse Description: Parsing CSV file";
     csv.open(QIODevice::ReadOnly);
     uint8_t firstLine = 0;
     QList<std::shared_ptr<Operation>> operations;
@@ -40,11 +28,15 @@ std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
                 if(columns[index] == "METHOD")
                     header.insert("TYPE", index);
 
-                if(columns[index] == "FEE CURRENCY") // Se coge usando la columna de fees. Moneda por defecto
+                if(columns[index] == "FROM CURRENCY") // Se coge usando la columna de fees. Moneda por defecto
                     header.insert("PAIR1", index);
-                if(columns[index] == "FEE AMOUNT") // Se coge un valor 0 porque siempre es 0 el valor en EUR al ser EARN
+                if(columns[index] == "FROM AMOUNT") // Se coge un valor 0 porque siempre es 0 el valor en EUR al ser EARN
                     header.insert("PAIR1_AMOUNT", index);
 
+                if(columns[index] == "FEE CURRENCY") // Se coge usando la columna de fees. Moneda por defecto
+                    header.insert("FEE", index);
+                if(columns[index] == "FEE AMOUNT") // Se coge un valor 0 porque siempre es 0 el valor en EUR al ser EARN
+                    header.insert("FEE_AMOUNT", index);
 
                 if(columns[index] == "TO CURRENCY")
                     header.insert("PAIR2", index);
@@ -62,7 +54,8 @@ std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
             auto lineV = line.split(',');
             if(lineV[header["TYPE"]] == "earn")
             {
-                operations.push_back(std::make_shared<Operation>(0, lineV[header["PAIR1"]], lineV[header["PAIR2"]], 0.0, 1.0,
+                qDebug() << "operatoin: " << lineV[header["PAIR1"]] << " " << lineV[header["PAIR2"]] << " " << lineV[header["PAIR2_AMOUNT_FIAT"]].toDouble();
+                operations.push_back(std::make_shared<Operation>(0, lineV[header["FEE"]], lineV[header["PAIR2"]], 0.0, 1.0,
                                                                  lineV[header["PAIR2_AMOUNT"]].toDouble(),
                                                                  lineV[header["PAIR2_AMOUNT_FIAT"]].toDouble(),
                                                                  0.0, 1.0, "Accepted",

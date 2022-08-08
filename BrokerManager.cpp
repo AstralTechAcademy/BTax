@@ -8,7 +8,7 @@
 #include "UsersModel.h"
 
 
-BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel)
+BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel)
 {
     parent = 0;
     operationsModel_ = operationsModel;
@@ -16,6 +16,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     walletsModelAll_ = walletsModelAll;
     walletsModelPerc_ = walletsPercModel;
     coinsModel_ = coinsModel;
+    assetTypesModel_ = assetTypesModel;
 
     userID = std::get<0> (UsersModel::getUsers()[0]);
     year_ = 2022;
@@ -24,6 +25,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
 
     loadOperationsFromDB(userID);
     loadCoinsFromDB();
+    loadAssetTypesFromDB();
     loadWalletsFromDB(userID);
     updateCurrentPrice();
     loadDepositsFromDB(userID);
@@ -45,10 +47,11 @@ bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
 }
 
 
-bool BrokerManager::newOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
+BrokerManager::NewOperationRes BrokerManager::newOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
                   double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
                   QString status, QString date)
 {
+    qDebug() << "File: BrokerManager.cpp Function: newOperation";
     if(date == "")
         date = QDateTime::currentDateTime().toString();
     if(status == "")
@@ -57,7 +60,7 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
     double totalAmount = 0.0;
 
     //std::cout << type.toStdString() << date.toStdString() << std::endl;
-    //std::cout << walletID1<< walletID2 << std::endl;
+    //std::cout << walletID1 << " " << walletID2 << std::endl;
 
     auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID1);
     auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(walletID2);
@@ -79,39 +82,37 @@ bool BrokerManager::newOperation(const int walletID1, const int walletID2, doubl
         //Se comprueba que haya saldo suficiente para la compra antes de proceder
         if(wallet1->getAmount() >= totalAmount)
         {
-
-            auto res = DBLocal::GetInstance()->registerOperation(wallet1->getWalletID(), walletID2, totalAmount, pair1AmountFiat, pair2Amount, pair2AmountFiat,
+            auto res = DBLocal::GetInstance()->registerOperation(walletID1, walletID2, totalAmount, pair1AmountFiat, pair2Amount, pair2AmountFiat,
                                                              feesCoin, comision, comisionFiat, comments, type, status, date);
-
-            return res;
+            return res ? NewOperationRes::ADDED : NewOperationRes::NOT_ADDED;
         }
         else
         {
             std::cout << "la wallet origen no tiene saldo suficiente para realizar la operación" << std::endl;
-            return false;
+            return NewOperationRes::INSUF_BALANCE_ORI_WALLET;
         }
     }
     else
     {
         std::cout << "La wallet origen no existe." << std::endl;
-        return false;
+        return NewOperationRes::ORI_WALLET_NOT_EXIST;
     }
 }
 
-bool BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operation> operation)
+BrokerManager::NewOperationRes BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operation> operation)
 {
     auto ops = operationsModel_->operations();
-    auto exist = std::find_if(ops.begin(), ops.end(),
-                    [&](Operation* op){return *op == *operation.get();});
-    if(exist != ops.end())
+
+    if(isDuplicated(operation))
     {
         std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
-        return false;
+        return NewOperationRes::ALREADY_ADDED;
     }
 
     auto walletPair1 = findWallet(exchange, operation->getPair1());
     auto walletPair2 = findWallet(exchange, operation->getPair2());
 
+    qDebug() << "Pair1: " << walletPair1->getWalletID() << " " << operation->getPair1();
     return newOperation(walletPair1->getWalletID(),
                  walletPair2->getWalletID(),
                  operation->getPair1Amount(),
@@ -125,6 +126,20 @@ bool BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operat
                  operation->getType(),
                  operation->getStatus(),
                  operation->getDate());
+}
+
+bool BrokerManager::newAsset(const QString& type, const QString& name, const QString& color)
+{
+    auto assets = coinsModel_->coins();
+    auto exist = std::find_if(assets.begin(), assets.end(),
+                              [&](Coin* coin){return coin->name() == name;});
+    if(exist != assets.end())
+    {
+        std::cout << "El asset " +  name.toStdString() + " ya existe en la base de datos" << std::endl;
+        return false;
+    }
+
+    return DBLocal::GetInstance()->registerAsset(type, name, color);
 }
 
 bool BrokerManager::addWallet(const QString coinName, const QString exchange)
@@ -146,7 +161,7 @@ bool BrokerManager::addWallet(const QString coinName, const QString exchange)
 
 }
 
-bool BrokerManager::importPreviewOperations(const QString& csvFilePath, const QString& type)
+bool BrokerManager::importPreviewOperations(const QString& csvFilePath)
 {
     std::cout << "Import Path: " << csvFilePath.toStdString() << std::endl;
 
@@ -260,7 +275,14 @@ void BrokerManager::loadCoinsFromDB(void)
 {
     auto coins = DBLocal::GetInstance()->getCoins();
     for(auto c : coins)
-        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c)));
+        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c), std::get<3>(c)));
+}
+
+void BrokerManager::loadAssetTypesFromDB(void)
+{
+    auto assets = DBLocal::GetInstance()->getAssetTypes();
+    for(auto c : assets)
+        assetTypesModel_->add(new AssetType(std::get<0>(c), std::get<1>(c)));
 }
 
 void BrokerManager::loadWalletsFromDB(const uint32_t userID)
@@ -334,6 +356,19 @@ void BrokerManager::setCoinPtrInWallets()
             w->setCoin(coin);
     }
     walletsModel_->updateLayout();
+}
+
+bool BrokerManager::isDuplicated(std::shared_ptr<Operation> operation)
+{
+    auto ops = operationsModel_->operations();
+    auto exist = std::find_if(ops.begin(), ops.end(),
+                              [&](Operation* op){return *op == *operation.get();});
+    if(exist != ops.end())
+    {
+        std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
+        return true;
+    }
+    return false;
 }
 
 std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& coin)

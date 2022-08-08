@@ -69,11 +69,11 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
                 query2.exec();
             }
         }
-        else if(type == "Stacking" || type == "Cashback") // Siempre genera una ganacia porque se considera como una venta desde 0€
+        else if(type == "Stacking" || type == "Cashback" || type == "Airdrop" || "Earn") // Siempre genera una ganacia porque se considera como una venta desde 0€
         {
             ganancia = pair2Amount * pair2AmountFiat;
         }
-        
+
         // Nueva entrada con la cantidad de moneda en la wallet destino
         query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,wallet)"
                       " VALUES (:amount, :retired, :available, :fiat,:walletID)");
@@ -83,6 +83,21 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
         query.bindValue(":available", pair2Amount);
         query.bindValue(":walletID", walletID2);
         query.exec();
+
+        std::cout << "INSERT INTO OPERATIONS(wallet1, wallet2, pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia)"
+                     " VALUES("
+                << walletID1 << ","
+                << walletID2 << ","
+                << pair1Amount << ","
+                << pair1AmountFiat << ","
+                << pair2Amount << ","
+                << pair2AmountFiat << ","
+                << comision << ","
+                << comisionFiat << ","
+                << status.toStdString() << ","
+                << date.toStdString() << ","
+                << type.toStdString() << ","
+                << ganancia << std::endl;
 
         query.prepare("INSERT INTO Operations(wallet1, wallet2, pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia)"
                        " VALUES(:wallet1,:wallet2,:pair1Amount,:pair1AmountFiat,:pair2Amount,:comision,:comisionFiat,:pair2AmountFiat,:status,:date,:comments,:type,:ganancia)");
@@ -107,6 +122,18 @@ bool SQLManager::registerOperation(const int walletID1, const int walletID2, dou
         return false;
     }
 }
+
+bool SQLManager::registerAsset(const QString& type, const QString& name, const QString& color)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("INSERT INTO Coins(name, type, color)"
+                  " VALUES (:name, :type, :color)");
+    query.bindValue(":name", name);
+    query.bindValue(":type", type);
+    query.bindValue(":color", color);
+    return query.exec();
+}
+
 
 std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(void)
 {
@@ -487,18 +514,30 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
 
  }*/
 
-QList<std::tuple<uint32_t, QString, QString>> SQLManager::getCoins(void)
+QList<std::tuple<uint32_t, QString, QString, QString>> SQLManager::getCoins(void)
 {
     QSqlQuery query = QSqlQuery(database);
     query.prepare("SELECT * FROM Coins");
     query.exec();
-    QList<std::tuple<uint32_t, QString, QString>> coins;
+    QList<std::tuple<uint32_t, QString, QString, QString>> coins;
     while(query.next())
     {
-        coins.push_back({query.value(0).toUInt(),  query.value(1).toString(), query.value(3).toString()});
+        coins.push_back({query.value(0).toUInt(),  query.value(1).toString(), query.value(3).toString(), query.value(2).toString()});
     }
 
     return coins;
+}
+
+QList<std::tuple<uint32_t, QString>> SQLManager::getAssetTypes(void)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT * FROM AssetType");
+    query.exec();
+    QList<std::tuple<uint32_t, QString>> assets;
+    while(query.next())
+        assets.push_back({query.value(0).toUInt(),  query.value(1).toString()});
+
+    return assets;
 }
 
 

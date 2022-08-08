@@ -30,12 +30,10 @@ if(WIN)
 endif()
 
 if(ANDROID)
-    set(ANDROID_ABIS "armeabi-v7a")
-    #set(ANDROID_ABIS "arm64-v8a")
-    set(ANDROID_ARM_NEON "ON")
-    set(ANDROID_PACKAGE_SOURCE_DIR /home/gabridc/Repositorio/Broker/android_files)
+    add_definitions( -DANDROID )
+    set(ANDROID_PACKAGE_SOURCE_DIR /home/gabridc/Repositorio/neptuno-forked/App/android_files)
     set(ANDROID_ABI "arm64-v8a")
-
+    set(ANDROID_ARM_NEON "ON")
     set(CMAKE_TOOLCHAIN_FILE "/home/gabridc/Android/Sdk/ndk/build/cmake/android.toolchain.cmake")
     set(CMAKE_BUILD_TYPE "Debug")
     set(CMAKE_PROJECT_INCLUDE_BEFORE "/home/gabridc/Qt/Tools/QtCreator/share/qtcreator/package-manager/auto-setup.cmake")
@@ -63,9 +61,15 @@ if(ANDROID)
     set(Qt5Widgets_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5Widgets")
     set(Qt5Sql_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5Sql")
     set(Qt5NetworkAuth_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5NetworkAuth")
+    set(Qt5AndroidExtras_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5AndroidExtras")
+    set(Qt5Svg_DIR "~/Qt/5.15.2/android/lib/cmake/Qt5Svg")
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth)
+if(ANDROID)
+    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth AndroidExtras Svg)
+else()
+    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg)
+endif()
 
 include_directories(~/Qt/5.15.2/gcc_64/include/)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtNetworkAuth)
@@ -94,9 +98,14 @@ if(ANDROID)
             Deposit.h
             Statistics.cpp
             DBCredential_NotPush.h
-            Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
             WalletsPercModel.cpp WalletsPercModel.h
+            Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
             CoinsModel.cpp CoinsModel.h
+            AssetTypeModel.cpp AssetTypeModel.h
+            IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
+            IfExchanges/Binance.cpp IfExchanges/Binance.h
+            IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
+            IMarketData/Coingecko.cpp IMarketData/Coingecko.h
             ${RESOURCES})
 else()
 add_executable(Broker
@@ -121,9 +130,11 @@ add_executable(Broker
         WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h
-        IfExchanges/IMarketData.cpp IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
+        AssetTypeModel.cpp AssetTypeModel.h
+        IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
-        IfExchanges/ExchangeFactory.cpp IfExchanges/MarketDataFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h IMarketData/Coingecko.cpp IMarketData/Coingecko.h)
+        IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
+        IMarketData/Coingecko.cpp IMarketData/Coingecko.h)
 endif()
 
 if(LINUX)

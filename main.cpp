@@ -13,6 +13,7 @@
 #include "WalletsPercModel.h"
 #include "UsersModel.h"
 #include "CoinsModel.h"
+#include "AssetTypeModel.h"
 #include "IfExchanges/Importer.h"
 #include "IMarketData/Coingecko.h"
 
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<OperationsModel>("es.broker", 1, 0, "OperationsModel", "OperationsModel sholud not be created in QMl");
     qmlRegisterUncreatableType<Coin>("es.broker", 1, 0, "Coin", "OperationsModel sholud not be created in QMl");
     qmlRegisterUncreatableType<CoinsModel>("es.broker", 1, 0, "CoinsModel", "OperationsModel sholud not be created in QMl");
+    qmlRegisterUncreatableType<AssetTypeModel>("es.broker", 1, 0, "AssetTypesModel", "OperationsModel sholud not be created in QMl");
     qmlRegisterUncreatableType<Operation>("es.broker", 1, 0, "Operation", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsModel", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsPercModel", "Operation sholud not be created in QMl");
@@ -51,6 +53,7 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:Wallet.qml"), "es.broker", 1, 0, "Wallet");
     qmlRegisterType(QUrl("qrc:NewOperationForm.qml"), "es.broker", 1, 0, "NewOperationForm");
     qmlRegisterType(QUrl("qrc:NewDepositForm.qml"), "es.broker", 1, 0, "NewDepositForm");
+    qmlRegisterType(QUrl("qrc:NewAssetForm.qml"), "es.broker", 1, 0, "NewAssetForm");
     qmlRegisterType(QUrl("qrc:ImportOperationForm.qml"), "es.broker", 1, 0, "ImportOperationForm");
     qmlRegisterType(QUrl("qrc:DateSelector.qml"), "es.broker.components", 1, 0, "DateSelector");
     qmlRegisterType(QUrl("qrc:DataItem.qml"), "es.broker.components", 1, 0, "Data");
@@ -62,6 +65,7 @@ int main(int argc, char *argv[])
     WalletsModel walletsModelAll;
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
+    AssetTypeModel assetTypeModel;
 
     //DBRemote::GetInstance()->createDatabase();
     /*auto future = std::async(std::launch::async, [](){
@@ -126,6 +130,8 @@ int main(int argc, char *argv[])
 
 
     QQmlApplicationEngine engine;
+    engine.addImportPath("/home/gabridc/Repositorio/Astral_Academy/medium/Components");
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
@@ -133,9 +139,13 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("walletsPercModel", &walletsPercModel);
     engine.rootContext()->setContextProperty("usersModel", &usersModel);
     engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
+    engine.rootContext()->setContextProperty("assetTypesModel", &assetTypeModel);
 
-    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel);
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
+
+    Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
+    engine.rootContext()->setContextProperty("importer", importer);
 
     Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);

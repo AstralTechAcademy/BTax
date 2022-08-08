@@ -4,20 +4,10 @@
 
 #include "Binance.h"
 #include <QFile>
+#include "DBLocal.h"
 
 Binance::Binance(void){};
 
-
-std::optional<QList<std::shared_ptr<Operation>>> Binance::import(const QString& csvPath)
-{
-    QFile csv(csvPath);
-    if(csv.exists() == false)
-        return std::nullopt;
-    else
-    {
-        return parse(csv);
-    }
-}
 
 std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
 {
@@ -49,6 +39,7 @@ std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
         else
         {
             auto lineV = line.split(',');
+            qDebug() << lineV;
 
             //Defaults
             double pair1Amount = 0.0;
@@ -57,6 +48,13 @@ std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
 
             if(lineV[header["TYPE"]] == "POS savings interest")
             {
+                auto walletID = DBLocal::GetInstance()->getWalletID(DBLocal::GetInstance()->getUserID("gabridc"), "Binance", BrokerManager::DEF_FIAT_ID);
+
+                if (walletID == 0)
+                {
+                    qDebug() << "File: Binance.cpp Function: parse Description: No se encuentra la wallet Binance:EUR en el usuario gabridc";
+                    return std::nullopt;
+                }
                 operations.push_back(std::make_shared<Operation>(0, BrokerManager::DEF_FIAT, lineV[header["PAIR2"]], pair1Amount, pair1AmountFiat,
                                                                  lineV[header["PAIR2_AMOUNT"]].toDouble(),
                                                                  pair2AmountFiat,

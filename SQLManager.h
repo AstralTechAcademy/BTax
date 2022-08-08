@@ -34,7 +34,8 @@ public:
     virtual bool openDatabase(void) = 0;
     uint32_t getUserID(const QString& username);
     QString getServer(void) const;
-    QList<std::tuple<uint32_t, QString, QString>> getCoins(void);
+    QList<std::tuple<uint32_t, QString, QString, QString>> getCoins(void);
+    QList<std::tuple<uint32_t, QString>> getAssetTypes(void);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(void);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const uint32_t user);
@@ -55,6 +56,7 @@ public:
     bool registerOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
                            double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString& comments, QString& type,
                            QString& status, QString& date );
+    bool registerAsset(const QString& type, const QString& name, const QString& color);
     void setWalletData(Wallet& wallet);
     const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
     //const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker.db";

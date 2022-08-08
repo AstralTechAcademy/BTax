@@ -10,7 +10,6 @@ Rectangle{
     id: operation
     color: "#00000000"//"#A5A5A5"
     radius: 10
-    width: parent.width
     height: 70
 
     signal dataChanged(var role, var value)

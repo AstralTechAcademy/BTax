@@ -13,18 +13,21 @@ class Coin : public QObject
     Q_PROPERTY(int id READ id)
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString color READ color)
+    Q_PROPERTY(QString type READ type)
     Q_PROPERTY(double currentPrice READ currentPrice WRITE setCurrentPrice)
 public:
     Coin(void) = default;
-    Coin(int id, const QString& name, const QString& color) :
+    Coin(int id, const QString& name, const QString& color, QString type) :
         id_(id),
         name_(name),
         color_(color),
-        currentPrice_(-0.1){};
+        currentPrice_(-0.1),
+        type_(type){};
 
     int id(void) const noexcept {return id_;};
     QString name(void) const noexcept {return name_;};
     QString color(void) const noexcept {return color_;};
+    QString type(void) const noexcept {return type_;};
     double currentPrice(void) const noexcept {return currentPrice_;};
 
     void setCurrentPrice(const double price) noexcept {currentPrice_ = price;};
@@ -33,6 +36,7 @@ private:
     int id_;
     QString name_;
     QString color_;
+    QString type_;
     double currentPrice_;
 };
 

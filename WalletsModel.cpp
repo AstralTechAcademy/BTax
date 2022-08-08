@@ -3,6 +3,8 @@
 //
 
 #include "WalletsModel.h"
+#include "BrokerManager.h"
+#include "CoinsModel.h"
 
 //Expone el nombre de los atributos y los relaciona entre QML y C++
 QHash<int, QByteArray> WalletsModel::roleNames() const
@@ -83,8 +85,24 @@ void WalletsModel::clear(void)
 double WalletsModel::getTotalInvested(void) const
 {
     double invested = 0.0 ;
+
     for(auto w : wallets_)
         invested += w->getInvested();
+    return invested;
+}
+
+double WalletsModel::getCryptoInvested(void) const
+{
+    double invested = 0.0 ;
+    for(auto w : wallets_)
+    {
+        if(BrokerManager::getInstance() != nullptr)
+        {
+            auto c = BrokerManager::getInstance()->findCoin(w->getCoin());
+            if(c != nullptr && c->type() != "fiat")
+                invested += w->getInvested();
+        }
+    }
 
     return invested;
 }

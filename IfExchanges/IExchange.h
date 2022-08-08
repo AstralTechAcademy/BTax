@@ -14,8 +14,19 @@
 
 class IExchange {
 public:
-    virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath) = 0;
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv) = 0;
+    virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath)
+    {
+        qDebug() << "File: IExchange.h Func: Import Description: Importing file " << csvPath;
+        QFile csv;
+        csv.setFileName(csvPath);
+        if(csv.exists() == false)
+        {
+            qDebug() << "File: IExchange.h Func: Import Description: File does not exist " << csvPath;
+            return std::nullopt;
+        }
+        return parse(csv);
+    }
 };
 
 
