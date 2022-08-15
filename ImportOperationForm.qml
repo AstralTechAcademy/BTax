@@ -120,10 +120,14 @@ TextArea
             console.log("Import operation result = " + res)
 
             console.log("Import Details:")
-            console.log("   Added: " + importer.opsAdded.length)
-            console.log("   Already:" + importer.opsAlrdyAdded.length)
-            console.log("   Error: " + importer.opsWithError.length)
-
+            importPre.placeholderText +=  "Total Earn operations: "
+            importPre.placeholderText +=  importer.operationsSize()
+            importPre.placeholderText +=  "\nError: " + importer.opsWithErrorSize() + "\n\n"
+            importPre.placeholderText +=  importer.opsWithError()
+            importPre.placeholderText +=  "\nAdded: " + importer.opsAddedSize() + "\n\n"
+            importPre.placeholderText +=  importer.opsAdded()
+            importPre.placeholderText +=  "\nAlready: " + importer.opsAlrdyAddedSize() + "\n\n"
+            importPre.placeholderText +=  importer.opsAlrdyAdded()
 
         }
         onRejected: {

@@ -18,14 +18,14 @@ bool Importer::import(const QString& exchange, const QString& csvPath) noexcept
     auto path = csvPath;
     if(csvPath.contains("file://"))
         path = csvPath.split("file://")[1];
-    auto operations = exch->import(path);
+    operations_ = exch->import(path);
 
-    if(operations == std::nullopt)
+    if(operations_ == std::nullopt)
         return false;
 
-    qDebug() << "File: Importer Func: import Description: Operations imported " << operations->size();
+    qDebug() << "File: Importer Func: import Description: Operations imported " << operations_->size();
     auto coingecko = MarketDataFactory::createMarketData("Coingecko");
-    auto ops = operations.value();
+    auto ops = operations_.value();
     for(auto index = 0; index < ops.size();)
     {
         if (!brokerManager_->isDuplicated(ops[index]))

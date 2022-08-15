@@ -10,23 +10,75 @@
 class Importer : public QObject{
 
     Q_OBJECT
-    Q_PROPERTY(QList<std::shared_ptr<Operation>>  opsAlrdyAdded READ opsAlrdyAdded)
-    Q_PROPERTY(QList<std::shared_ptr<Operation>>  opsWithError READ opsWithError)
-    Q_PROPERTY(QList<std::shared_ptr<Operation>>  opsAdded READ opsAdded)
 public:
     Importer(std::shared_ptr<BrokerManager> brokerManager, const QObject *o = nullptr);
+
+
+    static Importer* getInstance(std::shared_ptr<BrokerManager> brokerManager) {
+        if(instance_ == nullptr)
+            instance_ = new Importer(brokerManager);
+        return instance_;
+
+    }
+
 public slots:
     bool import(const QString& exchange, const QString& csvPath) noexcept;
 
-    QList<std::shared_ptr<Operation>>  opsAlrdyAdded(void){return opsAlrdyAdded_;}
-    QList<std::shared_ptr<Operation>>  opsWithError(void){return opsWithError_;}
-    QList<std::shared_ptr<Operation>>  opsAdded(void) {return opsAdded_;}
+    QString  opsAlrdyAdded(void)
+    {
+        QString operations;
+        for(auto op : opsAlrdyAdded_)
+        {
+            operations += op->getPair1() + " " + op->getPair2()  + " " + QString::number(op->getPair2Amount()) + " " +  op->getDate() +  " " + op->getType() + "\n";
+        }
+        return operations;
+    }
+    QString  opsWithError(void)
+    {
+        QString operations;
+        for(auto op : opsWithError_)
+        {
+            operations += op->getPair1() + " " + op->getPair2()  +  " " + QString::number(op->getPair2Amount()) + " " + op->getDate() +  " " + op->getType() + "\n";
+        }
+        return operations;
+    }
+    QString opsAdded(void)
+    {
+        QString operations;
+        for(auto op : opsAdded_)
+        {
+            operations += op->getPair1() + " " + op->getPair2()  +  " "  + QString::number(op->getPair2Amount()) + " " +  op->getDate() +  " " + op->getType() +  "\n";
+        }
+        return operations;
+    }
+
+    int operationsSize(void)
+    {
+        return operations_->size();
+    }
+
+    int opsAddedSize(void)
+    {
+        return opsAdded_.size();
+    }
+
+    int opsWithErrorSize(void)
+    {
+        return opsWithError_.size();
+    }
+
+    int opsAlrdyAddedSize(void)
+    {
+        return opsAlrdyAdded_.size();
+    }
 
 private:
     std::shared_ptr<BrokerManager> brokerManager_;
+    std::optional<QList<std::shared_ptr<Operation>>> operations_ = std::nullopt;
     QList<std::shared_ptr<Operation>> opsAlrdyAdded_;
     QList<std::shared_ptr<Operation>> opsWithError_;
     QList<std::shared_ptr<Operation>> opsAdded_;
+    inline static Importer* instance_ = nullptr;
 
 };
 

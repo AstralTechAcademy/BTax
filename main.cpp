@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
 
-    Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
+    Importer *importer = Importer::getInstance(std::shared_ptr<BrokerManager>(brokerManager));
     engine.rootContext()->setContextProperty("importer", importer);
 
     Broker* broker = new Broker(DBRemote::GetInstance()->getServer(), version);
