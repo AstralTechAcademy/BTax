@@ -30,55 +30,57 @@ bool Importer::import(const QString& exchange, const QString& csvPath) noexcept
     {
         if (!brokerManager_->isDuplicated(ops[index]))
         {
-
-            if(ops[index]->getPair2AmountFiat() == 0.0)
+            auto coinID = coingecko->getCoinID("Binance", ops[index]->getPair2());
+            if(coinID != std::nullopt)
             {
-                auto coinID = coingecko->getCoinID("Binance", ops[index]->getPair2());
-                if(coinID != std::nullopt)
+                if(ops[index]->getPair2AmountFiat() == 0.0)
                 {
                     auto price = coingecko->getPrice(coinID.value(), QDateTime::fromString(ops[index]->getDate()));
+                    ops[index]->setPair2AmountFiat(-1.0);
 
-                    if(price == std::nullopt)
-                        ops[index]->setPair2AmountFiat(-1.0);
-                    else
-                    {
+                    if(price != std::nullopt)
                         ops[index]->setPair2AmountFiat(price.value());
-                        qDebug() << "Price: " << ops[index]->getPair2AmountFiat();
-                    }
-
-               }
-            }
-            if(ops[index]->getPair2AmountFiat() != -1.0)
-            {
-                auto res = brokerManager_->newOperation(exchange, ops[index]);
-                switch(res)
+                    qDebug() << "Price: " << ops[index]->getPair2AmountFiat();
+                }
+                if(ops[index]->getPair2AmountFiat() != -1.0)
                 {
-                    case BrokerManager::NewOperationRes::ADDED:
-                        qDebug() << "File: Importer Func: import Description: Operación registrada";
-                        opsAdded_.push_back(ops[index]);
-                        index++;
-                        break;
-                    case BrokerManager::NewOperationRes::ORI_WALLET_NOT_EXIST:
-                        qDebug() << "File: Importer Func: import Description: Wallet origen no existe";
-                        opsWithError_.push_back(ops[index]);
-                        index++;
-                        break;
-                    case BrokerManager::NewOperationRes::NOT_ADDED:
-                        qDebug() << "File: Importer Func: import Description: Error desconocido";
-                        opsWithError_.push_back(ops[index]);
-                        index++;
-                        break;
-                    default:
-                        qDebug() << "File: Importer Func: import Description: Error desconocido";
-                        opsWithError_.push_back(ops[index]);
-                        index++;
-                        break;
+                    auto res = brokerManager_->newOperation(exchange, ops[index]);
+                    switch(res)
+                    {
+                        case static_cast<int>(BrokerManager::NewOperationRes::ADDED):
+                            qDebug() << "File: Importer Func: import Description: Operación registrada";
+                            opsAdded_.push_back(ops[index]);
+                            index++;
+                            break;
+                        case  static_cast<int>(BrokerManager::NewOperationRes::ORI_WALLET_NOT_EXIST):
+                            qDebug() << "File: Importer Func: import Description: Wallet origen no existe";
+                            opsWithError_.push_back(ops[index]);
+                            index++;
+                            break;
+                        case  static_cast<int>(BrokerManager::NewOperationRes::NOT_ADDED):
+                            qDebug() << "File: Importer Func: import Description: Error desconocido";
+                            opsWithError_.push_back(ops[index]);
+                            index++;
+                            break;
+                        default:
+                            qDebug() << "File: Importer Func: import Description: Error desconocido";
+                            opsWithError_.push_back(ops[index]);
+                            index++;
+                            break;
+                    }
+                }
+                else
+                {
+                    qDebug() << "File: Importer Func: import Description: No se ha obtenido el precio desde coingecko. Try again ";
                 }
             }
             else
             {
-                qDebug() << "File: Importer Func: import Description: No se ha obtenido el precio desde coingecko. Try again ";
+                qDebug() << "File: Importer Func: import Description: Coin " << ops[index]->getPair2() << " no encontrada en Coingecko";
+                opsWithError_.push_back(ops[index]);
+                index++;
             }
+
         }
         else // IsDuplicated
         {

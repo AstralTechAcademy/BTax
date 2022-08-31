@@ -17,6 +17,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <iostream>
+#include <QThread>
 
 class IMarketData {
 public:
@@ -26,6 +27,7 @@ public:
     virtual std::optional<QString> getCoinID(const QString& exchange, const QString& coin) = 0;
     virtual QJsonDocument send(std::shared_ptr<QNetworkRequest> request)
     {
+        QThread::msleep(2000);
         QNetworkAccessManager nManager;
 
         auto reply = nManager.get(*request.get());

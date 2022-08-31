@@ -66,7 +66,6 @@ std::optional<QString> Coingecko::getCoinID(const QString& exchange, const QStri
 
 std::optional<double> Coingecko::getPrice(const QString& coin, const QDateTime& date)
 {
-    QThread::msleep(2000);
     std::shared_ptr<QNetworkRequest> request = std::make_shared<QNetworkRequest>();
     std::cout << "Coind Id " <<  coin.toLower().toStdString() << std::endl;
     std::cout << "Uri " << "https://api.coingecko.com/api/v3/coins/" << coin.toLower().toStdString() << "/history?date=" << date.date().day() <<  "-" << date.date().month() << "-" << date.date().year()  << std::endl;
@@ -75,12 +74,11 @@ std::optional<double> Coingecko::getPrice(const QString& coin, const QDateTime& 
     auto response_doc = IMarketData::send(request);
     if(response_doc.isNull() == false && response_doc.isObject())
     {
-        if(response_doc.object().value("status").toObject().value("error_code").toString() == "429")
-        {
-            std::cout << response_doc.object().value("status").toObject().value("error_message").toString().toStdString() << std::endl;
+        if(response_doc.object().value("market_data").toObject().value("current_price").isObject() == true)
+            return response_doc.object().value("market_data").toObject().value("current_price").toObject().value(BrokerManager::DEF_FIAT.toLower()).toDouble();
+        else
             return std::nullopt;
-        }
-        return response_doc.object().value("market_data").toObject().value("current_price").toObject().value(BrokerManager::DEF_FIAT.toLower()).toDouble();
+
     }
     else
         return std::nullopt;
