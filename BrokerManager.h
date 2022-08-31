@@ -53,6 +53,7 @@ public:
         return instance;
     }
     bool isDuplicated(std::shared_ptr<Operation> operation);
+    std::optional<std::vector<WalletOperation*>>  getAvailableBalances(const QString& coinName);
 
 
 signals:
@@ -63,10 +64,10 @@ signals:
 public slots:
     bool newDeposit(const int walletID, double pairAmount, double fees,
                     const QString comment, QString date);
-    NewOperationRes newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
+    int newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
                       double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
                       QString status, QString date);
-    NewOperationRes newOperation(const QString& exchange, const std::shared_ptr<Operation> operation);
+    int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation);
     bool newAsset(const QString& type, const QString& name, const QString& color);
     bool addWallet(const QString coinName, const QString exchange);
     bool importOperations(void);

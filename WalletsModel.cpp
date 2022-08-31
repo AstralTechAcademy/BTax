@@ -230,7 +230,7 @@ double WalletsModel::calculateGlobalAverageCost(const QString& coin) const
     auto wallets = find(coin);
     auto average = 0.0;
 
-
+    //TODO: Calcular el global average usando los datos de invested y cantindad de moneda poseida. El calculo medio de average no es válido.
     if(wallets == std::nullopt)
         return (double) average;
 

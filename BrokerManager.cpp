@@ -47,7 +47,7 @@ bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
 }
 
 
-BrokerManager::NewOperationRes BrokerManager::newOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
+int BrokerManager::newOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
                   double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
                   QString status, QString date)
 {
@@ -84,29 +84,29 @@ BrokerManager::NewOperationRes BrokerManager::newOperation(const int walletID1, 
         {
             auto res = DBLocal::GetInstance()->registerOperation(walletID1, walletID2, totalAmount, pair1AmountFiat, pair2Amount, pair2AmountFiat,
                                                              feesCoin, comision, comisionFiat, comments, type, status, date);
-            return res ? NewOperationRes::ADDED : NewOperationRes::NOT_ADDED;
+            return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
         }
         else
         {
             std::cout << "la wallet origen no tiene saldo suficiente para realizar la operación" << std::endl;
-            return NewOperationRes::INSUF_BALANCE_ORI_WALLET;
+            return static_cast<int>( NewOperationRes::INSUF_BALANCE_ORI_WALLET);
         }
     }
     else
     {
         std::cout << "La wallet origen no existe." << std::endl;
-        return NewOperationRes::ORI_WALLET_NOT_EXIST;
+        return static_cast<int>( NewOperationRes::ORI_WALLET_NOT_EXIST);
     }
 }
 
-BrokerManager::NewOperationRes BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operation> operation)
+int BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operation> operation)
 {
     auto ops = operationsModel_->operations();
 
     if(isDuplicated(operation))
     {
         std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
-        return NewOperationRes::ALREADY_ADDED;
+        return static_cast<int>( NewOperationRes::ALREADY_ADDED);
     }
 
     auto walletPair1 = findWallet(exchange, operation->getPair1());
@@ -356,6 +356,18 @@ void BrokerManager::setCoinPtrInWallets()
             w->setCoin(coin);
     }
     walletsModel_->updateLayout();
+}
+
+std::optional<std::vector<WalletOperation*>>  BrokerManager::getAvailableBalances(const QString& coinID)
+{
+    auto wallets = DBLocal::GetInstance()->getWallets(BrokerManager::userID, coinID);
+    if (wallets == std::nullopt)
+        return std::nullopt;
+
+    std::sort(wallets->begin(), wallets->end(), [&](WalletOperation* w1, WalletOperation* w2){
+            return w1->getDate() < w2->getDate();
+    });
+    return wallets;
 }
 
 bool BrokerManager::isDuplicated(std::shared_ptr<Operation> operation)
