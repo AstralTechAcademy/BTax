@@ -478,7 +478,40 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
     }
 }
 
+std::optional<std::vector<WalletOperation*>> SQLManager::getWallets(const uint32_t userID, const QString& coin)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT WOP.wallet, WOP.amount, WOP.retired, WOP.available, WOP.fiat, WOP.date, W.coin, W.exchange, W.user, WOP.id"
+                  " FROM WalletOperations WOP"
+                  " INNER JOIN Wallets W ON WOP.wallet = W.id"
+                  " WHERE W.user=:user AND W.coin =:coin");
+    query.bindValue(":user", userID);
+    query.bindValue(":coin", coin);
+    query.exec();
+    bool result = query.result()->handle().isValid();
+    if(!result)
+        return std::nullopt;
 
+    std::vector<WalletOperation*> wallets;
+    while (query.next())
+    {
+        auto id = query.value(9).toInt();
+        auto walletID = query.value(0).toInt();
+        auto amount = query.value(1).toDouble();
+        auto available = query.value(3).toDouble();
+        auto retired = query.value(2).toDouble();
+        auto fiat = query.value(4).toInt();
+        auto coin = query.value(6).toString();
+        auto date = query.value(5).toString();
+        auto exchange = query.value(7).toString();
+        auto user = query.value(8).toString();
+
+        auto wallet = new WalletOperation(id, walletID, coin, exchange, user, amount, available, retired, fiat, QDateTime::fromString(date));
+        wallets.push_back(wallet);
+    }
+
+    return wallets;
+}
 
 /* Wallet SQLManager::getWallet(const QString& wallet)
  {

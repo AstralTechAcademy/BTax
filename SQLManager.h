@@ -14,6 +14,7 @@
 #include <QVariant>
 #include <Operation.h>
 #include "Wallet.h"
+#include "WalletOperation.h"
 #include "Deposit.h"
 
 class SQLManager {
@@ -42,6 +43,7 @@ public:
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) ;
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
+    std::optional<std::vector<WalletOperation*>>  getWallets(const uint32_t userID, const QString& coin);
     std::tuple<bool, Wallet*> getWallet(const uint32_t user, const QString& exchange, const QString& coin);
     std::tuple<bool, Wallet*> getWallet(const uint32_t walletID);
     //virtual Wallet getWallet(const QString& wallet) = 0;

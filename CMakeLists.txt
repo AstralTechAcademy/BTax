@@ -84,6 +84,8 @@ if(ANDROID)
             main.cpp
             Wallet.cpp
             Wallet.h
+            WalletOperation.cpp
+            WalletOperation.h
             SQLManager.cpp
             SQLManager.h
             DBLocal.cpp
@@ -113,6 +115,8 @@ add_executable(Broker
         ${RESOURCES}
         Wallet.cpp
         Wallet.h
+        WalletOperation.cpp
+        WalletOperation.h
         SQLManager.cpp
         SQLManager.h
         DBLocal.cpp
