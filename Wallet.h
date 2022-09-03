@@ -7,6 +7,7 @@
 #include <QString>
 #include <iostream>
 #include "CoinsModel.h"
+#include "WalletOperation.h"
 #include <memory>
 
 class Wallet {
@@ -14,16 +15,17 @@ class Wallet {
 public:
     Wallet() = default;
     ~Wallet() = default;
-    Wallet( int walletID, const QString &coin, const QString& exchange, const QString& user) :
+    Wallet( int walletID, const QString &coinName, const QString& exchange, const QString& user, const Coin* coin, std::vector<const WalletOperation*> walletOps) :
             walletID_(walletID),
-            coinName_(coin),
+            coinName_(coinName),
             exchange_(exchange),
-            user_(user) {
+            user_(user),
+            coin_(coin),
+            walletOps_(walletOps) {
         amount_ = 0.0;
         avgPrice_ = 0.0;
         fiatPrice_ = 0.0;
         invested_ = 0.0;
-        coin_ = nullptr;
     };
 
     Wallet(const Wallet&) = default;
@@ -39,6 +41,8 @@ public:
     QString getFiatCoin(void) const noexcept;
     double getAverageCost(void) const noexcept;
     double getCurPrice(void) const noexcept;
+    const Coin* getpCoin(void) const noexcept;
+
 
     void setWalletID(const int walletID);
     void setInvested(const double invested);
@@ -50,7 +54,7 @@ public:
     void setUser(const QString user);
     void setCoin(Coin* coin);
 
-    Coin* getpCoin(void) const noexcept;
+
 
 private:
     double fiatPrice_;
@@ -62,7 +66,8 @@ private:
     QString user_;
     int walletID_;
     double invested_;
-    Coin* coin_;
+    const Coin* coin_;
+    std::vector<const WalletOperation*> walletOps_;
 };
 
 

@@ -38,17 +38,20 @@ public:
     QList<std::tuple<uint32_t, QString, QString, QString>> getCoins(void);
     QList<std::tuple<uint32_t, QString>> getAssetTypes(void);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
-    std::tuple<bool, std::vector<Deposit*>> getDeposits(void);
-    std::tuple<bool, std::vector<Deposit*>> getDeposits(const uint32_t user);
+    std::optional<std::vector<Deposit*>> getDeposits(void);
+    std::optional<std::vector<Deposit*>> getDeposits(const uint32_t user);
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) ;
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
-    std::optional<std::vector<WalletOperation*>>  getWallets(const uint32_t userID, const QString& coin);
+    std::optional<std::vector<WalletOperation*>>  getWallets(const uint32_t userID, const QString& coin, const QString exchange = "");
+    std::optional<std::vector<Wallet*>> getCryptoWallets(const uint32_t userID);
     std::tuple<bool, Wallet*> getWallet(const uint32_t user, const QString& exchange, const QString& coin);
     std::tuple<bool, Wallet*> getWallet(const uint32_t walletID);
+    std::optional<std::vector<const WalletOperation*>> getWalletOperations(const QString& walletID);
     //virtual Wallet getWallet(const QString& wallet) = 0;
     //std::tuple<bool, std::vector<Operation*>> getOperations(void);
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID);
+
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID, const QString& exchange);
     bool depositOperation(const int walletID, double amount, double amountFiat, double fees, const QString& comments, QString& date);
     //virtual int getInvested(const QString& user, const QString& excahnge) = 0;
@@ -58,6 +61,7 @@ public:
     bool registerOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
                            double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString& comments, QString& type,
                            QString& status, QString& date );
+    bool registerOperationNew(const std::vector<WalletOperation*> walletOperations, const WalletOperation::OperationData& data);
     bool registerAsset(const QString& type, const QString& name, const QString& color);
     void setWalletData(Wallet& wallet);
     const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";

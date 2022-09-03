@@ -53,7 +53,7 @@ public:
         return instance;
     }
     bool isDuplicated(std::shared_ptr<Operation> operation);
-    std::optional<std::vector<WalletOperation*>>  getAvailableBalances(const QString& coinName);
+    std::optional<std::vector<WalletOperation*>>  getAvailableBalancesOrdered(const QString& coinID, const QString exchange = "");
 
 
 signals:
@@ -90,7 +90,6 @@ private:
 
     inline static BrokerManager *instance;
 
-
     void loadOperationsFromDB(const uint32_t userID);
     void loadOperationsFromDB(const uint32_t userID, const uint32_t year);
     void loadWalletsFromDB(const uint32_t userID);
@@ -99,6 +98,7 @@ private:
     void loadDepositsFromDB(const uint32_t userID);
     void groupCoinBySymbol(void);
     void setCoinPtrInWallets();
+    double getAvailableAmounts(const std::vector<WalletOperation*>& wallets) const;
 
 };
 

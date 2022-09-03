@@ -9,10 +9,16 @@ void Wallet::print() const noexcept
 {
     std::cout << "Wallet: " <<  walletID_ << std::endl;
     std::cout << "  Coin: " <<  coinName_.toStdString() << std::endl;
+    std::cout << "  CoinID: " <<  coin_->id() << std::endl;
+    std::cout << "  Type: " <<  coin_->type().toStdString() << std::endl;
     std::cout << "  User: " <<  user_.toStdString() << std::endl;
     std::cout << "  Cantidad de monedas: " <<  amount_  << std::endl;
     std::cout << "  Invertido: " <<  invested_  << std::endl;
     std::cout << "  Average Cost: " <<  avgPrice_ << std::endl;
+
+    std::cout << "  Wallet Operations: " <<  std::endl;
+    for(auto op : walletOps_)
+        op->print2();
 }
 
 
@@ -34,6 +40,7 @@ QString Wallet::getCoin(void) const noexcept {return coinName_;}
 double Wallet::getCurPrice(void) const noexcept {
     return coin_ ? coin_->currentPrice() : 0.0;}
 QString Wallet::getFiatCoin(void) const noexcept { return fiatCoin_;};
+const Coin* Wallet::getpCoin(void) const noexcept { return coin_;}
 
 
 void Wallet::setInvested(const double invested)

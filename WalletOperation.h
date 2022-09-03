@@ -13,13 +13,29 @@
 class WalletOperation {
 
 public:
+    struct OperationData{
+        int walletID1;
+        int walletID2;
+        double pair1Amount;
+        double pair1AmountFiat;
+        double pair2Amount;
+        double pair2AmountFiat;
+        QString feesCoin;
+        double comision;
+        double comisionFiat;
+        QString comments;
+        QString type;
+        QString status;
+        QString date;
+    };
+
     WalletOperation() = delete;
     ~WalletOperation() = default;
-    WalletOperation( int id, int walletID, const QString &coin, const QString& exchange, const QString& user,
+    WalletOperation( int id, int walletID, const QString &coinName, const QString& exchange, const QString& user,
                      const double amount, const double available, const double retired, const double fiat, const QDateTime date) :
             id_(id),
             walletID_(walletID),
-            coinName_(coin),
+            coinName_(coinName),
             exchange_(exchange),
             user_(user),
             amount_(amount),
@@ -29,6 +45,7 @@ public:
             date_(date){};
 
     void print(void) const noexcept;
+    void print2(void) const noexcept;
     int getWalletID(void) const noexcept;
     int getID(void) const noexcept;
     QDateTime getDate(void) const noexcept;
@@ -39,6 +56,7 @@ public:
     QString getExchange(void) const noexcept;
     QString getCoin(void) const noexcept;
     QString getFiatCoin(void) const noexcept;
+    double getFiatPrice(void) const noexcept;
 
 private:
     double fiatPrice_;

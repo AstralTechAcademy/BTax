@@ -47,9 +47,9 @@ bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
 }
 
 
-int BrokerManager::newOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
-                  double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
-                  QString status, QString date)
+int BrokerManager::newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
+                                double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
+                                QString status, QString date)
 {
     qDebug() << "File: BrokerManager.cpp Function: newOperation";
     if(date == "")
@@ -65,6 +65,7 @@ int BrokerManager::newOperation(const int walletID1, const int walletID2, double
     auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID1);
     auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(walletID2);
 
+    auto coin = findCoin(wallet1->getCoin());
 
     if(r1 and r2)
     {
@@ -79,18 +80,73 @@ int BrokerManager::newOperation(const int walletID1, const int walletID2, double
             totalAmount = pair1Amount + (comision * comisionFiat) / pair1AmountFiat; // Formula reviwed. OK.
         }
 
-        //Se comprueba que haya saldo suficiente para la compra antes de proceder
-        if(wallet1->getAmount() >= totalAmount)
+        WalletOperation::OperationData data;
+        data.walletID1 = walletID1;
+        data.walletID2 = walletID2;
+        data.pair1Amount = pair1Amount;
+        data.pair1AmountFiat = pair1AmountFiat;
+        data.pair2Amount = pair2Amount;
+        data.pair2AmountFiat = pair2AmountFiat;
+        data.feesCoin = feesCoin;
+        data.comision = comision;
+        data.comisionFiat = comisionFiat;
+        data.comments = comments;
+        data.type = type;
+        data.status = status;
+        data.date = date;
+
+        if(coin->type() == "fiat")
         {
-            auto res = DBLocal::GetInstance()->registerOperation(walletID1, walletID2, totalAmount, pair1AmountFiat, pair2Amount, pair2AmountFiat,
-                                                             feesCoin, comision, comisionFiat, comments, type, status, date);
-            return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
+            //Se comprueba que haya saldo suficiente para la compra antes de proceder
+            auto ws = getAvailableBalancesOrdered(QString::number(coin->id()), wallet1->getExchange());
+
+            if (ws == std::nullopt)
+            {
+                std::cout << "No existen wallets de la moneda " << wallet1->getCoin().toStdString() << std::endl;
+                return static_cast<int>( NewOperationRes::ORI_WALLET_NOT_EXIST);
+            }
+            auto wallets = ws.value();
+            double totalAvailableAmt = getAvailableAmounts(wallets);
+
+            if(totalAvailableAmt >= totalAmount)
+            {
+
+
+                auto res = DBLocal::GetInstance()->registerOperationNew(wallets, data);
+                return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
+            }
+            else
+            {
+                std::cout << "la wallet origen no tiene saldo suficiente para realizar la operación" << std::endl;
+                return static_cast<int>( NewOperationRes::INSUF_BALANCE_ORI_WALLET);
+            }
         }
         else
         {
-            std::cout << "la wallet origen no tiene saldo suficiente para realizar la operación" << std::endl;
-            return static_cast<int>( NewOperationRes::INSUF_BALANCE_ORI_WALLET);
+            // Calculate Total Available amount
+            auto ws = getAvailableBalancesOrdered(QString::number(coin->id()));
+
+            if (ws == std::nullopt)
+            {
+                std::cout << "No existen wallets de la moneda " << wallet1->getCoin().toStdString() << std::endl;
+                return static_cast<int>( NewOperationRes::ORI_WALLET_NOT_EXIST);
+            }
+            auto wallets = ws.value();
+            double totalAvailableAmt = getAvailableAmounts(wallets);
+
+            if(totalAvailableAmt >= totalAmount)
+            {
+                auto res = DBLocal::GetInstance()->registerOperationNew(wallets, data);
+                return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
+            }
+            else
+            {
+                std::cout << "la wallet origen no tiene saldo suficiente para realizar la operación" << std::endl;
+                return static_cast<int>( NewOperationRes::INSUF_BALANCE_ORI_WALLET);
+            }
         }
+
+
     }
     else
     {
@@ -315,8 +371,12 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
 {
     double totalInvested = 0.0;
-    auto [r,deposits] = DBLocal::GetInstance()->getDeposits(userID);
+    auto result = DBLocal::GetInstance()->getDeposits(userID);
 
+    if(result == std::nullopt)
+        return;
+
+    auto deposits = result.value();
     for(auto d : deposits)
         totalInvested += d->getAmount();
     std::cout << "Total Invested " << totalInvested << std::endl;
@@ -358,9 +418,9 @@ void BrokerManager::setCoinPtrInWallets()
     walletsModel_->updateLayout();
 }
 
-std::optional<std::vector<WalletOperation*>>  BrokerManager::getAvailableBalances(const QString& coinID)
+std::optional<std::vector<WalletOperation*>>  BrokerManager::getAvailableBalancesOrdered(const QString& coinID, const QString exchange)
 {
-    auto wallets = DBLocal::GetInstance()->getWallets(BrokerManager::userID, coinID);
+    auto wallets = DBLocal::GetInstance()->getWallets(BrokerManager::userID, coinID, exchange);
     if (wallets == std::nullopt)
         return std::nullopt;
 
@@ -368,6 +428,15 @@ std::optional<std::vector<WalletOperation*>>  BrokerManager::getAvailableBalance
             return w1->getDate() < w2->getDate();
     });
     return wallets;
+}
+
+double  BrokerManager::getAvailableAmounts(const std::vector<WalletOperation*>& wallets) const
+{
+    double totalAvailableAmt = 0.0;
+    for (auto w : wallets)
+        totalAvailableAmt += w->getAvailable();
+    qDebug() << "Total Available Amount = " << totalAvailableAmt;
+    return totalAvailableAmt;
 }
 
 bool BrokerManager::isDuplicated(std::shared_ptr<Operation> operation)

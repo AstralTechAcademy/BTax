@@ -91,18 +91,34 @@ double WalletsModel::getTotalInvested(void) const
     return invested;
 }
 
+double WalletsModel::getTotalInvestedFiat(void) const
+{
+    double invested = 0.0 ;
+
+    auto result = DBLocal::GetInstance()->getDeposits();
+
+    if (result == std::nullopt)
+        return 0.0;
+
+    auto deposits = result.value();
+    for(auto deposit : deposits)
+        invested += deposit->getAmount();
+
+    return invested;
+}
+
 double WalletsModel::getCryptoInvested(void) const
 {
     double invested = 0.0 ;
-    for(auto w : wallets_)
-    {
-        if(BrokerManager::getInstance() != nullptr)
-        {
-            auto c = BrokerManager::getInstance()->findCoin(w->getCoin());
-            if(c != nullptr && c->type() != "fiat")
-                invested += w->getInvested();
-        }
-    }
+
+    auto ws = DBLocal::GetInstance()->getCryptoWallets(BrokerManager::userID);
+
+    if(ws == std::nullopt)
+        return 0.0;
+
+    auto wallets = ws.value();
+    for(auto w : wallets)
+        invested += w->getInvested();
 
     return invested;
 }

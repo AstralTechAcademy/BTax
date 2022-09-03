@@ -18,6 +18,14 @@ void WalletOperation::print() const noexcept
     std::cout << "  Date: " <<  date_.toString().toStdString() << std::endl;
 }
 
+void WalletOperation::print2() const noexcept
+{
+    std::cout << "      Retired: " <<  retired_  << " ";
+    std::cout << "      Available: " <<  available_ << " ";
+    std::cout << "      Fiat: " <<  fiatPrice_ << " ";
+    std::cout << "      Date: " <<  date_.toString().toStdString() << std::endl;
+}
+
 double WalletOperation::getAmount(void) const noexcept {return amount_;}
 int WalletOperation::getWalletID(void) const noexcept{return walletID_;};
 int WalletOperation::getID(void) const noexcept{return id_;};
@@ -27,3 +35,4 @@ double WalletOperation::getAvailable(void) const noexcept {return available_;}
 QString WalletOperation::getUser(void) const noexcept {return user_;};
 QString WalletOperation::getExchange(void) const noexcept {return exchange_;};
 QString WalletOperation::getCoin(void) const noexcept {return coinName_;}
+double WalletOperation::getFiatPrice(void) const noexcept {return fiatPrice_;}

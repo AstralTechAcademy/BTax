@@ -25,12 +25,12 @@ double Deposit::getAvailable() const {
     return available;
 }
 
-const QDate& Deposit::getDate() const {
+const QDateTime& Deposit::getDate() const {
     return date;
 }
 
-const QString& Deposit::getExchange() const {
-    return exchange;
+const QString& Deposit::getWalletID() const {
+    return walletID;
 }
 
 const QString& Deposit::getUser() const {

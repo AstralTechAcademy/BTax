@@ -12,13 +12,11 @@ class Deposit {
 public:
     Deposit() = delete;
     ~Deposit() = default;
-    Deposit(const QString &coin, double amount, double comision, const QDate &date,
-                     const QString &exchange, const QString &user) :
+    Deposit(const QString &coin, double amount, double comision, const QDateTime &date, const QString &walletID) :
                      coin(coin), amount(amount),
                      comision(comision),
                      date(date),
-                     exchange(exchange),
-                     user(user) {}
+                     walletID(walletID){}
 
     void print(void) const noexcept;
     const QString& getCoin() const ;
@@ -28,8 +26,8 @@ public:
 
     double getAvailable() const ;
 
-    const QDate &getDate() const ;
-    const QString &getExchange() const ;
+    const QDateTime &getDate() const ;
+    const QString &getWalletID() const ;
 
     const QString &getUser() const;
 
@@ -39,8 +37,8 @@ private:
     double amount;
     double comision;
     double available;
-    QDate date;
-    QString exchange;
+    QDateTime date;
+    QString walletID;
     QString user;
 
 };

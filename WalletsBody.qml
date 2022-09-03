@@ -36,7 +36,7 @@ Item
         width: 80
         visible: true
         title: "Total Invested"
-        value: parseFloat( walletsModel.getTotalInvested().toFixed(6) ) + " " + "EUR"
+        value: parseFloat( walletsModel.getTotalInvestedFiat().toFixed(6) ) + " " + "EUR"
         colorValue: "black"
     }
 
