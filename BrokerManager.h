@@ -25,7 +25,9 @@ public:
         ADDED,
         ALREADY_ADDED,
         ORI_WALLET_NOT_EXIST,
-        INSUF_BALANCE_ORI_WALLET
+        INSUF_BALANCE_ORI_WALLET,
+        VALIDATION_ERROR
+
     };
 
     const uint8_t IMPORT_STAKING_OP_ATRS = 3;

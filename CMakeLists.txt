@@ -108,6 +108,7 @@ if(ANDROID)
             IfExchanges/Binance.cpp IfExchanges/Binance.h
             IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
             IMarketData/Coingecko.cpp IMarketData/Coingecko.h
+            Validators/VDate.cpp Validators/VDate.h Validators/VOperation.cpp Validators/VOperation.h
             ${RESOURCES})
 else()
 add_executable(Broker
@@ -138,7 +139,7 @@ add_executable(Broker
         IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
-        IMarketData/Coingecko.cpp IMarketData/Coingecko.h)
+        IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h Validators/VOperation.cpp Validators/VOperation.h)
 endif()
 
 if(LINUX)

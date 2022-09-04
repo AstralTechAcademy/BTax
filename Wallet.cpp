@@ -42,6 +42,11 @@ double Wallet::getCurPrice(void) const noexcept {
 QString Wallet::getFiatCoin(void) const noexcept { return fiatCoin_;};
 const Coin* Wallet::getpCoin(void) const noexcept { return coin_;}
 
+const bool Wallet::isFiat(void) const noexcept
+{
+    return coin_->type() == "fiat";
+}
+
 
 void Wallet::setInvested(const double invested)
 {

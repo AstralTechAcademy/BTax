@@ -35,7 +35,7 @@ Item
         anchors.leftMargin: 60
         width: 80
         visible: true
-        title: "Total Invested"
+        title: "Deposited"
         value: parseFloat( walletsModel.getTotalInvestedFiat().toFixed(6) ) + " " + "EUR"
         colorValue: "black"
     }

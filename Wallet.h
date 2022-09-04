@@ -42,6 +42,7 @@ public:
     double getAverageCost(void) const noexcept;
     double getCurPrice(void) const noexcept;
     const Coin* getpCoin(void) const noexcept;
+    const bool isFiat(void) const noexcept;
 
 
     void setWalletID(const int walletID);

@@ -10,6 +10,12 @@ Item
     id: dateSelector
 
     property var years: ["2009"]
+    property string day: "1"
+    property string month: "1"
+    property string year: "1900"
+    property string hour: "1"
+    property string minute: "1"
+    property string second: "1"
 
     Text
     {
@@ -31,6 +37,7 @@ Item
         model: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                 "11", "12", "13", "14", "15", "16", "17", "18", "19",
                 "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
+        onActivated: dateSelector.day = currentText
     }
 
     ComboBox
@@ -43,6 +50,7 @@ Item
         anchors.left: day.right
         anchors.leftMargin: 5
         model: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10","11","12"]
+        onActivated: dateSelector.month = currentText
     }
 
     ComboBox
@@ -53,9 +61,9 @@ Item
         anchors.leftMargin: 5
         anchors.top: day.top
         anchors.topMargin: 0
-        currentIndex: 11
+        currentIndex: 0
         model: ListModel{id:years}
-
+        onActivated: dateSelector.year = currentText
         Component.onCompleted:
         {
             for(var i = 2010; i < 2050; i++)
@@ -87,6 +95,7 @@ Item
         model: ["0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                 "11", "12", "13", "14", "15", "16", "17", "18", "19",
                 "20", "21", "22", "23"]
+        onActivated: dateSelector.hour = currentText
     }
 
     ComboBox
@@ -99,7 +108,7 @@ Item
         anchors.left: hour.right
         anchors.leftMargin: 5
         model: ListModel{id:minutes}
-
+        onActivated: dateSelector.minute = currentText
         Component.onCompleted:
         {
             for(var i = 0; i < 60; i++)
@@ -119,7 +128,7 @@ Item
         anchors.leftMargin: 5
         currentIndex: 0
         model: ListModel{id:seconds}
-
+        onActivated: dateSelector.second = currentText
         Component.onCompleted:
         {
             for(var i = 0; i < 60; i++)

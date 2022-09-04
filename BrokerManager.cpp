@@ -6,6 +6,7 @@
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 #include "UsersModel.h"
+#include "Validators/VOperation.h"
 
 
 BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel)
@@ -52,15 +53,26 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
                                 QString status, QString date)
 {
     qDebug() << "File: BrokerManager.cpp Function: newOperation";
+    QDateTime dateTime;
+    dateTime.setDate(QDate(1900, 1, 1));
     if(date == "")
         date = QDateTime::currentDateTime().toString();
+    else
+    {
+
+        dateTime.setDate(QDate(date.split(" ")[0].split("/")[2].toInt(),
+                                   date.split(" ")[0].split("/")[1].toInt(),
+                                   date.split(" ")[0].split("/")[0].toInt()));
+        dateTime.setTime(QTime(date.split(" ")[1].split(":")[0].toInt(),
+                               date.split(" ")[1].split(":")[1].toInt(),
+                               date.split(" ")[1].split(":")[2].toInt()));
+        //dateTime.setTimeZone(QTimeZone::utc());
+    }
+
     if(status == "")
         status = "Confirmed";
 
     double totalAmount = 0.0;
-
-    //std::cout << type.toStdString() << date.toStdString() << std::endl;
-    //std::cout << walletID1 << " " << walletID2 << std::endl;
 
     auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID1);
     auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(walletID2);
@@ -95,6 +107,10 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
         data.status = status;
         data.date = date;
 
+        VOperation voperation(data, dateTime);
+        if( voperation.validate() == false)
+            return static_cast<int>( NewOperationRes::VALIDATION_ERROR);
+
         if(coin->type() == "fiat")
         {
             //Se comprueba que haya saldo suficiente para la compra antes de proceder
@@ -110,8 +126,6 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
 
             if(totalAvailableAmt >= totalAmount)
             {
-
-
                 auto res = DBLocal::GetInstance()->registerOperationNew(wallets, data);
                 return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
             }

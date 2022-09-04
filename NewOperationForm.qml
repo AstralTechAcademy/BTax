@@ -67,15 +67,13 @@ Window
 
     DateSelector
     {
+        id: dateSelector
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.left: p1AmountFiat.right
         anchors.leftMargin: 50
         width: 300
     }
-
-
-
 
 //////////PAIR 1
 
@@ -255,9 +253,28 @@ Window
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Accept"
         onClicked: {
+            console.log(dateSelector.day + "/" + dateSelector.month + "/" + dateSelector.year + "/  " +
+                            dateSelector.hour + ":" + dateSelector.minute + ":" + dateSelector.second)
+            var dateTime = ""
+            if (dateSelector.year != 1900)
+                dateTime = dateSelector.day + "/" + dateSelector.month + "/" + dateSelector.year + " " +
+                           dateSelector.hour + ":" + dateSelector.minute + ":" + dateSelector.second
+            if(pair1Amount.text_ == "" || pair1Amount.text_ == "Amount" )
+                pair1Amount.text_ = "-0.1"
+            if(pair2Amount.text_ == "" || pair2Amount.text_ == "Amount" )
+                pair1Amount.text_ = "-0.1"
+            if(p1AmountFiat.text_ == "" || p1AmountFiat.text_ == "Fiat Price (per coin)" )
+                p1AmountFiat.text_ = "-0.1"
+            if(p2AmountFiat.text_ == "" || p2AmountFiat.text_ == "Fiat Price (per coin)" )
+                p2AmountFiat.text_ = "-0.1"
+            if(feesAmount.text_ == "" || feesAmount.text_ == "Fees Amount" )
+                feesAmount.text_ = "-0.1"
+            if(feesAmountFiat.text_ == "" || feesAmountFiat.text_ == "Fiat Price (per coin)" )
+                feesAmountFiat.text_ = "-0.1"
             var res = brokerManager.newOperation(walletsModelAll.getWalletID(pair1.currentIndex), walletsModelAll.getWalletID(pair2.currentIndex), pair1Amount.text_, p1AmountFiat.text_, pair2Amount.text_, p2AmountFiat.text_,
-                        fees.textAt(fees.currentIndex), feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", "") //TODO: comments
+                        fees.textAt(fees.currentIndex), feesAmount.text_, feesAmountFiat.text_, "", type.currentText, "", dateTime) //TODO: comments
             console.log(res)
+            newOperationWindow.close()
         }
     }
 
