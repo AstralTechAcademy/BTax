@@ -143,6 +143,9 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
         {
             auto index = 0;
             auto pair1AmountAux = data.pair1Amount;
+            if(data.comisionFiat == data.pair1AmountFiat)
+                pair1AmountAux += data.comision;
+
             while( index < walletOperations.size() && pair1AmountAux != 0.0000)  // Minetras haya compras y no se haya llegado a la cantidad vendida en la operacion
             {
                 auto walletOp = walletOperations[index];
@@ -162,7 +165,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
                 else // Se vende lo que resta porque si no hubiera cantidad sufiente se detecta en la funcion newOperation
                 {
                     if(data.type == "Venta")
-                        ganancia += (available * fiat); // Formula reviwed. OK.
+                        ganancia += (available * (data.pair1AmountFiat - fiat)); // Formula reviwed. OK.
                     pair1AmountAux -= available; // Formula reviwed. OK.
                     retired += available; // Formula reviwed. OK.
                     available -= available; // Formula reviwed. OK.
