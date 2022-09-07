@@ -26,7 +26,7 @@ void timeout(void)
 
 int main(int argc, char *argv[])
 {
-    QString version = "1.0.1";
+    QString version = "1.1.0";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
 
