@@ -66,6 +66,7 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
         dateTime.setTime(QTime(date.split(" ")[1].split(":")[0].toInt(),
                                date.split(" ")[1].split(":")[1].toInt(),
                                date.split(" ")[1].split(":")[2].toInt()));
+        date = dateTime.toString();
         //dateTime.setTimeZone(QTimeZone::utc());
     }
 
