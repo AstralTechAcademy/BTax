@@ -187,16 +187,18 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
         {
             ganancia = data.pair2Amount * data.pair2AmountFiat;
         }
+        QDateTime time = QDateTime::fromString(data.date);
 
         // Nueva entrada con la cantidad de moneda en la wallet destino
-        query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,wallet, date)"
-                      " VALUES (:amount, :retired, :available, :fiat,:walletID, :date)");
+        query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,wallet, date, datetimeUTC)"
+                      " VALUES (:amount, :retired, :available, :fiat,:walletID, :date, :datetimeUTC)");
         query.bindValue(":amount", data.pair2Amount);
         query.bindValue(":fiat", data.pair2AmountFiat);
         query.bindValue(":retired", 0.0);
         query.bindValue(":available", data.pair2Amount);
         query.bindValue(":walletID", data.walletID2);
         query.bindValue(":date", data.date);
+        query.bindValue(":datetimeUTC", dateTimeToUTC0(time, wallet2->getExchange()));
         query.exec();
 
         std::cout << "INSERT INTO OPERATIONS(wallet1, wallet2, pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia)"
@@ -514,7 +516,8 @@ std::optional<std::vector<const WalletOperation*>> SQLManager::getWalletOperatio
 {
     QSqlQuery query = QSqlQuery(database);
 
-    query.prepare("SELECT WOP.*, C.name, W.exchange, W.user FROM WalletOperations WOP "
+    query.prepare("SELECT WOP.id, WOP.wallet, WOP.amount, WOP.retired, WOP.available, WOP.fiat, WOP.date, "
+                  " C.name, W.exchange, W.user, WOP.datetimeUTC FROM WalletOperations WOP "
                   " LEFT JOIN Wallets W ON W.id = WOP.wallet"
                   " LEFT JOIN Coins C ON C.id = W.coin"
                   " WHERE WOP.wallet =:walletID");
@@ -525,9 +528,10 @@ std::optional<std::vector<const WalletOperation*>> SQLManager::getWalletOperatio
     if(result)
     {
         std::vector<const WalletOperation*> walletOps;
+
         while (query.next())
         {
-            walletOps.push_back(new WalletOperation{
+            auto wop= new WalletOperation(
                     query.value(0).toInt(),
                     query.value(1).toInt(),
                     query.value(7).toString(),
@@ -537,8 +541,14 @@ std::optional<std::vector<const WalletOperation*>> SQLManager::getWalletOperatio
                     query.value(4).toDouble(),
                     query.value(3).toDouble(),
                     query.value(5).toDouble(),
-                    QDateTime::fromString( query.value(6).toString())
-            });
+                    QDateTime::fromString( query.value(6).toString()));
+            wop->print();
+            walletOps.push_back(wop);
+
+            auto exchange = query.value(8).toString();
+            if (query.value(10).isNull())
+                updateDateTimeUTCFromQTFormat("WalletOperations", query.value(0).toString(), QDateTime::fromString( query.value(6).toString()), exchange);
+
         }
         return walletOps;
     }
@@ -646,7 +656,51 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
     }
 }
 
-std::optional<std::vector<WalletOperation*>> SQLManager::getWallets(const uint32_t userID, const QString& coin, const QString exchange)
+std::optional<Wallet> SQLManager::getWallets(const uint32_t userID, const QString& coin, const QString exchange)
+{
+    QSqlQuery query = QSqlQuery(database);
+
+    query.prepare("SELECT C.name, U.username,W.*, C.id, C.type, C.color"
+                  " FROM Walllets W"
+                  " LEFT JOIN Coins C ON C.id = W.coin"
+                  " LEFT JOIN Users U ON U.id = W.user"
+                  " WHERE W.user=:user AND W.coin =:coin AND W.exchange=:exchange");
+    query.bindValue(":exchange", exchange);
+    query.bindValue(":user", userID);
+    query.bindValue(":coin", coin);
+    query.exec();
+    bool result = query.result()->handle().isValid();
+    if(!result)
+        return std::nullopt;
+
+    while (query.next())
+    {
+
+        auto id = query.value(2).toInt();
+        auto coinName = query.value(0).toString();
+        auto exchange = query.value(4).toString();
+        auto user = query.value(1).toString();
+        auto coinID = query.value(7).toInt();
+        auto color = query.value(9).toString();
+        auto type = query.value(8).toString();
+
+        auto ws = getWalletOperations(QString::number(id));
+        Wallet* wallet;
+        if (ws == std::nullopt)
+            wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+        else
+            wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+
+        setWalletData(*wallet);
+        return *wallet;
+    }
+
+    return std::nullopt;
+
+
+}
+
+std::optional<std::vector<WalletOperation*>> SQLManager::getWalletsOps(const uint32_t userID, const QString& coin, const QString exchange)
 {
     QSqlQuery query = QSqlQuery(database);
     if(exchange == "")
@@ -1035,6 +1089,37 @@ bool SQLManager::depositOperation(const int walletID, double amount, double amou
 
 
     return query.exec();
+}
+
+QString SQLManager::dateTimeToUTC0(QDateTime time, QString exchange)
+{
+    if (exchange == "B2M")
+    {
+        QTimeZone zone("Europe/Madrid");
+        time.setTimeZone(zone);
+        std::cout << time.toString(Qt::ISODateWithMs).replace('T', ' ').toStdString() << " ";
+        std::cout << time.toUTC().toString(Qt::ISODateWithMs).replace('T', ' ').toStdString() << std::endl;
+        return time.toUTC().toString(Qt::ISODateWithMs).replace('T', ' ').replace('Z', "");
+    }
+    else if(exchange == "Binance" or exchange == "Crypto" or exchange == "Coinbase")
+    {
+        // No conversion required
+        return time.toString(Qt::ISODateWithMs).replace('T', ' ').replace('Z', "");
+    }
+}
+
+void SQLManager::updateDateTimeUTCFromQTFormat(QString table, QString id, QDateTime time, QString exchange)
+{
+    QSqlQuery query = QSqlQuery(database);
+
+    std::cout << "File:SQLManager.cpp Function: updateDateTimeUTCFromQTFormat" << std::endl;
+
+    query.prepare("UPDATE WalletOperations"
+                  " SET dateTimeUTC=:time"
+                  " WHERE id=:id");
+    query.bindValue(":id", id);
+    query.bindValue(":time", dateTimeToUTC0(time, exchange));
+    query.exec();
 }
 
 

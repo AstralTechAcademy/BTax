@@ -28,7 +28,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     loadCoinsFromDB();
     loadAssetTypesFromDB();
     loadWalletsFromDB(userID);
-    updateCurrentPrice();
+    //updateCurrentPrice(); //TODO: Run using threads after open app
     loadDepositsFromDB(userID);
 
 }
@@ -435,7 +435,7 @@ void BrokerManager::setCoinPtrInWallets()
 
 std::optional<std::vector<WalletOperation*>>  BrokerManager::getAvailableBalancesOrdered(const QString& coinID, const QString exchange)
 {
-    auto wallets = DBLocal::GetInstance()->getWallets(BrokerManager::userID, coinID, exchange);
+    auto wallets = DBLocal::GetInstance()->getWalletsOps(BrokerManager::userID, coinID, exchange);
     if (wallets == std::nullopt)
         return std::nullopt;
 
@@ -474,7 +474,7 @@ std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& co
 
 std::optional<Wallet> BrokerManager::findWallet(const QString& exchange, const QString& coin)
 {
-    return walletsModelAll_->find(exchange, coin);
+    return DBLocal::GetInstance()->getWallets(BrokerManager::userID, coin, exchange); //walletsModelAll_->find(exchange, coin);
 }
 
 Coin* BrokerManager::findCoin(const QString& coin)

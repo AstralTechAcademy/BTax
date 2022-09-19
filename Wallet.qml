@@ -131,13 +131,9 @@ Rectangle{
         width: 80
         visible: true
         title: "CurrentPrice"
-        value: parseFloat( currentPrice.toFixed(6) )
+        value: currentPrice == -0.1 ? "N/A" : parseFloat( currentPrice.toFixed(6) )
         colorValue: "black"
     }
-
-
-
-
 
 /////// EARNING
 
@@ -153,7 +149,7 @@ Rectangle{
         width: 80
         visible: true
         title: "Earning"
-        value: parseFloat( amount * currentPrice - invested).toFixed(6)
+        value: currentPrice == -0.1 ? "N/A" : parseFloat( amount * currentPrice - invested).toFixed(6)
         colorValue: if((amount * currentPrice - invested) > 0 ) {return "green"} else {return "red"}
     }
 
@@ -170,14 +166,22 @@ Rectangle{
         visible: true
         title: "Percentage"
         value: {
-          if((amount * currentPrice - invested) > 0 )
-          {
-               return "+" +  parseFloat( ( (amount * currentPrice * 100) / invested).toFixed(6) )+ "%"
-          }
-          else
-          {
-               return "-" + parseFloat( 100 -  (  (amount * currentPrice)  / invested)).toFixed(6)+ "%"
-          }
+            if (currentPrice == -0.1)
+             {
+                return "N/A"
+             }
+             else
+             {
+                   if((amount * currentPrice - invested) > 0 )
+                   {
+                        return "+" +  parseFloat( ( (amount * currentPrice * 100) / invested).toFixed(6) )+ "%"
+                   }
+                   else
+                   {
+                        return "-" + parseFloat( 100 -  (  (amount * currentPrice)  / invested)).toFixed(6)+ "%"
+                   }
+            }
+
         }
         colorValue: if((amount * currentPrice - invested) > 0 ) {return "green"} else {return "red"}
     }

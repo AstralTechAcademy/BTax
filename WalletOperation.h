@@ -27,6 +27,7 @@ public:
         QString type;
         QString status;
         QString date;
+        QString datetimeUTC;
     };
 
     WalletOperation() = delete;
@@ -70,6 +71,7 @@ private:
     Coin* coin_;
     double available_;
     QDateTime date_;
+    QDateTime datetimeUTC_;
     int id_;
 };
 

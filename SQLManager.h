@@ -12,6 +12,7 @@
 #include <QtSql/QSqlResult>
 #include <QtSql/QSqlQuery>
 #include <QVariant>
+#include <QTimeZone>
 #include <Operation.h>
 #include "Wallet.h"
 #include "WalletOperation.h"
@@ -43,7 +44,8 @@ public:
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) ;
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
-    std::optional<std::vector<WalletOperation*>>  getWallets(const uint32_t userID, const QString& coin, const QString exchange = "");
+    std::optional<Wallet> getWallets(const uint32_t userID, const QString& coin, const QString exchange);
+    std::optional<std::vector<WalletOperation*>>  getWalletsOps(const uint32_t userID, const QString& coin, const QString exchange = "");
     std::optional<std::vector<Wallet*>> getCryptoWallets(const uint32_t userID);
     std::tuple<bool, Wallet*> getWallet(const uint32_t user, const QString& exchange, const QString& coin);
     std::tuple<bool, Wallet*> getWallet(const uint32_t walletID);
@@ -66,6 +68,10 @@ public:
     void setWalletData(Wallet& wallet);
     const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
     //const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker.db";
+
+    // Auxiliary tables
+    QString dateTimeToUTC0(QDateTime time, QString exchange);
+    void updateDateTimeUTCFromQTFormat(QString table,QString id, QDateTime time, QString exchange);
 
 
 
