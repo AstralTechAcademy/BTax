@@ -3,6 +3,7 @@
 //
 
 #include "BrokerManager.h"
+#include "Broker.h"
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 #include "UsersModel.h"
@@ -31,6 +32,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     //updateCurrentPrice(); //TODO: Run using threads after open app
     loadDepositsFromDB(userID);
 
+    emit Broker::getInstance()->loaded();
 }
 
 bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
