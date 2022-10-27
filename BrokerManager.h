@@ -25,8 +25,10 @@ public:
         ADDED,
         ALREADY_ADDED,
         ORI_WALLET_NOT_EXIST,
+        DEST_WALLET_NOT_EXIST,
         INSUF_BALANCE_ORI_WALLET,
-        VALIDATION_ERROR
+        VALIDATION_ERROR,
+        COIN_NOT_FOUND
 
     };
 
@@ -43,7 +45,7 @@ public:
     inline static uint32_t year_;
     std::optional<std::vector<Wallet*>> findWallets(const QString& coin);
     std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
-    Coin* findCoin(const QString& coin);
+    std::optional<Coin*> findCoin(const QString& coin);
     static BrokerManager* getInstance(OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll,
                                       WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel) {
         if (!instance)
@@ -57,6 +59,9 @@ public:
     bool isDuplicated(std::shared_ptr<Operation> operation);
     std::optional<std::vector<WalletOperation*>>  getAvailableBalancesOrdered(const QString& coinID, const QString exchange = "");
 
+    void load(void);
+    Operation* getLastOperation(void) const;
+    std::vector<WalletOperation*> getLastNWalletOperation(int limit = 1) const;
 
 signals:
     void depositCompleted(void);
@@ -68,8 +73,8 @@ public slots:
                     const QString comment, QString date);
     int newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
                       double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
-                      QString status, QString date);
-    int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation);
+                      QString status, QString date, std::vector<WalletOperation>& wOpsModified);
+    int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation, std::vector<WalletOperation>& wOpsModified);
     bool newAsset(const QString& type, const QString& name, const QString& color);
     bool addWallet(const QString coinName, const QString exchange);
     bool importOperations(void);

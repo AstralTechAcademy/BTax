@@ -4,7 +4,7 @@ import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.14
 import es.notifications 1.0
 import es.broker 1.0
-
+import Astral 1.0
 
 Window {
     id: initWindow
@@ -15,6 +15,8 @@ Window {
     //visibility: "FullScreen"
     color: "#e9e7e7"
     title: qsTr("Broker Loading")
+
+    onClosing: BrokerImpl.close()
 
     Component.onCompleted: {
             setX(Screen.width / 2 - width / 2);
@@ -55,6 +57,8 @@ Window {
         function onLoaded(){
                 footer.text = "Loaded. Connection with database " +  BrokerImpl.getServer()
                 winld.active = true
+                winld.source = "main.qml"
+                initWindow.visible = false
         }
     }
 
@@ -70,7 +74,10 @@ Window {
     Loader {
         id: winld
         active: false
-        sourceComponent: Main{}
     }
 
+     Connections{
+        target: winld.item
+        function onClosing () { BrokerImpl.close(); }
+     }
 }

@@ -17,6 +17,8 @@ DBRemote *DBRemote::GetInstance(void)
      * This is a safer way to create an instance. instance = new Singleton is
      * dangeruous in case two instance threads wants to access at the same time
      */
+    server = SERVER;
+    databaseName = DATABASENAME;
     if(db_ == nullptr){
         db_ = new DBRemote();
     }
@@ -41,6 +43,7 @@ bool DBRemote::openDatabase(void)
     database.setDatabaseName(DATABASENAME);
     database.setPassword(PASSWORD);
     server = SERVER;
+    databaseName = DATABASENAME;
 
 
 

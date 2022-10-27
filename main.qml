@@ -3,7 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.14
 import es.broker 1.0
-
+import Astral 1.0
 
 
 Window {
@@ -14,8 +14,6 @@ Window {
     //visibility: "FullScreen"
     color: "#e9e7e7"
     title: qsTr("Broker")
-
-
 
     //OperationsModel{id: operationsModel}
 
@@ -29,7 +27,7 @@ Window {
 
     Text{
 
-        text: "Server: " + BrokerImpl.getServer() + "  Version: " + BrokerImpl.getVersion()
+        text: "Server: " + BrokerImpl.getServer() + "  Database: " + BrokerImpl.getDatabase() + "  Version: " + BrokerImpl.getVersion()
         anchors.top: parent.top
         anchors.topMargin: 2
         anchors.left: parent.left
@@ -191,15 +189,15 @@ Window {
 
     }
 
-         Loader {
-            id: formsLoader
-         }
+     Loader {
+        id: formsLoader
+     }
 
-         Connections{
-            target: formsLoader.item
-            function onClosing () {formsLoader.source = "" }
-            function onClose () {formsLoader.source = "" }
-         }
+     Connections{
+        target: formsLoader.item
+        function onClosing () {formsLoader.source = "" }
+        function onClose () {formsLoader.source = "" }
+     }
 
 }
 

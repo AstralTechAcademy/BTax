@@ -66,9 +66,9 @@ if(ANDROID)
 endif()
 
 if(ANDROID)
-    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth AndroidExtras Svg)
+    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth AndroidExtras Svg Test)
 else()
-    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg)
+    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg Test)
 endif()
 
 include_directories(~/Qt/5.15.2/gcc_64/include/)
@@ -79,43 +79,7 @@ include_directories(./)
 
 qt5_add_resources(RESOURCES ./qml.qrc)
 
-if(ANDROID)
-    add_library(Broker SHARED
-            main.cpp
-            Wallet.cpp
-            Wallet.h
-            WalletOperation.cpp
-            WalletOperation.h
-            SQLManager.cpp
-            SQLManager.h
-            DBLocal.cpp
-            DBLocal.h
-            Broker.cpp
-            Broker.h
-            OperationsModel.cpp
-            OperationsModel.h
-            Operation.cpp
-            Operation.h
-            Deposit.cpp
-            Deposit.h
-            Statistics.cpp
-            DBCredential_NotPush.h
-            WalletsPercModel.cpp WalletsPercModel.h
-            Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
-            CoinsModel.cpp CoinsModel.h
-            AssetTypeModel.cpp AssetTypeModel.h
-            IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
-            IfExchanges/Binance.cpp IfExchanges/Binance.h
-            IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
-            IMarketData/Coingecko.cpp IMarketData/Coingecko.h
-            Validators/VDate.cpp Validators/VDate.h Validators/VOperation.cpp Validators/VOperation.h
-            ${RESOURCES})
-else()
-add_executable(Broker
-        main.cpp
-        ${RESOURCES}
-        Wallet.cpp
-        Wallet.h
+set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.cpp
         WalletOperation.h
         SQLManager.cpp
@@ -139,7 +103,19 @@ add_executable(Broker
         IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
-        IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h Validators/VOperation.cpp Validators/VOperation.h Notifications/NotificationManager.cpp Notifications/NotificationManager.h)
+        IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h
+        Validators/VOperation.cpp Validators/VOperation.h Notifications/NotificationManager.cpp Notifications/NotificationManager.h)
+
+if(ANDROID)
+    add_library(Broker SHARED
+            main.cpp
+            ${APP_SOURCES}
+            ${RESOURCES})
+else()
+add_executable(Broker
+        main.cpp
+        ${RESOURCES}
+        ${APP_SOURCES})
 endif()
 
 if(LINUX)
@@ -154,3 +130,21 @@ endif()
 if(WIN)
     target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets)
 endif()
+
+if(LINUX AND GTEST)
+#################### QT TEST ####################
+add_definitions(-DGTEST)
+enable_testing(true)
+add_executable(BrokerManagerTest Test/BrokerManagerTest.cpp ${RESOURCES} ${APP_SOURCES})
+add_executable(BrokerTest Test/BrokerTest.cpp ${RESOURCES} ${APP_SOURCES})
+
+set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+set_target_properties(BrokerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+
+add_test(NAME BrokerTest COMMAND BrokerTest)
+add_test(NAME BrokerManagerTest COMMAND BrokerManagerTest)
+
+target_link_libraries(BrokerManagerTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
+target_link_libraries(BrokerTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
+endif()
+

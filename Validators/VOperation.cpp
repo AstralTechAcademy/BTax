@@ -11,6 +11,9 @@ bool VOperation::validate(void) const
 {
     VDate vdate(dateTime_);
 
+    std::cout << "TRACE 4" << std::endl;
+    std::cout << vdate.validate()  << std::endl;
+
     if(vdate.validate() == false)
         return false;
 
@@ -45,6 +48,6 @@ bool VOperation::validate(void) const
         return false;
     }
 
-
+    std::cout << "TRACE 5" << std::endl;
     return true;
 }

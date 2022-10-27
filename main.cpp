@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 
 
     QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
     qmlRegisterUncreatableType<Broker>("es.broker", 1, 0, "Broker", "App Class Instance");
     qmlRegisterUncreatableType<UsersModel>("es.broker", 1, 0, "UsersModel", "Se crea despues");
     //qmlRegisterType<OperationsModel>("es.broker", 1, 0, "OperationsModel");
@@ -63,74 +64,36 @@ int main(int argc, char *argv[])
 
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
-    engine.addImportPath("/home/gabridc/Repositorio/Astral_Academy/medium/Components/Astral");
+    engine.addImportPath("/home/gabridc/Repositorio/Astral_Academy/medium/Components");
 
-
-
-    //DBRemote::GetInstance()->createDatabase();
-    /*auto future = std::async(std::launch::async, [](){
-        sleep(5);
-        std::cout << "TIMEOUT" << std::endl;
-    });*/
-    Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, engine);
+    Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, DBRemote::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     const QUrl url(QStringLiteral("qrc:/Init.qml"));
 
-    //DBLocal::GetInstance()->createDatabase();
-    //DBLocal::GetInstance()->openDatabase();
+    UsersModel usersModel;
+    OperationsModel operationsModel;
+    WalletsModel walletsModel;
+    WalletsModel walletsModelAll;
+    WalletsPercModel walletsPercModel;
+    CoinsModel coinsModel;
+    AssetTypeModel assetTypeModel;
+    NotificationManager notificationManager;
 
+    engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
+    engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
+    engine.rootContext()->setContextProperty("walletsModelAll", &walletsModelAll);
+    engine.rootContext()->setContextProperty("walletsPercModel", &walletsPercModel);
+    engine.rootContext()->setContextProperty("usersModel", &usersModel);
+    engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
+    engine.rootContext()->setContextProperty("assetTypesModel", &assetTypeModel);
+    engine.rootContext()->setContextProperty("notificationManager", &notificationManager);
 
-    /*double gananciasAnuales = 0.0;
-    for(auto operation : std::get<1>(DBLocal::GetInstance()->getOperations("B2M")) )
-    {
-        gananciasAnuales += operation->getGanancia();
-    }
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
+    engine.rootContext()->setContextProperty("brokerManager", brokerManager);
 
-    double invertido = 0.0;
-    auto deposits = std::get<1>(DBLocal::GetInstance()->getDeposits("Gabriel"));
-    for(auto deposit : deposits)
-    {
-        std::cout << deposit->getUser().toStdString() << std::endl;
-        invertido += deposit->getAmount();
-    }
-
-    std::cout << "Invertido: " << invertido << std::endl;
-    std::cout << "Ganancias Anuales: " << gananciasAnuales << std::endl;
-
-    deposits = std::get<1>(DBLocal::GetInstance()->getDeposits("Gabriel", "B2M"));
-    invertido = 0.0;
-    for(auto deposit : deposits)
-    {
-        std::cout << deposit->getUser().toStdString() << std::endl;
-        invertido += deposit->getAmount();
-    }
-
-    std::cout << "Depositado B2M: " << invertido << std::endl;*/
-
-
-
-
-
-
-    /*invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "ADA");
-
-    std::cout << "Invertido ADA: " <<  invertido << std::endl;
-
-    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "DOT");
-
-    std::cout << "Invertido DOT: " <<  invertido << std::endl;
-
-    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "MATIC");
-
-    std::cout << "Invertido MATIC: " <<  invertido << std::endl;
-
-    invertido = DBLocal::GetInstance()->getInvested("Gabriel", "Binance", "SOL");
-
-    std::cout << "Invertido SOL: " <<  invertido << std::endl;*/
-
-
-
+    Importer *importer = Importer::getInstance(std::shared_ptr<BrokerManager>(brokerManager));
+    engine.rootContext()->setContextProperty("importer", importer);
 
     engine.load(url);
     //Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));

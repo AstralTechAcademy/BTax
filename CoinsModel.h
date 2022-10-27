@@ -17,7 +17,7 @@ class Coin : public QObject
     Q_PROPERTY(double currentPrice READ currentPrice WRITE setCurrentPrice)
 public:
     Coin(void) = default;
-    Coin(int id, const QString& name, const QString& color, QString type) :
+    Coin(int id, const QString& name, const QString& color, const QString& type) :
         id_(id),
         name_(name),
         color_(color),

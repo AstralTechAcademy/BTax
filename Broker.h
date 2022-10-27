@@ -27,12 +27,12 @@ class Broker : public QObject
     Q_OBJECT
 
 public:
-    Broker(const QString& server, const QString& version, QQmlApplicationEngine& engine, QObject *parent = nullptr);
+    Broker(const QString& server, const QString& version, const QString database, QObject *parent = nullptr);
 
 
-    static Broker* getInstance(const QString& server, const QString& version, QQmlApplicationEngine& engine) {
+    static Broker* getInstance(const QString& server, const QString& version, const QString& database) {
         if (!instance)
-            instance = new Broker(server, version, engine);
+            instance = new Broker(server, version, database);
         return instance;
     }
 
@@ -60,11 +60,11 @@ public slots:
     int getHost(void) const;
     QString getServer(void) const;
     QString getVersion(void) const;
+    QString getDatabase(void) const;
     bool isOpened(void) const;
-    void openDatabase(void);
-
+    bool openDatabase(void);
     void load(void);
-
+    void close(void) const noexcept { qApp->exit(0);}
 
 
 
@@ -72,11 +72,10 @@ private:
     static HOSTS host_;
     static QString server_;
     static QString version_;
+    inline static QString database_;
     static bool dbOpened_;
 
     inline static Broker *instance;
-
-    QQmlApplicationEngine& engine_;
 
 };
 
