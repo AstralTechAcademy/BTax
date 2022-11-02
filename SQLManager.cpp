@@ -149,6 +149,9 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
             if(data.comisionFiat == data.pair1AmountFiat)
                 pair1AmountAux += data.comision;
 
+            if(data.type == "Compra")
+                ganancia -= (data.comision * data.comisionFiat);
+
             while( index < walletOperations.size() && pair1AmountAux != 0.0000)  // Minetras haya compras y no se haya llegado a la cantidad vendida en la operacion
             {
                 auto walletOp = walletOperations[index];
@@ -317,7 +320,6 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
         query.bindValue(":date", data.date);
         query.bindValue(":comments", data.comments);
         query.bindValue(":type", data.type);
-        ganancia -= (data.comision * data.comisionFiat);
         query.bindValue(":ganancia", ganancia);
         return query.exec();
     }
@@ -837,7 +839,7 @@ std::optional<std::vector<WalletOperation*>> SQLManager::getWalletsOps(const uin
         auto amount = query.value(1).toDouble();
         auto available = query.value(3).toDouble();
         auto retired = query.value(2).toDouble();
-        auto fiat = query.value(4).toInt();
+        auto fiat = query.value(4).toDouble();
         auto coin = query.value(6).toString();
         auto date = QDateTime::fromString(query.value(5).toString());
         auto datetimeUtc = DatetimeUTCStrToDatetime(query.value(10).toString());
@@ -1273,20 +1275,21 @@ Operation* SQLManager::getLastOperation(void) const
 
     std::cout << "File:SQLManager.cpp Function: getLastOperation" << std::endl;
 
-    query.prepare("SELECT OP.id, C1.name, C2.name, pair1Amount, pair1AmountFiat, pair2Amount, pair2AmountFiat, comision, comisionFiat, status, date, OP.type, ganancia\n"
+    query.prepare("SELECT OP.id, C1.name, C2.name, pair1Amount, pair1AmountFiat, pair2Amount, pair2AmountFiat, comision, comisionFiat, "
+                  "status, date, OP.type, ganancia"
                   " FROM Operations OP"
                   " INNER JOIN Wallets W1 ON W1.id = wallet1"
                   " INNER JOIN Wallets W2 ON W2.id = wallet2"
                   " INNER JOIN Coins C1 ON C1.id = W1.coin"
                   " INNER JOIN Coins C2 ON C2.id = W2.coin"
-                  " ORDER BY date DESC LIMIT 1");
+                  " ORDER BY id DESC LIMIT 1");
 
     query.exec();
     query.next();
 
     auto op = new Operation(query.value(0).toInt(), query.value(1).toString(), query.value(2).toString(), query.value(3).toDouble(), query.value(4).toDouble(),
                            query.value(5).toDouble(),query.value(6).toDouble(), query.value(7).toDouble(), query.value(8).toDouble(),
-                           query.value(9).toString(), query.value(10).toString(), query.value(11).toString(), query.value(12).toString(), query.value(4).toDouble());
+                           query.value(9).toString(), query.value(10).toString(), "", query.value(11).toString(), query.value(12).toDouble());
 
     op->print();
     return op;

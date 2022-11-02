@@ -14,6 +14,7 @@ private slots:
     void newAsset();
     void cleanupTestCase();
     void newOperation();
+    void newSaleAssetMultiExchange();
     void newOperationWallet1NotExist();
     void newOperationWallet2NotExist();
     void newTransferencia();
@@ -171,6 +172,34 @@ void BrokerManagerTest::newOperation()
     QCOMPARE(true, operation->getPair2Amount() == 0.03);
     QCOMPARE(true, operation->getComision() == 10);
     QCOMPARE(true, operation->getDate() == "dom. oct. 2 10:00:01 2022");
+}
+
+void BrokerManagerTest::newSaleAssetMultiExchange()
+{
+    std::vector<WalletOperation> wOpsModified;
+    QCOMPARE(true, brokerManager->newDeposit(15, 133.0, 0.0, "deposit 2", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(14, 133.0, 0.0, "deposit 2", "")); // compare two values
+    QCOMPARE(1, brokerManager->newOperation(15,5, 90.0, 1.0, 184.804928131, 0.487, "EUR", 10.0, 1.0, "newSaleAssetMultiExchange Compra 1", "Compra", "", "15/10/2022 13:00:00", wOpsModified)); // compare two values
+
+    auto operation = brokerManager->getLastOperation();
+    QCOMPARE(true, operation->getPair1() == "EUR");
+    QCOMPARE(true, operation->getPair2() == "ADA");
+    QCOMPARE(true, operation->getPair1Amount() == 90.0);
+    QCOMPARE(true, operation->getPair2Amount() == 184.804928131);
+    QCOMPARE(true, operation->getGanancia() == -10.0);
+    QCOMPARE(true, operation->getDate() == "sáb. oct. 15 13:00:00 2022");
+
+    QCOMPARE(1, brokerManager->newOperation(14,6, 100.0, 1.0, 147.492625369, 0.678, "EUR", 5.0, 1.0, "newSaleAssetMultiExchange Compra 2", "Compra", "", "15/10/2022 13:00:01", wOpsModified)); // compare two values
+    QCOMPARE(1, brokerManager->newOperation(6,14, 58.0, 0.3489, 20.2362, 1.0, "EUR", 10.0, 0.3489, "newSaleAssetMultiExchange Venta 1", "Venta", "", "16/10/2022 16:00:01", wOpsModified)); // compare two values
+
+    auto ganancia = (58.0 + 10.0) * (0.3489 - 0.487);
+    operation = brokerManager->getLastOperation();
+    QCOMPARE(true, operation->getPair1() == "ADA");
+    QCOMPARE(true, operation->getPair2() == "EUR");
+    QCOMPARE(true, operation->getPair1Amount() == 58.0);
+    QCOMPARE(true, operation->getPair2Amount() == 20.2362);
+    QCOMPARE(true, operation->getGanancia() == ganancia);
+    QCOMPARE(true, operation->getDate() == "dom. oct. 16 16:00:01 2022");
 }
 
 void BrokerManagerTest::newTransferencia()
