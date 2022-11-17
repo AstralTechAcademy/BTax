@@ -26,6 +26,7 @@ bool Importer::import(const QString& exchange, const QString& csvPath) noexcept
     qDebug() << "File: Importer Func: import Description: Operations imported " << operations_->size();
     auto coingecko = MarketDataFactory::createMarketData("Coingecko");
     auto ops = operations_.value();
+    std::vector<WalletOperation> wOpsModified;
     for(auto index = 0; index < ops.size();)
     {
         if (!brokerManager_->isDuplicated(ops[index]))
@@ -44,7 +45,7 @@ bool Importer::import(const QString& exchange, const QString& csvPath) noexcept
                 }
                 if(ops[index]->getPair2AmountFiat() != -1.0)
                 {
-                    auto res = brokerManager_->newOperation(exchange, ops[index]);
+                    auto res = brokerManager_->newOperation(exchange, ops[index], wOpsModified);
                     switch(res)
                     {
                         case static_cast<int>(BrokerManager::NewOperationRes::ADDED):

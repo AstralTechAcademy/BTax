@@ -22,7 +22,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex & index, int role = Username) const;
     static QList<std::tuple<uint32_t , QString>> getUsers(void);
-    void setUsers(void);
+    static void setUsers(void);
 private:
     static QList<std::tuple<uint32_t , QString>> users ;
 

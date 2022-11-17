@@ -36,7 +36,10 @@ public:
     virtual bool openDatabase(void) = 0;
     uint32_t getUserID(const QString& username);
     QString getServer(void) const;
+    QString getDatabase(void) const;
+    static QSqlDatabase getDb(void) { return database;};
     QList<std::tuple<uint32_t, QString, QString, QString>> getCoins(void);
+    std::optional<std::tuple<uint32_t, QString, QString, QString>> getCoin(const QString& coin);
     QList<std::tuple<uint32_t, QString>> getAssetTypes(void);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
     std::optional<std::vector<Deposit*>> getDeposits(void);
@@ -53,24 +56,30 @@ public:
     //virtual Wallet getWallet(const QString& wallet) = 0;
     //std::tuple<bool, std::vector<Operation*>> getOperations(void);
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID);
+    Operation* getLastOperation(void) const;
+    std::vector<WalletOperation*> getLastNWalletOperation(int limit) const;
 
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID, const QString& exchange);
-    bool depositOperation(const int walletID, double amount, double amountFiat, double fees, const QString& comments, QString& date);
+    bool depositOperation(const int walletID, const QString exchange, double amount, double amountFiat, double fees, const QString& comments, QString& date);
     //virtual int getInvested(const QString& user, const QString& excahnge) = 0;
     double getInvested(const QString& user, const QString& exchange, const QString& wallet);
-    int addWallet(const QString& coin, double amount, const QString& exchange, const uint32_t user);
+    int addWallet(const QString& coin, const QString& exchange, const uint32_t user);
     int getWalletID(const uint32_t user, const QString& exchange, const QString& coin);
     bool registerOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
                            double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString& comments, QString& type,
                            QString& status, QString& date );
-    bool registerOperationNew(const std::vector<WalletOperation*> walletOperations, const WalletOperation::OperationData& data);
+    bool registerOperationNew(const std::vector<WalletOperation*> walletOperations,
+                              const WalletOperation::OperationData& data,
+                              std::vector<WalletOperation>& wOpsModified);
     bool registerAsset(const QString& type, const QString& name, const QString& color);
+    bool registerUser(const QString& username);
     void setWalletData(Wallet& wallet);
     const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker (copia) (1).db";
     //const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker.db";
 
     // Auxiliary tables
     QString dateTimeToUTC0(QDateTime time, QString exchange);
+    QDateTime DatetimeUTCStrToDatetime(QString timeUtc) const;
     void updateDateTimeUTCFromQTFormat(QString table,QString id, QDateTime time, QString exchange);
 
 
@@ -78,6 +87,7 @@ public:
 protected:
     static QSqlDatabase database;
     static QString server;
+    static QString databaseName;
 
 private:
     QString query_view_operations = "SELECT OP.date, OP.type, OP.wallet1, W1.exchange, C1.name, OP.pair1Amount, OP.pair1AmountFiat,"

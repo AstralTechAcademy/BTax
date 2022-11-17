@@ -33,12 +33,23 @@ public:
     WalletOperation() = delete;
     ~WalletOperation() = default;
     WalletOperation( int id, int walletID, const QString &coinName, const QString& exchange, const QString& user,
-                     const double amount, const double available, const double retired, const double fiat, const QDateTime date) :
+                     const double amount, const double available, const double retired, const double fiat, const QDateTime date, const QDateTime datetimeUtc) :
             id_(id),
             walletID_(walletID),
             coinName_(coinName),
             exchange_(exchange),
             user_(user),
+            amount_(amount),
+            retired_(retired),
+            available_(available),
+            fiatPrice_(fiat),
+            date_(date),
+            datetimeUTC_(datetimeUtc){};
+
+    [[deprecated("Do not use at least you want to get LastWalletOperations")]]
+    WalletOperation( int id, int walletID, const double amount, const double available, const double retired, const double fiat, const QDateTime date) :
+            id_(id),
+            walletID_(walletID),
             amount_(amount),
             retired_(retired),
             available_(available),
@@ -50,6 +61,7 @@ public:
     int getWalletID(void) const noexcept;
     int getID(void) const noexcept;
     QDateTime getDate(void) const noexcept;
+    QDateTime getDateTimeUtc(void) const noexcept;
     double getAmount(void) const noexcept;
     double getRetired(void) const noexcept;
     double getAvailable(void) const noexcept;
@@ -71,7 +83,7 @@ private:
     Coin* coin_;
     double available_;
     QDateTime date_;
-    QDateTime datetimeUTC_;
+    QDateTime datetimeUTC_ = QDateTime();
     int id_;
 };
 

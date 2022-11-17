@@ -4,6 +4,7 @@ import QtQuick.Dialogs 1.3
 import QtQuick.Controls 2.14
 import es.broker.components.material 1.0 as Material
 import es.broker 1.0
+import Astral 1.0
 
 ListView{
     id: schedulerBody

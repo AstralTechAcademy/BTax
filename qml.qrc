@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Init.qml</file>
         <file>body.qml</file>
         <file>MaterialTextInput.qml</file>
         <file>Operation.qml</file>
@@ -14,6 +15,7 @@
         <file>NewAssetForm.qml</file>
         <file>DateSelector.qml</file>
         <file>DataItem.qml</file>
+        <file>Notifications/AMessageDialog.qml</file>
     </qresource>
 
     <qresource prefix="/assets">
