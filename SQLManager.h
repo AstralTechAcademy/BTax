@@ -65,9 +65,6 @@ public:
     double getInvested(const QString& user, const QString& exchange, const QString& wallet);
     int addWallet(const QString& coin, const QString& exchange, const uint32_t user);
     int getWalletID(const uint32_t user, const QString& exchange, const QString& coin);
-    bool registerOperation(const int walletID1, const int walletID2, double pair1Amount, double pair1AmountFiat,
-                           double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString& comments, QString& type,
-                           QString& status, QString& date );
     bool registerOperationNew(const std::vector<WalletOperation*> walletOperations,
                               const WalletOperation::OperationData& data,
                               std::vector<WalletOperation>& wOpsModified);
