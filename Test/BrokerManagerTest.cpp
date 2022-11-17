@@ -23,9 +23,13 @@ private slots:
     void newImportCrypto();
     void newDateCoversion();
     void newSale();
+    void getAverage();
+    void getGlobalAverage();
+    void calculatePortfolio();
 
 
-private:
+
+        private:
     UsersModel usersModel;
     OperationsModel operationsModel;
     WalletsModel walletsModel;
@@ -201,6 +205,60 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     QCOMPARE(true, operation->getGanancia() == ganancia);
     QCOMPARE(true, operation->getDate() == "dom. oct. 16 16:00:01 2022");
 }
+
+void BrokerManagerTest::getAverage()
+{
+    std::vector<WalletOperation> wOpsModified;
+    QCOMPARE(true, brokerManager->newDeposit(1, 177.0, 0.0, "deposit getAverage", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(2, 177.0, 0.0, "deposit getAverage", "")); // compare two values
+    QCOMPARE(1, brokerManager->newOperation(1,9, 56.0, 1.0, 0.00085826043, 65248.26, "EUR", 0.0, 1.0, "getAverage Compra 1", "Compra", "", "17/10/2022 13:00:00", wOpsModified)); // compare two values
+    QCOMPARE(1, brokerManager->newOperation(1,9, 80.0, 1.0, 0.00189131555, 42298.6, "EUR", 0.0, 1.0, "getAverage Compra 2", "Compra", "", "17/10/2022 13:00:00", wOpsModified)); // compare two values
+    QCOMPARE(1, brokerManager->newOperation(2,10, 90.0, 1.0, 0.00270690857, 33248.26, "EUR", 0.0, 1.0, "getAverage Compra 3", "Compra", "", "18/10/2022 13:00:00", wOpsModified)); // compare two values
+
+    auto ws = DBLocal::GetInstance()->getCryptoWallets(BrokerManager::userID);
+
+    for(auto w : ws.value())
+    {
+        auto average = 0.0;
+        if(w->getWalletID() == 9)
+        {
+            average = (56.0+80.0)/(0.00085826043 + 0.00189131555);
+            QCOMPARE(true, (int) w->getAverageCost() == (int) average);
+        }
+
+        if(w->getWalletID() == 10)
+        {
+            average = 33248.26;
+            QCOMPARE(true, (int) w->getAverageCost() == (int) average);
+        }
+    }
+
+    QCOMPARE(1, brokerManager->newOperation(9,1, 0.000143, 65000, 9.295, 1.0, "EUR", 0.0, 1.0, "getAverage Venta 1", "Venta", "", "17/10/2022 13:00:00", wOpsModified)); // compare two values
+
+    ws = DBLocal::GetInstance()->getCryptoWallets(BrokerManager::userID);
+    for(auto w : ws.value())
+    {
+        auto average = 0.0;
+        if(w->getWalletID() == 9)
+        {
+            average = (46.6694+80.0)/(0.00071526043+0.00189131555);
+            QCOMPARE(true, (int) w->getAverageCost() == (int) average);
+        }
+    }
+}
+
+
+void BrokerManagerTest::getGlobalAverage()
+{
+
+}
+
+void BrokerManagerTest::calculatePortfolio()
+{
+
+}
+
+
 
 void BrokerManagerTest::newTransferencia()
 {
