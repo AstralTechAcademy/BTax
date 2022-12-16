@@ -11,6 +11,7 @@ class Binance : public IExchange {
 public:
     Binance(void);
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
+    virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr);
 };
 
 

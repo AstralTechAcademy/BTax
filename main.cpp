@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:WalletsBody.qml"), "es.broker", 1, 0, "WalletsBody");
     qmlRegisterType(QUrl("qrc:Wallet.qml"), "es.broker", 1, 0, "Wallet");
     qmlRegisterType(QUrl("qrc:NewOperationForm.qml"), "es.broker", 1, 0, "NewOperationForm");
+    qmlRegisterType(QUrl("qrc:NewTransferForm.qml"), "es.broker", 1, 0, "NewTransferForm");
     qmlRegisterType(QUrl("qrc:NewDepositForm.qml"), "es.broker", 1, 0, "NewDepositForm");
     qmlRegisterType(QUrl("qrc:NewAssetForm.qml"), "es.broker", 1, 0, "NewAssetForm");
     qmlRegisterType(QUrl("qrc:ImportOperationForm.qml"), "es.broker", 1, 0, "ImportOperationForm");

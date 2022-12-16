@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/*",
+                "/home/gabridc/Qt/5.15.2/gcc_64/include",
+                "/home/gabridc/Qt/5.15.2/gcc_64/include/QtCore",
+                "/home/gabridc/Qt/5.15.2/gcc_64/include/QtQml",
+                "/home/gabridc/Qt/5.15.2/gcc_64/include/QtNetwork"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "8.1",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+}

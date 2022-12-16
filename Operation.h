@@ -5,13 +5,16 @@
 #ifndef BROKER_OPERATION_H
 #define BROKER_OPERATION_H
 #include <QObject>
+#include <QDateTime>
 #include <iostream>
-
+#include "Utils.h"
 class Operation : public QObject{
 
     Q_PROPERTY(int id MEMBER id_ READ getID WRITE setID NOTIFY idChanged)
     Q_PROPERTY(QString pair1 MEMBER pair1_ READ getPair1 WRITE setPair1 NOTIFY pair1Changed)
+    Q_PROPERTY(QString walletID1 MEMBER walletID1_ READ getWalletID1 WRITE setWalletID1 NOTIFY WalletID1Changed)
     Q_PROPERTY(QString pair2 MEMBER pair2_ READ getPair2 WRITE setPair2 NOTIFY pair2Changed)
+    Q_PROPERTY(QString walletID2 MEMBER walletID2_ READ getWalletID2 WRITE setWalletID2 NOTIFY WalletID2Changed)
     Q_PROPERTY(double pair1Amount MEMBER pair1Amount_ READ getPair1Amount WRITE setPair1Amount NOTIFY pair1AmountChanged)
     Q_PROPERTY(double pair1AmountFiat MEMBER pair1AmountFiat_ READ getPair1AmountFiat WRITE setPair1AmountFiat NOTIFY pair1AmountFiatChanged)
     Q_PROPERTY(double pair2Amount MEMBER pair2Amount_ READ getPair2Amount WRITE setPair2Amount NOTIFY pair2AmountChanged)
@@ -62,11 +65,35 @@ public:
             type_(type),
             ganancia_(ganancia){};
 
+    Operation(int id, QString pair1, QString pair2, int walletID1, int walletID2, double pair1Amount, double pair1AmountFiat,
+              double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat,
+              QString status, QString date, QString comments, QString type, double ganancia):
+            id_(id),
+            pair1_(pair1),
+            pair2_(pair2),
+            walletID1_(walletID1),
+            walletID2_(walletID2),
+            pair1Amount_(pair1Amount),
+            pair1AmountFiat_(pair1AmountFiat),
+            pair2Amount_(pair2Amount),
+            pair2AmountFiat_(pair2AmountFiat),
+            feesCoin_(feesCoin),
+            comision_(comision),
+            comisionFiat_(comisionFiat),
+            status_(status),
+            date_(date),
+            comments_(comments),
+            type_(type),
+            ganancia_(ganancia){};
+
     int getID(void) const noexcept;
     QString getPair1(void) const noexcept;
     QString getPair2(void) const noexcept;
+    int getWalletID1(void) const noexcept;
+    int getWalletID2(void) const noexcept;
     QString getStatus(void) const noexcept;
     QString getDate(void) const noexcept;
+    QDateTime getDateTime(void) const noexcept;
     QString getComments(void) const noexcept;
     double getPair1Amount() const;
     double getPair1AmountFiat() const;
@@ -81,6 +108,8 @@ public:
     void setID(const int id) noexcept;
     void setPair1(const QString pair1) noexcept;
     void setPair2(const QString pair2) noexcept;
+    void setWalletID1(const int walletID1) noexcept;
+    void setWalletID2(const int walletID1) noexcept;
     void setStatus(const QString status) noexcept;
     void setDate(const QString buyDate) noexcept;
     void setComments(const QString ) noexcept;
@@ -97,7 +126,12 @@ public:
 
     bool operator==(Operation& rhs)
     {
-        return date_ == rhs.getDate() &&
+        auto date = rhs.getDate();
+        QDateTime datetime;
+        cnvStrToDateTime(date, datetime);
+        if(rhs.getDate().contains("/"))
+            date = cnvDateTime2DBStr(datetime);
+        return date_ == date &&
                 pair1_ == rhs.getPair1() && pair1Amount_ == rhs.getPair1Amount() &&
                 pair2_ == rhs.getPair2() && pair2Amount_== rhs.getPair2Amount() &&
                 type_ == rhs.getType();
@@ -122,8 +156,10 @@ public:
 
 private:
     int  id_;
-    QString   pair1_;
+    QString pair1_;
     QString pair2_;
+    int walletID1_;
+    int walletID2_;
     double pair1Amount_;
     double pair1AmountFiat_;
     double pair2Amount_;
@@ -132,6 +168,7 @@ private:
     double comisionFiat_;
     QString status_;
     QString date_;
+    QString dateDBFormat_;
     QString comments_;
     QString type_;
     double ganancia_;

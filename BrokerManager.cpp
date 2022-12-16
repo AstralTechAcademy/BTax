@@ -4,6 +4,7 @@
 
 #include "BrokerManager.h"
 #include "Broker.h"
+#include "Utils.h"
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 #include "UsersModel.h"
@@ -52,37 +53,44 @@ bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
     return res;
 }
 
-
 int BrokerManager::newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
-                                double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
-                                QString status, QString date, std::vector<WalletOperation>& wOpsModified)
+                 double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
+                 QString status, QString date)
+{
+    std::vector<WalletOperation> wOpsModified;
+    WalletOperation::OperationData data;
+    data.walletID1 = walletID1;
+    data.walletID2 = walletID2;
+    data.pair1Amount = pair1Amount;
+    data.pair1AmountFiat = pair1AmountFiat;
+    data.pair2Amount = pair2Amount;
+    data.pair2AmountFiat = pair2AmountFiat;
+    data.feesCoin = feesCoin;
+    data.comision = comision;
+    data.comisionFiat = comisionFiat;
+    data.comments = comments;
+    data.type = type;
+    data.status = status;
+    data.date = date;
+    return newOperation(data , wOpsModified);
+
+}
+
+
+int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector<WalletOperation>& wOpsModified)
 {
     qDebug() << "File: BrokerManager.cpp Function: newOperation";
     QDateTime dateTime;
     dateTime.setDate(QDate(1900, 1, 1));
+    cnvStrToDateTime(data.date, dateTime);
 
-    if(date == "")
-        date = QDateTime::currentDateTime().toString();
-    else
-    {
-
-        dateTime.setDate(QDate(date.split(" ")[0].split("/")[2].toInt(),
-                                   date.split(" ")[0].split("/")[1].toInt(),
-                                   date.split(" ")[0].split("/")[0].toInt()));
-        dateTime.setTime(QTime(date.split(" ")[1].split(":")[0].toInt(),
-                               date.split(" ")[1].split(":")[1].toInt(),
-                               date.split(" ")[1].split(":")[2].toInt()));
-        date = dateTime.toString();
-        //dateTime.setTimeZone(QTimeZone::utc());
-    }
-
-    if(status == "")
-        status = "Confirmed";
+    if(data.status == "")
+        data.status = "Confirmed";
 
     double totalAmount = 0.0;
 
-    auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID1);
-    auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(walletID2);
+    auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(data.walletID1);
+    auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(data.walletID2);
 
     if(r1 and r2)
     {
@@ -93,41 +101,30 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
             return static_cast<int>( NewOperationRes::COIN_NOT_FOUND);
         }
 
-        if(feesCoin == wallet1->getCoin())
+        if(data.feesCoin == wallet1->getCoin())
         {
             //std::cout << "Same coin fees"<< std::endl;
-            totalAmount = pair1Amount + comision;  // Formula reviwed. OK.
+            totalAmount = data.pair1Amount + data.comision;  // Formula reviwed. OK.
         }
         else
         {
             //std::cout << "Not same coin fees. Calculation to same coin: " << (comision * comisionFiat) / pair1AmountFiat << std::endl;
-            totalAmount = pair1Amount + (comision * comisionFiat) / pair1AmountFiat; // Formula reviwed. OK.
+            totalAmount = data.pair1Amount + (data.comision * data.comisionFiat) / data.pair1AmountFiat; // Formula reviwed. OK.
         }
-
-        WalletOperation::OperationData data;
-        data.walletID1 = walletID1;
-        data.walletID2 = walletID2;
-        data.pair1Amount = pair1Amount;
-        data.pair1AmountFiat = pair1AmountFiat;
-        data.pair2Amount = pair2Amount;
-        data.pair2AmountFiat = pair2AmountFiat;
-        data.feesCoin = feesCoin;
-        data.comision = comision;
-        data.comisionFiat = comisionFiat;
-        data.comments = comments;
-        data.type = type;
-        data.status = status;
-        data.date = date;
 
         VOperation voperation(data, dateTime);
         if( voperation.validate() == false)
             return static_cast<int>( NewOperationRes::VALIDATION_ERROR);
 
-         if(coin.value()->type() == "fiat")
-        {
-            //Se comprueba que haya saldo suficiente para la compra antes de proceder
-            auto ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()), wallet1->getExchange());
+         // Calculate Total Available amount
+        std::optional<std::vector<WalletOperation*>> ws;
+        if(data.type == "Transferencia" or coin.value()->type() == "fiat") 
+            ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()), wallet1->getExchange());   //Se comprueba que haya saldo suficiente para la compra antes de proceder
+        else
+            ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()));
 
+         if(coin.value()->type() == "fiat")
+        {          
             if (ws == std::nullopt)
             {
                 std::cout << "No existen wallets de la moneda " << wallet1->getCoin().toStdString() << std::endl;
@@ -150,9 +147,6 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
         }
         else
         {
-            // Calculate Total Available amount
-            auto ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()));
-
             if (ws == std::nullopt)
             {
                 std::cout << "No existen wallets de la moneda " << wallet1->getCoin().toStdString() << std::endl;
@@ -183,34 +177,55 @@ int BrokerManager::newOperation(const int walletID1,const int walletID2, double 
     }
 }
 
+int BrokerManager::newTransfer(const int walletID1,const int walletID2, double walletOAmount, double walletDAmount, QString feesCoin, 
+                        double comision, double comisionFiat, QString comments, QString status, QString date)
+{
+
+    std::vector<WalletOperation> wOpsModified;
+    WalletOperation::OperationData data;
+    data.walletID1 = walletID1;
+    data.walletID2 = walletID2;
+    data.pair1Amount = walletOAmount;
+    data.pair1AmountFiat = 0;
+    data.pair2Amount = walletDAmount;
+    data.pair2AmountFiat = 0;
+    data.feesCoin = feesCoin;
+    data.comision = comision;
+    data.comisionFiat = comisionFiat;
+    data.comments = comments;
+    data.type = "Transferencia";
+    data.status = status;
+    data.date = date;
+    return newOperation(data , wOpsModified);
+}
+
+int BrokerManager::newTransfer(WalletOperation::OperationData data, std::vector<WalletOperation>& wOpsModified)
+{
+    bool result = false;
+    qDebug() << "File: BrokerManager.cpp Func: newTransfer";
+    QDateTime dateTime;
+    dateTime.setDate(QDate(1900, 1, 1));
+    cnvStrToDateTime(data.date, dateTime);
+
+
+    return result;
+}
+
+
 int BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operation> operation, std::vector<WalletOperation>& wOpsModified)
 {
-    auto ops = operationsModel_->operations();
+    auto res = setWallets(exchange, operation);
+    if(res != static_cast<int>(NewOperationRes::OK)) return res; 
 
-    if(isDuplicated(operation))
+    if(checkDuplicity(operation))
     {
         std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
         return static_cast<int>( NewOperationRes::ALREADY_ADDED);
     }
 
-    auto walletPair1 = findWallet(exchange, operation->getPair1());
-    auto walletPair2 = findWallet(exchange, operation->getPair2());
-
-    qDebug() << "Pair1: " << walletPair1->getWalletID() << " " << operation->getPair1();
-    return newOperation(walletPair1->getWalletID(),
-                 walletPair2->getWalletID(),
-                 operation->getPair1Amount(),
-                 operation->getPair1AmountFiat(),
-                 operation->getPair2Amount(),
-                 operation->getPair2AmountFiat(),
-                 operation->getFeesCoin(),
-                 operation->getComision(),
-                 operation->getComisionFiat(),
-                 operation->getComments(),
-                 operation->getType(),
-                 operation->getStatus(),
-                 operation->getDate(),
-                 wOpsModified);
+    WalletOperation::OperationData data;
+    data.fromOperation(operation);
+    return newOperation(data, wOpsModified);
 }
 
 bool BrokerManager::newAsset(const QString& type, const QString& name, const QString& color)
@@ -227,6 +242,37 @@ bool BrokerManager::newAsset(const QString& type, const QString& name, const QSt
     return DBLocal::GetInstance()->registerAsset(type, name, color);
 }
 
+bool BrokerManager::addWalletIfNotExist(const QString exchange, 
+                                        const QString coinName)
+{
+    bool exist = false;
+
+    auto res = DBLocal::GetInstance()->getWallets();
+    if(std::get<0>(res) == false)
+    {
+        return (DBLocal::GetInstance()->addWallet(coinName, exchange, userID) > 0);
+    }
+
+    auto uname = DBLocal::GetInstance()->getUsername(userID);
+    auto wallets = std::get<1>(res);
+    for(auto w : wallets)
+    {
+        if(w->getCoin() == coinName && w->getExchange() == exchange && w->getUser() == uname)
+            exist = true;
+    }
+
+    if(!exist)
+    {
+        auto res = findCoin(coinName);
+        if(res == std::nullopt)
+            return false;
+        auto coin = res.value();
+        return (DBLocal::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID) > 0);
+    }
+
+    return exist;
+}
+
 bool BrokerManager::addWallet(const QString coinName, const QString exchange)
 {
     bool exist = false;
@@ -241,7 +287,11 @@ bool BrokerManager::addWallet(const QString coinName, const QString exchange)
         return false;
     else
     {
-        return (DBLocal::GetInstance()->addWallet(coinName, exchange, userID) > 0);
+        auto res = findCoin(coinName);
+        if(res == std::nullopt)
+            return false;
+        auto coin = res.value();
+        return (DBLocal::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID) > 0);
     }
 
 }
@@ -468,14 +518,20 @@ double  BrokerManager::getAvailableAmounts(const std::vector<WalletOperation*>& 
     return totalAvailableAmt;
 }
 
-bool BrokerManager::isDuplicated(std::shared_ptr<Operation> operation)
+bool BrokerManager::checkDuplicity(std::shared_ptr<Operation> operation)
 {
-    auto ops = operationsModel_->operations();
+    auto res = DBLocal::GetInstance()->getOperations(operation->getWalletID1());
+    if(std::get<0>(res) ==  false)
+        return false;
+    
+    auto ops = std::get<1>(res);
+    operation->print();
     auto exist = std::find_if(ops.begin(), ops.end(),
                               [&](Operation* op){return *op == *operation.get();});
     if(exist != ops.end())
     {
-        std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
+        std::cout << "La operacion ya existe en la base de datos" << std::endl;
+        operation->print();
         return true;
     }
     return false;
@@ -577,4 +633,26 @@ std::vector<WalletOperation*> BrokerManager::getLastNWalletOperation(int limit) 
     return DBLocal::GetInstance()->getLastNWalletOperation(limit);
 }
 
+
+int BrokerManager::setWallets(const QString& exchange, std::shared_ptr<Operation> operation)
+{
+
+    auto res1 = findCoin(operation->getPair1());
+    auto res2 = findCoin(operation->getPair2());
+    if(res1 == std::nullopt) return static_cast<int>(NewOperationRes::ORI_COIN_NOT_EXIST);
+    if(res1 == std::nullopt) return static_cast<int>(NewOperationRes::DEST_COIN_NOT_EXIST);
+    
+    auto walletPair1 = findWallet(exchange, QString::number(res1.value()->id()));
+    auto walletPair2 = findWallet(exchange, QString::number(res2.value()->id()));
+
+    if(walletPair1 == std::nullopt) return static_cast<int>(NewOperationRes::ORI_WALLET_NOT_EXIST);
+    if(walletPair2 == std::nullopt) return static_cast<int>(NewOperationRes::DEST_WALLET_NOT_EXIST);
+
+    qDebug() << "Pair1: " << walletPair1->getWalletID() << " " << operation->getPair1();
+
+    operation->setWalletID1(walletPair1->getWalletID());
+    operation->setWalletID2(walletPair2->getWalletID());
+
+    return static_cast<int>(NewOperationRes::OK);
+}
 

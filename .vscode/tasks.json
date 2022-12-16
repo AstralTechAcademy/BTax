@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build Broker w/ GTEST",
+			"command": "cmake -DLINUX=1 -DGTEST=1 -DCMAKE_BUILD_TYPE=Debug . && make",
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build Broker w/ GTEST"
+		},
+		{
+			"type": "shell",
+			"label": "Build Broker no GTEST",
+			"command": "cmake -DLINUX=1 -DCMAKE_BUILD_TYPE=Debug . && make",
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Build Broker no GTEST"
+		},
+		{
+			"type": "shell",
+			"label": "Clean",
+			"command": "rm CMakeCache.txt",
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Clean"
+		}
+	]
+}

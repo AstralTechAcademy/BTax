@@ -6,6 +6,7 @@
 #define BROKER_IMPORTER_H
 #include "ExchangeFactory.h"
 #include "BrokerManager.h"
+#include "Utils.h"
 
 class Importer : public QObject{
 
@@ -22,7 +23,8 @@ public:
     }
 
 public slots:
-    bool import(const QString& exchange, const QString& csvPath) noexcept;
+    //bool import(const QString& exchange, const QString& csvPath) noexcept;
+    bool import(const EN_Exchange exchange, const QString& csvPath) noexcept;
 
     QString  opsAlrdyAdded(void)
     {
@@ -79,6 +81,8 @@ private:
     QList<std::shared_ptr<Operation>> opsWithError_;
     QList<std::shared_ptr<Operation>> opsAdded_;
     inline static Importer* instance_ = nullptr;
+
+    void clear(void) noexcept;
 
 };
 

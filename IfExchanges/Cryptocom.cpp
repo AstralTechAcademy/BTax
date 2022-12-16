@@ -78,3 +78,8 @@ std::optional<QList<std::shared_ptr<Operation>>> Cryptocom::parse(QFile& csv)
     else
         return std::nullopt;
 }
+
+QDateTime Cryptocom::datetimeStrToDatetime(QByteArray dtimeStr)
+{
+    return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODate); // Date
+}

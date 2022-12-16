@@ -12,6 +12,7 @@ public:
     Cryptocom(void);
     virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath);
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
+    virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr);
 };
 
 

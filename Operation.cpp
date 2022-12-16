@@ -18,12 +18,28 @@ QString Operation::getPair2(void) const noexcept{
     return pair2_;
 }
 
+int Operation::getWalletID1(void) const noexcept {
+    return walletID1_;
+}
+
+int Operation::getWalletID2(void) const noexcept{
+    return walletID2_;
+}
+
 QString Operation::getStatus(void) const noexcept{
     return status_;
 }
 
 QString Operation::getDate(void) const noexcept{
     return date_;
+}
+
+QDateTime Operation::getDateTime(void) const noexcept
+{
+    auto str = date_;
+    QDateTime dateTime;
+    cnvStrToDateTime(str, dateTime);
+    return dateTime;
 }
 
 QString Operation::getComments(void) const noexcept{
@@ -64,6 +80,14 @@ QString Operation::getType() const {
 
 double Operation::getGanancia() const {
     return ganancia_;
+}
+
+void Operation::setWalletID1(int walletID1) noexcept {
+    walletID1_ = walletID1;
+}
+
+void Operation::setWalletID2(int walletID2) noexcept {
+    walletID2_ = walletID2;
 }
 
 void Operation::setPair1Amount(double pair1Amount) {

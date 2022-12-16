@@ -28,8 +28,28 @@ public:
         DEST_WALLET_NOT_EXIST,
         INSUF_BALANCE_ORI_WALLET,
         VALIDATION_ERROR,
-        COIN_NOT_FOUND
+        COIN_NOT_FOUND,
+        ORI_COIN_NOT_EXIST,
+        DEST_COIN_NOT_EXIST,
+        OK
 
+    };
+
+    struct NewOperationData
+    {
+        const int walletID1;
+        const int walletID2;
+        double pair1Amount;
+        double pair1AmountFiat;
+        double pair2Amount;
+        double pair2AmountFiat;
+        QString feesCoin;
+        double comision;
+        double comisionFiat;
+        QString comments;
+        QString type;
+        QString status;
+        QString date;
     };
 
     const uint8_t IMPORT_STAKING_OP_ATRS = 3;
@@ -56,13 +76,14 @@ public:
     static BrokerManager* getInstance(void) {
         return instance;
     }
-    bool isDuplicated(std::shared_ptr<Operation> operation);
+    bool checkDuplicity(std::shared_ptr<Operation> operation);
     std::optional<std::vector<WalletOperation*>>  getAvailableBalancesOrdered(const QString& coinID, const QString exchange = "");
 
     void load(void);
     Operation* getLastOperation(void) const;
     std::vector<WalletOperation*> getLastNWalletOperation(int limit = 1) const;
-
+    int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation, std::vector<WalletOperation>& wOpsModified);
+    int setWallets(const QString& exchange, std::shared_ptr<Operation> operation);
 signals:
     void depositCompleted(void);
 
@@ -72,10 +93,12 @@ public slots:
     bool newDeposit(const int walletID, double pairAmount, double fees,
                     const QString comment, QString date);
     int newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,
-                      double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
-                      QString status, QString date, std::vector<WalletOperation>& wOpsModified);
-    int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation, std::vector<WalletOperation>& wOpsModified);
+                     double pair2Amount, double pair2AmountFiat, QString feesCoin, double comision, double comisionFiat, QString comments, QString type,
+                     QString status, QString date);
+    int newTransfer(const int walletID1,const int walletID2, double walletOAmount, double walletDAmount, QString feesCoin, 
+                        double comision, double comisionFiat, QString comments, QString status, QString date);
     bool newAsset(const QString& type, const QString& name, const QString& color);
+    bool addWalletIfNotExist(const QString coinName, const QString exchange);
     bool addWallet(const QString coinName, const QString exchange);
     bool importOperations(void);
     uint32_t getUserID(const QString& username);
@@ -106,6 +129,13 @@ private:
     void groupCoinBySymbol(void);
     void setCoinPtrInWallets();
     double getAvailableAmounts(const std::vector<WalletOperation*>& wallets) const;
+
+#ifdef GTEST
+public:
+#endif
+    int newOperation(WalletOperation::OperationData data, std::vector<WalletOperation>& wOpsModified);
+    int newTransfer(WalletOperation::OperationData data, std::vector<WalletOperation>& wOpsModified);
+
 
 };
 

@@ -10,6 +10,7 @@
         <file>Wallet.qml</file>
         <file>IconButton.qml</file>
         <file>NewOperationForm.qml</file>
+        <file>NewTransferForm.qml</file>
         <file>ImportOperationForm.qml</file>
         <file>NewDepositForm.qml</file>
         <file>NewAssetForm.qml</file>

@@ -7,6 +7,7 @@
 #include <QString>
 #include <iostream>
 #include "CoinsModel.h"
+#include "Operation.h"
 #include <memory>
 #include <QDateTime>
 
@@ -28,6 +29,24 @@ public:
         QString status;
         QString date;
         QString datetimeUTC;
+
+        void fromOperation(std::shared_ptr<Operation> o) noexcept
+        {
+            walletID1 = o->getWalletID1();
+            walletID2 = o->getWalletID2();
+            pair1Amount = o->getPair1Amount();
+            pair1AmountFiat = o->getPair1AmountFiat();
+            pair2Amount = o->getPair2Amount();
+            pair2AmountFiat = o->getPair2AmountFiat();
+            feesCoin = o->getFeesCoin();
+            comision = o->getComision();
+            comisionFiat = o->getComisionFiat();
+            comments = o->getComments();
+            type = o->getType();
+            status = o->getStatus();
+            date = o->getDate();
+        }
+
     };
 
     WalletOperation() = delete;

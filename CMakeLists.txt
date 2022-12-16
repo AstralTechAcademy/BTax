@@ -76,6 +76,7 @@ include_directories(~/Qt/5.15.2/gcc_64/include/QtNetworkAuth)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtNetwork)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtWidgets)
 include_directories(./)
+include_directories(./IfExchanges)
 
 qt5_add_resources(RESOURCES ./qml.qrc)
 
@@ -94,6 +95,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Operation.h
         Deposit.cpp
         Deposit.h
+        Utils.h
+        Utils.cpp
         Statistics.cpp
         DBCredential_NotPush.h
         WalletsPercModel.cpp WalletsPercModel.h
@@ -137,14 +140,22 @@ add_definitions(-DGTEST)
 enable_testing(true)
 add_executable(BrokerManagerTest Test/BrokerManagerTest.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(BrokerTest Test/BrokerTest.cpp ${RESOURCES} ${APP_SOURCES})
+add_executable(B2mTest Test/B2mTest.cpp ${RESOURCES} ${APP_SOURCES})
+add_executable(ImporterTest Test/ImporterTest.cpp ${RESOURCES} ${APP_SOURCES})
 
 set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(BrokerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+set_target_properties(B2mTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+set_target_properties(ImporterTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 
 add_test(NAME BrokerTest COMMAND BrokerTest)
 add_test(NAME BrokerManagerTest COMMAND BrokerManagerTest)
+add_test(NAME B2mTest COMMAND B2mTest)
+add_test(NAME ImporterTest COMMAND ImporterTest)
 
 target_link_libraries(BrokerManagerTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
 target_link_libraries(BrokerTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
+target_link_libraries(B2mTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
+target_link_libraries(ImporterTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
 endif()
 

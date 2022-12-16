@@ -72,3 +72,8 @@ std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
     else
         return std::nullopt;
 }
+
+QDateTime Binance::datetimeStrToDatetime(QByteArray dtimeStr)
+{
+    return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODate); // Date
+}

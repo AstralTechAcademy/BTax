@@ -14,8 +14,10 @@
 
 class IExchange {
 public:
+
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv) = 0;
-    virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath)
+    virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr) = 0;
+    virtual std::optional<QList<std::shared_ptr<Operation>>> read(const QString& csvPath)
     {
         qDebug() << "File: IExchange.h Func: Import Description: Importing file " << csvPath;
         QFile csv;
@@ -27,6 +29,8 @@ public:
         }
         return parse(csv);
     }
+protected:
+    QList<std::shared_ptr<Operation>> operations_;
 };
 
 

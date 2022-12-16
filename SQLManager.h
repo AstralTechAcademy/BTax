@@ -16,7 +16,9 @@
 #include <Operation.h>
 #include "Wallet.h"
 #include "WalletOperation.h"
+#include "CoinsModel.h"
 #include "Deposit.h"
+#include "Utils.h"
 
 class SQLManager {
 
@@ -56,8 +58,10 @@ public:
     //virtual Wallet getWallet(const QString& wallet) = 0;
     //std::tuple<bool, std::vector<Operation*>> getOperations(void);
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID);
+    std::tuple<bool, std::vector<Operation*>> getOperations(const QString& walletID);
     Operation* getLastOperation(void) const;
     std::vector<WalletOperation*> getLastNWalletOperation(int limit) const;
+    QString getUsername(uint32_t userid);
 
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID, const QString& exchange);
     bool depositOperation(const int walletID, const QString exchange, double amount, double amountFiat, double fees, const QString& comments, QString& date);
@@ -75,11 +79,8 @@ public:
     //const QString   LinuxDatabasePath = QDir::homePath()+ "/.broker/broker.db";
 
     // Auxiliary tables
-    QString dateTimeToUTC0(QDateTime time, QString exchange);
     QDateTime DatetimeUTCStrToDatetime(QString timeUtc) const;
-    void updateDateTimeUTCFromQTFormat(QString table,QString id, QDateTime time, QString exchange);
-
-
+    QString updateDateTimeUTCFromQTFormat(QString table,QString id, QDateTime time, QString exchange);
 
 protected:
     static QSqlDatabase database;
@@ -87,6 +88,7 @@ protected:
     static QString databaseName;
 
 private:
+    std::tuple<bool, std::vector<Operation*>> processGetOperations(QSqlQuery& query);
     QString query_view_operations = "SELECT OP.date, OP.type, OP.wallet1, W1.exchange, C1.name, OP.pair1Amount, OP.pair1AmountFiat,"
                                     "    OP.wallet2, W2.exchange, C2.name, OP.pair2Amount, OP.pair2AmountFiat,"
                                     "    OP.comision, OP.comisionFiat, OP.ganancia"
