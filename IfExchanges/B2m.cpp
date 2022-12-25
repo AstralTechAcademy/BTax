@@ -14,7 +14,7 @@ std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
     uint8_t firstLine = 0;
     operations_.clear();
 
-    QMap<QString, int> header;
+    QMap<EN_COLUMN_NAMES, int> header;
     while (!csv.atEnd()) {
         QByteArray line = csv.readLine();
         if(firstLine == 1) // HEADER
@@ -24,51 +24,51 @@ std::optional<QList<std::shared_ptr<Operation>>> B2m::parse(QFile& csv)
             {
 
                 if(columns[index] == "DATE")
-                    header.insert("DATE", index);
+                    header.insert(EN_COLUMN_NAMES::DATE, index);
                 if(columns[index] == "METHOD")
-                    header.insert("TYPE", index);
+                    header.insert(EN_COLUMN_NAMES::TYPE, index);
 
                 if(columns[index] == "FROM CURRENCY") // Se coge usando la columna de fees. Moneda por defecto
-                    header.insert("PAIR1", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR1, index);
                 if(columns[index] == "FROM AMOUNT") // Se coge un valor 0 porque siempre es 0 el valor en EUR al ser EARN
-                    header.insert("PAIR1_AMOUNT", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR1_AMOUNT, index);
 
                 if(columns[index] == "FEE CURRENCY") // Se coge usando la columna de fees. Moneda por defecto
-                    header.insert("FEE", index);
+                    header.insert(EN_COLUMN_NAMES::FEE, index);
                 if(columns[index] == "FEE AMOUNT") // Se coge un valor 0 porque siempre es 0 el valor en EUR al ser EARN
-                    header.insert("FEE_AMOUNT", index);
+                    header.insert(EN_COLUMN_NAMES::FEE_AMOUNT, index);
 
                 if(columns[index] == "TO CURRENCY")
-                    header.insert("PAIR2", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR2, index);
                 if(columns[index] == "TO AMOUNT")
-                    header.insert("PAIR2_AMOUNT", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR2_AMOUNT, index);
 
                 if(columns[index] == "FEE CURRENCY")
-                    header.insert("FIAT_CURRENCY", index);
+                    header.insert(EN_COLUMN_NAMES::FIAT_CURRENCY, index);
                 if(columns[index] == "TO RATE EUR")
-                    header.insert("PAIR2_AMOUNT_FIAT", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT, index);
             }
         }
         else if(firstLine > 1)
         {
             auto lineV = line.split(',');
-            if(lineV[header["TYPE"]] == "earn")
+            if(lineV[header[EN_COLUMN_NAMES::TYPE]] == "earn")
             {
-                qDebug() << "Operation: " << lineV[header["PAIR1"]] << " " << lineV[header["PAIR2"]] << " " << lineV[header["PAIR2_AMOUNT_FIAT"]].toDouble();
+                qDebug() << "Operation: " << lineV[header[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble();
                 operations_.push_back(std::make_shared<Operation>(0, 
-                            lineV[header["FEE"]],  // Pair 1 Coin
-                            lineV[header["PAIR2"]], // Pair 2 Coin
+                            lineV[header[EN_COLUMN_NAMES::FEE]],  // Pair 1 Coin
+                            lineV[header[EN_COLUMN_NAMES::PAIR2]], // Pair 2 Coin
                             0.0, // Pair1Amount
                             1.0, // Pair1AmountFiat
-                            lineV[header["PAIR2_AMOUNT"]].toDouble(), // Pair2Amount
-                            lineV[header["PAIR2_AMOUNT_FIAT"]].toDouble(), // Pair2AmountFiat
+                            lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble(), // Pair2Amount
+                            lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble(), // Pair2AmountFiat
                             0.0, // Fees Amount
                             1.0, // Fees Amount fiat
                             "Accepted", // Status
-                            cnvDateTime2Str(datetimeStrToDatetime(lineV[header["DATE"]])), // Date //TODO: This variable must be dateTime type
+                            cnvDateTime2StrFormat(datetimeStrToDatetime(lineV[header[EN_COLUMN_NAMES::DATE]]), EN_DateFormat::DMYhms), // Date //TODO: This variable must be dateTime type
                             "", // Description 
                             "Earn", // Type
-                            lineV[header["PAIR2_AMOUNT_FIAT"]].toDouble()*lineV[header["PAIR2_AMOUNT"]].toDouble() // Ganancia
+                            lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble()*lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble() // Ganancia
                             ));
             }
         }

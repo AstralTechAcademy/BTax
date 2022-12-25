@@ -14,8 +14,8 @@ std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
     csv.open(QIODevice::ReadOnly);
     uint8_t firstLine = 0;
     QList<std::shared_ptr<Operation>> operations;
+    QMap<EN_COLUMN_NAMES, int> header;
 
-    QMap<QString, int> header;
     while (!csv.atEnd()) {
         QByteArray line = csv.readLine();
         if(firstLine == 0) // HEADER
@@ -25,47 +25,44 @@ std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
             {
 
                 if(columns[index] == "UTC_Time")
-                    header.insert("DATE", index);
+                    header.insert(EN_COLUMN_NAMES::DATE, index);
                 if(columns[index] == "Operation")
-                    header.insert("TYPE", index);
+                    header.insert(EN_COLUMN_NAMES::TYPE, index);
 
                 if(columns[index] == "Coin")
-                    header.insert("PAIR2", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR2, index);
                 if(columns[index] == "Change")
-                    header.insert("PAIR2_AMOUNT", index);
+                    header.insert(EN_COLUMN_NAMES::PAIR2_AMOUNT, index);
 
             }
         }
         else
         {
             auto lineV = line.split(',');
-            qDebug() << lineV;
-
             //Defaults
             double pair1Amount = 0.0;
             double pair1AmountFiat = 1.0;
             double pair2AmountFiat = 0.0;
 
-            if(lineV[header["TYPE"]] == "POS savings interest")
+            if(lineV[header[EN_COLUMN_NAMES::TYPE]] == "POS savings interest")
             {
-                auto walletID = DBLocal::GetInstance()->getWalletID(DBLocal::GetInstance()->getUserID("gabridc"), "Binance", BrokerManager::DEF_FIAT_ID);
-
-                if (walletID == 0)
-                {
-                    qDebug() << "File: Binance.cpp Function: parse Description: No se encuentra la wallet Binance:EUR en el usuario gabridc";
-                    return std::nullopt;
-                }
-                operations.push_back(std::make_shared<Operation>(0, BrokerManager::DEF_FIAT, lineV[header["PAIR2"]], pair1Amount, pair1AmountFiat,
-                                                                 lineV[header["PAIR2_AMOUNT"]].toDouble(),
+                qDebug() << "Operation: " << lineV[header[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble();
+                operations.push_back(std::make_shared<Operation>(0, BrokerManager::DEF_FIAT,  // Pair 1 Coin
+                                                                 lineV[header[EN_COLUMN_NAMES::PAIR2]],  // Pair 2 Coin
+                                                                 pair1Amount, pair1AmountFiat,
+                                                                 lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble(),
                                                                  pair2AmountFiat,
                                                                  0.0, 1.0, "Accepted",
-                                                                 QDateTime::fromString(lineV[header["DATE"]], Qt::DateFormat::ISODate).toString(),
-                                                                 "", "Earn", pair2AmountFiat*lineV[header["PAIR2_AMOUNT"]].toDouble()));
+                                                                 cnvDateTime2StrFormat(datetimeStrToDatetime(lineV[header[EN_COLUMN_NAMES::DATE]]), EN_DateFormat::DMYhms),                                                                 "", "Earn", 
+                                                                 pair2AmountFiat*lineV[header[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble()) // Ganancia
+                                                                 );
             }
         }
 
         firstLine = 1;
     }
+
+    getFiatPrice(operations);
 
     if(operations.size() > 0)
         return operations;
@@ -75,5 +72,30 @@ std::optional<QList<std::shared_ptr<Operation>>> Binance::parse(QFile& csv)
 
 QDateTime Binance::datetimeStrToDatetime(QByteArray dtimeStr)
 {
-    return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODate); // Date
+    return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODateWithMs); // Date
+}
+
+bool Binance::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
+{
+    Coingecko coingecko;
+
+    for(auto o : operations)
+    {
+        auto id = coingecko.getCoinID(o->getPair2());
+        if(id == std::nullopt)
+            return false;
+        
+        qDebug() << o->getDate() << " " << o->getDateTime();
+
+        auto price = coingecko.getPrice(id.value(), o->getDateTime());
+
+        if(price == std::nullopt)
+            return false;
+        
+        qDebug() << "Price: " << id.value()  << " " << o->getDateTime() << " " << price.value();
+
+    }
+        
+
+    return false;
 }
