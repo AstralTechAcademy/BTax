@@ -21,7 +21,9 @@
 
 class IMarketData {
 public:
+    virtual std::optional<QMap<QString, QString>> getCoins(void) = 0;
     virtual std::optional<double> getCurrentPrice(const QString& fiat) = 0;
+    virtual std::optional<QString> getCoinID(const QString& coinName) = 0;
     virtual std::optional<std::unordered_map<QString, double>> getCurrentPrices(void) = 0;
     virtual std::optional<double> getPrice(const QString& coin, const QDateTime& date) = 0;
     virtual std::optional<QString> getCoinID(const QString& exchange, const QString& coin) = 0;

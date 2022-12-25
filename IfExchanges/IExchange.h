@@ -15,6 +15,20 @@
 class IExchange {
 public:
 
+    enum class EN_COLUMN_NAMES
+    {
+        DATE = 0,
+        TYPE,
+        PAIR1,
+        PAIR1_AMOUNT,
+        FEE,
+        FEE_AMOUNT,
+        PAIR2,
+        PAIR2_AMOUNT,
+        PAIR2_AMOUNT_FIAT,
+        FIAT_CURRENCY
+    };
+
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv) = 0;
     virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr) = 0;
     virtual std::optional<QList<std::shared_ptr<Operation>>> read(const QString& csvPath)
