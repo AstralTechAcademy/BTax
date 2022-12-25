@@ -521,7 +521,7 @@ std::optional<std::vector<const WalletOperation*>> SQLManager::getWalletOperatio
             auto exchange = query.value(8).toString();
             QDateTime dateTimeUTC;
             if (query.value(10).isNull())
-                dateTimeUTC =  QDateTime::fromString(updateDateTimeUTCFromQTFormat("WalletOperations", query.value(0).toString(), QDateTime::fromString(query.value(6).toString()), exchange));
+                dateTimeUTC =  QDateTime::fromString(updateDateTimeUTCFromQTFormat("WalletOperations", query.value(0).toString(), cnvDBStr2DateTime(query.value(6).toString()), exchange));
             else    
                 dateTimeUTC = DatetimeUTCStrToDatetime(query.value(10).toString());
 

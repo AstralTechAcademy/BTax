@@ -221,6 +221,11 @@ void BrokerManagerTest::newOperation()
     QCOMPARE(true, operation->getDate() == "dom. oct. 2 10:00:01 2022");
 }
 
+
+/*
+ * Description: Two ADA wallets (diferent exchange) have bought diferent amount of ADA in diferent hour.
+ *  FIFO algorithm is applied and earning is calculated.
+*/
 void BrokerManagerTest::newSaleAssetMultiExchange()
 {
     std::vector<WalletOperation> wOpsModified;
@@ -270,6 +275,12 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     data.date = "15/10/2022 13:00:01";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values    
         
+    /*******************************************************************************/
+    /*******************************************************************************/
+    /******************************** First Sale  ADA-B2M **************************/
+    /*******************************************************************************/
+    /*******************************************************************************/
+
     data.walletID1 = 6;
     data.walletID2 = 14;
     data.pair1Amount = 58.0;
@@ -295,14 +306,15 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     QCOMPARE(true, operation->getGanancia() == ganancia);
     QCOMPARE(true, operation->getDate() == "dom. oct. 16 16:00:01 2022");
 
-    // Revisar la cantidad de monedas en la wallet ADA-Binance (tiene las monedas mas antiguas -> las primeras que se venden)
+    // Check that FIFO algortihm has been used. 
+    // ADA-Binance has the oldest coins, so this coins are sold before.
     QCOMPARE(true, wOpsModified.size() == 1);
     QCOMPARE(true, QString::number(wOpsModified[0].getRetired()) == "68");
     QCOMPARE(true, QString::number(wOpsModified[0].getAvailable()) == "116.805");
 
     /*******************************************************************************/
     /*******************************************************************************/
-    /******************************** Segunda Venta ********************************/
+    /******************************** Second Sale  ADA-B2M *************************/
     /*******************************************************************************/
     /*******************************************************************************/
     data.walletID1 = 6;
@@ -329,19 +341,21 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     QCOMPARE(true, operation->getGanancia() == ganancia);
     QCOMPARE(true, operation->getDate() == "dom. oct. 16 17:00:01 2022");
 
-    // Revisar la cantidad de monedas en la wallet ADA-Binance (tiene las monedas mas antiguas -> las primeras que se venden)
+    // Check that FIFO algortihm has been used. 
+    // ADA-Binance has the oldest coins, so this coins are sold before.
     QCOMPARE(true, wOpsModified.size() == 1);
     QCOMPARE(true, QString::number(wOpsModified[0].getRetired()) == "88");
     QCOMPARE(true, QString::number(wOpsModified[0].getAvailable()) == "96.8049");
 
-    // Revisar la cantidad de monedas en la wallet ADA-B2M
+    // Check that FIFO algortihm has been used. 
+    // ADA-B2M has all amount available.
     wallet = DBLocal::GetInstance()->getWalletOperations("6");
     ws = wallet.value();
     QCOMPARE(true, ws.size() == 1);
     QCOMPARE(true, QString::number(ws[0]->getRetired()) == "0");
     QCOMPARE(true, QString::number(ws[0]->getAvailable()) == "147.493");
 
-    // Revisar la cantidad de monedas en la wallet EUR-B2M
+    // Check that EUR-B2M has amount available bacause of sales.
     wallet = DBLocal::GetInstance()->getWalletOperations("14");
     ws = wallet.value();
     QCOMPARE(true, ws.size() == 3);
@@ -352,6 +366,13 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
 
 }
 
+/*
+ * Description: Calculate average cost of each individual wallet. 
+    In one wallet two buy operation is performed, average cost is calculated and then one sell operation
+    is perfomed, average cost is calculated.
+
+    Othe wallet one buy operation is performed, average cost is calculated.
+*/
 void BrokerManagerTest::getAverage()
 {
     std::vector<WalletOperation> wOpsModified;
@@ -460,8 +481,11 @@ void BrokerManagerTest::calculatePortfolio()
 
 }
 
-
-
+/*
+ * Description: Transfer from one wallet to another. 
+    WalletOperations register has to be modified keeping the same values in the new walletoperation register. 
+    A transfer does not change the operation datetime
+*/
 void BrokerManagerTest::newTransferencia()
 {
     std::vector<WalletOperation> wOpsModified;
@@ -490,6 +514,7 @@ void BrokerManagerTest::newTransferencia()
         QCOMPARE(true, wOpsModified.size() == 2);
         QCOMPARE(true, operations[index]->getAmount() == wOpsModified[indexModified].getRetired());
         QCOMPARE(true, operations[index]->getDate().toString() == wOpsModified[indexModified].getDate().toString());
+        QCOMPARE(true, cnvDateTime2StrFormat(operations[index]->getDate(), EN_DateFormat::DMYhms) != "3/10/2022 10:00:00");
         indexModified--;
     }
 }
@@ -597,7 +622,7 @@ void BrokerManagerTest::fullUseCase()
     data.date = "31/12/2021 23:59:59";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values
 
-    // Check retired amount
+    // Check retired amount. FIFO algorithm.
     wops = brokerManager->getLastNWalletOperation(2);
     QCOMPARE(true, wops.at(1)->getCoin() == "LINK");
     QCOMPARE(true, wops.at(1)->getAmount() == 11.004567);
@@ -620,6 +645,8 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getGanancia() < 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "vie. dic. 31 23:59:59 2021");
+    QCOMPARE(true, cnvDateTime2StrFormat(op->getDateTime(), EN_DateFormat::DMYhms) == "31/12/2021 23:59:59");
+
 
     data.walletID1 = 24;
     data.walletID2 = 20;
@@ -659,6 +686,8 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getGanancia() > 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "sáb. ene. 1 02:25:00 2022");
+    QCOMPARE(true, cnvDateTime2StrFormat(op->getDateTime(), EN_DateFormat::DMYhms) == "1/1/2022 2:25:0");
+
 }
 
 void BrokerManagerTest::newDateCoversion()
@@ -711,6 +740,11 @@ void BrokerManagerTest::newOperationWallet2NotExist()
     QCOMPARE(3, brokerManager->newOperation(data, wOpsModified)); // compare two values
 }
 
+/*
+ * Description: Calculate UTC+0 time in WalletOperations table if the value does not exist.
+    The calculation is based on the exchange, Bit2Me exchange date time is Spanish timezone and Binance 
+    or other exchanges no conversion is required.
+*/
 void BrokerManagerTest::updateTimeUTC()
 {
     QSqlQuery query(DBLocal::getDb());

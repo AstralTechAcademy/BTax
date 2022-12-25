@@ -15,7 +15,7 @@ void cnvDateTime2Str(QDateTime datetime, QString& datetimeStr)
                     QString::number(datetime.time().second());
 }
 
-QString cnvDateTime2Str(QDateTime datetime)
+QString cnvDateTime2DMYhms(QDateTime datetime)
 {
      return QString::number(datetime.date().day()) + "/" + 
                     QString::number(datetime.date().month()) + "/" + 
@@ -25,11 +25,31 @@ QString cnvDateTime2Str(QDateTime datetime)
                     QString::number(datetime.time().second());
 }
 
-QString cnvDateTime2DBStr(QDateTime datetime)
+QString cnvDateTime2StrFormat(QDateTime datetime, EN_DateFormat format)
 {
-     return datetime.toString();
+    std::cout << datetime.toString().toStdString() << std::endl; 
+    QString str;
+    switch(format)
+    {
+        case EN_DateFormat::ISO_8601:
+            str = "1970-01-01 00:00:00";
+            break;
+        case EN_DateFormat::DMYhms:
+            str = cnvDateTime2DMYhms(datetime);
+            break;
+        case EN_DateFormat::QT:
+        default:
+            str = datetime.toString();
+            break;
+    }
+
+    return str;
 }
 
+QDateTime cnvDBStr2DateTime(QString datetime)
+{
+     return QDateTime::fromString(datetime);
+}
 
 void cnvStrToDateTime(QString& datetimeStr, QDateTime& dateTime)
 {
@@ -46,6 +66,10 @@ void cnvStrToDateTime(QString& datetimeStr, QDateTime& dateTime)
                                datetimeStr.split(" ")[1].split(":")[2].toInt()));
         datetimeStr = dateTime.toString();
         //dateTime.setTimeZone(QTimeZone::utc());
+    }
+    else if(datetimeStr.contains(" ") and datetimeStr.split(" ").size() == 5)
+    {
+        dateTime = QDateTime::fromString(datetimeStr);
     }
 }
 

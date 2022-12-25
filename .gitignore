@@ -54,3 +54,7 @@ android1/android_deployment_settings.json.in
 android1/qml.qrc.depends
 
 android1/qrc_qml.cpp
+ImporterTest_autogen/
+BinanceTest_autogen/
+B2mTest_autogen/
+build/

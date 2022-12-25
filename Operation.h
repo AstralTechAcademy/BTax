@@ -130,7 +130,7 @@ public:
         QDateTime datetime;
         cnvStrToDateTime(date, datetime);
         if(rhs.getDate().contains("/"))
-            date = cnvDateTime2DBStr(datetime);
+            date = cnvDateTime2StrFormat(datetime, EN_DateFormat::QT);
         return date_ == date &&
                 pair1_ == rhs.getPair1() && pair1Amount_ == rhs.getPair1Amount() &&
                 pair2_ == rhs.getPair2() && pair2Amount_== rhs.getPair2Amount() &&
