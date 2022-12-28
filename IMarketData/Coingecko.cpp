@@ -8,6 +8,8 @@
 #include <QThread>
 #include <tuple>
 
+Coingecko* Coingecko::instance_ = nullptr;
+
 Coingecko::Coingecko(void)
 {
     if(coins_.size() == 0)
@@ -16,6 +18,13 @@ Coingecko::Coingecko(void)
         if(coins != std::nullopt)
             coins_ = coins.value();    
     }
+}
+
+Coingecko* Coingecko::getInstace(void)
+{
+    if(instance_ == nullptr)
+        instance_ = new Coingecko();    
+    return instance_;
 }
 
 std::optional<double> Coingecko::getCurrentPrice(const QString& coin)
@@ -77,8 +86,6 @@ std::optional<QString> Coingecko::getCoinID(const QString& exchange, const QStri
 std::optional<double> Coingecko::getPrice(const QString& coin, const QDateTime& date)
 {
     std::shared_ptr<QNetworkRequest> request = std::make_shared<QNetworkRequest>();
-    std::cout << "Coind Id " <<  coin.toLower().toStdString() << std::endl;
-    std::cout << "Uri " << "https://api.coingecko.com/api/v3/coins/" << coin.toLower().toStdString() << "/history?date=" << date.date().day() <<  "-" << date.date().month() << "-" << date.date().year()  << std::endl;
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/" + coin.toLower() + "/history?date="+ QString::number(date.date().day()) + "-" + QString::number(date.date().month()) + "-" + QString::number(date.date().year())));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
@@ -98,7 +105,6 @@ std::optional<QMap<QString, QString>> Coingecko::getCoins(void)
 {
     QMap<QString, QString> coins;
     std::shared_ptr<QNetworkRequest> request = std::make_shared<QNetworkRequest>();
-    std::cout << "Uri " << "https://api.coingecko.com/api/v3/coins/list";
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/list" ));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
@@ -109,8 +115,20 @@ std::optional<QMap<QString, QString>> Coingecko::getCoins(void)
     if(response_doc.isNull() == false && response_doc.isArray() == true)
     {
          for (auto c : response_doc.array())
-                                // ADA                                  // CARDANO
-                coins.insert(c.toObject().value("symbol").toString(), c.toObject().value("id").toString() );
+         {
+            auto ticker = c.toObject().value("symbol").toString();
+            auto id = c.toObject().value("id").toString();
+
+            if(!coins.contains(ticker))
+                            // ADA // CARDANO
+                coins.insert(ticker,id);
+            else
+            {
+                auto idStored = coins[ticker];
+                if(id.size() < idStored.size()) //replace value because id is a better one
+                    coins.insert(ticker,id);
+            }
+         }
 
         if(!coins.isEmpty())
             return coins;
@@ -123,11 +141,6 @@ std::optional<QMap<QString, QString>> Coingecko::getCoins(void)
 
 std::optional<QString> Coingecko::getCoinID(const QString& coinName)
 {        
-    if(coins_.size() != 0)
-        qDebug() << "Number coins in Coingecko: " << coins_.size();
-
-    qDebug() << coinName << " " <<coins_[coinName.toLower()];
-
     if(coins_.empty())
         return std::nullopt;
     if(!coins_.contains(coinName.toLower()))

@@ -560,9 +560,9 @@ std::optional<Coin*> BrokerManager::findCoin(const QString& coin)
 
 void BrokerManager::updateCurrentPrice(void)
 {
-    Coingecko coingecko;
+    auto coingecko = Coingecko::getInstace();
 
-    auto prices = coingecko.getCurrentPrices();
+    auto prices = coingecko->getCurrentPrices();
     if(prices == std::nullopt)
     {
         std::cout << "Error: Prices information not provided" << std::endl;
@@ -598,11 +598,11 @@ void BrokerManager::updateCurrentPrice(void)
 
 std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
 {
-    Coingecko coingecko;
-    auto c = coingecko.getCoinID("Binance", coin->name().toLower());
+    auto coingecko = Coingecko::getInstace();
+    auto c = coingecko->getCoinID("Binance", coin->name().toLower());
     if(c == std::nullopt)
         return std::nullopt;
-    return coingecko.getCurrentPrice(c.value());
+    return coingecko->getCurrentPrice(c.value());
 }
 
 void BrokerManager::load(void)

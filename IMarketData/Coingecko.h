@@ -11,6 +11,7 @@ class Coingecko : public IMarketData{
 
 public:
     Coingecko(void);
+    static Coingecko* getInstace(void);
     virtual std::optional<QMap<QString, QString>> getCoins(void);
     virtual std::optional<QString> getCoinID(const QString& coinName);
     virtual std::optional<double> getCurrentPrice(const QString& coin);
@@ -19,7 +20,9 @@ public:
     std::optional<double> getPrice(const QString& coin, const QDateTime& date);
 
 private:
+
     QMap<QString, QString> coins_;
+    static Coingecko* instance_;
 
 };
 

@@ -83,3 +83,6 @@ QDateTime Cryptocom::datetimeStrToDatetime(QByteArray dtimeStr)
 {
     return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODate); // Date
 }
+
+void Cryptocom::parseHeader(QFile& csv)
+{}

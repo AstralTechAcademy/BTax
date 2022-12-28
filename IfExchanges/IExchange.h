@@ -30,6 +30,7 @@ public:
     };
 
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv) = 0;
+    virtual void parseHeader(QFile& csv) = 0;
     virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr) = 0;
     virtual std::optional<QList<std::shared_ptr<Operation>>> read(const QString& csvPath)
     {
@@ -45,6 +46,7 @@ public:
     }
 protected:
     QList<std::shared_ptr<Operation>> operations_;
+    QMap<EN_COLUMN_NAMES, int> header_;
 };
 
 

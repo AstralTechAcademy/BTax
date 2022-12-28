@@ -11,6 +11,7 @@ class B2m : public IExchange {
 public:
     B2m(void);
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
+    virtual void parseHeader(QFile& csv);
     virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr);
 };
 

@@ -87,3 +87,6 @@ QDateTime B2m::datetimeStrToDatetime(QByteArray dtimeStr)
 {
     return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODateWithMs); // Date
 }
+
+void B2m::parseHeader(QFile& csv)
+{}
