@@ -859,8 +859,7 @@ std::optional<std::tuple<uint32_t, QString, QString, QString>> SQLManager::getCo
     query.prepare("SELECT id, name, type, color FROM Coins WHERE name=:coin");
     query.bindValue(":coin", coin);
     query.exec();
-    bool result = query.result()->handle().isValid();
-    if(!result)
+    if(query.size() == 0)
         return std::nullopt;
 
     while(query.next())

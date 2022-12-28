@@ -1,5 +1,6 @@
 #include "IExchange.h"
 
+
 std::optional<QList<std::shared_ptr<Operation>>> IExchange::parse(QFile& csv)
 {
     csv.open(QIODevice::ReadOnly);
@@ -29,8 +30,7 @@ std::optional<QList<std::shared_ptr<Operation>>> IExchange::read(const QString& 
 bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
 {
     QList<QString> opsWithoutPrice;
-    auto coingecko = Coingecko::getInstace();
-
+    auto coingecko = MarketDataFactory::createMarketData("Coingecko");
     for(auto o : operations)
     {
         auto id = coingecko->getCoinID(o->getPair2());

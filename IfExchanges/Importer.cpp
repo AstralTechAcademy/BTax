@@ -28,7 +28,6 @@ bool Importer::import(const EN_Exchange exchange, const QString& csvPath) noexce
         return false;
 
     qDebug() << "File: Importer Func: import Description: Operations imported " << operations_->size();
-    auto coingecko = MarketDataFactory::createMarketData("Coingecko");
     auto ops = operations_.value();
     std::vector<WalletOperation> wOpsModified;
     for(auto index = 0; index < ops.size();)

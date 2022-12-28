@@ -16,6 +16,7 @@ private slots:
     void initTestCase();
     void loadTestData();
     void importB2m();
+    void importBinance();
     void OperationsDuplicatedImporting();
     void cleanupTestCase();
 
@@ -35,6 +36,8 @@ private:
 
     QString pathB2m = "Files/B2M.csv";
     QString pathB2m_1 = "Files/B2M_1.csv";
+    QString pathBinance = "Files/Binance.csv";
+    QString pathBinance_1 = "Files/Binance_1.csv";
 
 };
 
@@ -129,6 +132,7 @@ void ImporterTest::loadTestData()
     QCOMPARE(true, DBLocal::GetInstance()->registerAsset("fiat", "USD", "#FF0000")); // ID = 5
     QCOMPARE(true, DBLocal::GetInstance()->registerAsset("crypto", "LINK", "#FFF000")); // ID = 6
     QCOMPARE(true, DBLocal::GetInstance()->registerAsset("crypto", "B2M", "#FFF000")); // ID = 7
+    QCOMPARE(true, DBLocal::GetInstance()->registerAsset("crypto", "SHIB", "#FFF000")); // ID = 8
 
 
     brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
@@ -148,6 +152,21 @@ void ImporterTest::importB2m()
     importer->import(EN_Exchange::B2M, pathB2m_1);
     QCOMPARE(true, importer->opsAddedSize() == 2);
     QCOMPARE(true, importer->opsAlrdyAddedSize() == 2);
+    QCOMPARE(true, importer->opsWithError() == 0);
+}
+
+void ImporterTest::importBinance()
+{
+    importer->import(EN_Exchange::BINANCE, pathBinance);
+    QCOMPARE(true, importer->opsAddedSize() == 3);
+
+    importer->import(EN_Exchange::BINANCE, pathBinance);
+    QCOMPARE(true, importer->opsAlrdyAddedSize() == 3);
+
+    // Newer file with more earn operations
+    importer->import(EN_Exchange::BINANCE, pathBinance_1);
+    QCOMPARE(true, importer->opsAddedSize() == 2);
+    QCOMPARE(true, importer->opsAlrdyAddedSize() == 4);
     QCOMPARE(true, importer->opsWithError() == 0);
 }
 

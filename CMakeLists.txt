@@ -77,6 +77,7 @@ include_directories(~/Qt/5.15.2/gcc_64/include/QtNetwork)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtWidgets)
 include_directories(./)
 include_directories(./IfExchanges)
+include_directories(./IMarketData)
 
 qt5_add_resources(RESOURCES ./qml.qrc)
 
@@ -103,7 +104,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h
         AssetTypeModel.cpp AssetTypeModel.h
-        IfExchanges/IExchange.h IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
+        IfExchanges/IExchange.h IfExchanges/IExchange.cpp
+        IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
         IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h

@@ -11,6 +11,7 @@
 #include <QMap>
 #include "Operation.h"
 #include "BrokerManager.h"
+#include "MarketDataFactory.h"
 
 class IExchange {
 public:

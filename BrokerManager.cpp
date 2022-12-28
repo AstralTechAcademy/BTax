@@ -520,11 +520,12 @@ double  BrokerManager::getAvailableAmounts(const std::vector<WalletOperation*>& 
 
 bool BrokerManager::checkDuplicity(std::shared_ptr<Operation> operation)
 {
-    auto res = DBLocal::GetInstance()->getOperations(operation->getWalletID1());
+    auto res = DBLocal::GetInstance()->getOperations(QString::number(operation->getWalletID1()));
     if(std::get<0>(res) ==  false)
         return false;
     
     auto ops = std::get<1>(res);
+    qDebug() << ops.size();
     operation->print();
     auto exist = std::find_if(ops.begin(), ops.end(),
                               [&](Operation* op){return *op == *operation.get();});
