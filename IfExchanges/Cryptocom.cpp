@@ -6,83 +6,58 @@
 
 Cryptocom::Cryptocom(void){};
 
-
-std::optional<QList<std::shared_ptr<Operation>>> Cryptocom::import(const QString& csvPath)
-{
-    QFile csv(csvPath);
-    if(csv.exists() == false)
-        return std::nullopt;
-    else
-    {
-        return parse(csv);
-    }
-}
-
-std::optional<QList<std::shared_ptr<Operation>>> Cryptocom::parse(QFile& csv)
-{
-    csv.open(QIODevice::ReadOnly);
-    uint8_t firstLine = 0;
-    QList<std::shared_ptr<Operation>> operations;
-
-    QMap<QString, int> header;
-    while (!csv.atEnd()) {
-        QByteArray line = csv.readLine();
-
-        if(firstLine == 0) // HEADER
-        {
-            auto columns = line.split(',');
-            for(auto index = 0; index < columns.size(); index++)
-            {
-
-                if(columns[index] == "Timestamp (UTC)")
-                    header.insert("DATE", index);
-                if(columns[index] == "Transaction Description")
-                    header.insert("TYPE", index);
-
-                if(columns[index] == "Currency")
-                    header.insert("PAIR1", index);
-                if(columns[index] == "Amount")
-                    header.insert("PAIR1_AMOUNT", index);
-
-
-                if(columns[index] == "To Currency")
-                    header.insert("PAIR2", index);
-                if(columns[index] == "To Amount")
-                    header.insert("PAIR2_AMOUNT", index);
-
-                if(columns[index] == "Native Currency")
-                    header.insert("FIAT_CURRENCY", index);
-                if(columns[index] == "Native Amount")
-                    header.insert("FIAT_AMOUNT", index);
-            }
-        }
-        else
-        {
-            auto lineV = line.split(',');
-            if(lineV[header["TYPE"]] == "Card Cashback")
-            {
-                operations.push_back(std::make_shared<Operation>(0, lineV[header["FIAT_CURRENCY"]], lineV[header["PAIR1"]], 0.0, 1.0,
-                                                                 lineV[header["PAIR1_AMOUNT"]].toDouble(),
-                                                                 lineV[header["FIAT_AMOUNT"]].toDouble() / lineV[header["PAIR1_AMOUNT"]].toDouble(),
-                                                                 0.0, 1.0, "Accepted",
-                                                                 QDateTime::fromString(lineV[header["DATE"]], Qt::DateFormat::ISODate).toString(),
-                                                                 "", "Cashback", lineV[header["FIAT_AMOUNT"]].toDouble()));
-            }
-        }
-
-        firstLine = 1;
-    }
-
-    if(operations.size() > 0)
-        return operations;
-    else
-        return std::nullopt;
-}
-
 QDateTime Cryptocom::datetimeStrToDatetime(QByteArray dtimeStr)
 {
     return QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODate); // Date
 }
 
-void Cryptocom::parseHeader(QFile& csv)
-{}
+bool Cryptocom::parseHeader(QFile& csv)
+{
+    QByteArray line = csv.readLine();
+
+    auto columns = line.split(separator_);
+    for(auto index = 0; index < columns.size(); index++)
+    {
+
+        if(columns[index] == "Timestamp (UTC)")
+            header_.insert(EN_COLUMN_NAMES::DATE, index);
+        if(columns[index] == "Transaction Description")
+            header_.insert(EN_COLUMN_NAMES::TYPE, index);
+
+        if(columns[index] == "Currency")
+            header_.insert(EN_COLUMN_NAMES::PAIR1, index);
+        if(columns[index] == "Amount")
+            header_.insert(EN_COLUMN_NAMES::PAIR1_AMOUNT, index);
+
+
+        if(columns[index] == "To Currency")
+            header_.insert(EN_COLUMN_NAMES::PAIR2, index);
+        if(columns[index] == "To Amount")
+            header_.insert(EN_COLUMN_NAMES::PAIR2_AMOUNT, index);
+
+        if(columns[index] == "Native Currency")
+            header_.insert(EN_COLUMN_NAMES::FIAT_CURRENCY, index);
+        if(columns[index] == "Native Amount")
+            header_.insert(EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT, index);
+    }
+        
+}
+
+bool Cryptocom::parseBody(QFile& csv)
+{
+    QByteArray line = csv.readLine();
+
+    auto columns = line.split(separator_);
+    while (!csv.atEnd()) {
+            auto lineV = line.split(',');
+            if(lineV[header_[EN_COLUMN_NAMES::TYPE]] == "Card Cashback")
+            {
+                operations_.push_back(std::make_shared<Operation>(0, lineV[header_[EN_COLUMN_NAMES::FIAT_CURRENCY]], lineV[header_[EN_COLUMN_NAMES::PAIR1]], 0.0, 1.0,
+                                                                 lineV[header_[EN_COLUMN_NAMES::PAIR1_AMOUNT]].toDouble(),
+                                                                 lineV[header_[EN_COLUMN_NAMES::PAIR1_AMOUNT]].toDouble() / lineV[header_[EN_COLUMN_NAMES::PAIR1_AMOUNT]].toDouble(),
+                                                                 0.0, 1.0, "Accepted",
+                                                                 QDateTime::fromString(lineV[header_[EN_COLUMN_NAMES::DATE]], Qt::DateFormat::ISODate).toString(),
+                                                                 "", "Cashback", lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble()));
+            }        
+    }
+}

@@ -10,10 +10,12 @@ class Cryptocom : public IExchange {
 
 public:
     Cryptocom(void);
-    virtual std::optional<QList<std::shared_ptr<Operation>>> import(const QString& csvPath);
-    virtual void parseHeader(QFile& csv);
-    virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
+    virtual bool parseHeader(QFile& csv);
+    virtual bool parseBody(QFile& csv);
     virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr);
+
+private:
+    char separator_ = ',';
 };
 
 

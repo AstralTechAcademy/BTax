@@ -28,22 +28,17 @@ public:
         PAIR2_AMOUNT_FIAT,
         FIAT_CURRENCY
     };
+    IExchange(void) =default;
 
-    virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv) = 0;
-    virtual void parseHeader(QFile& csv) = 0;
+    // Comunes
+    virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
+    virtual std::optional<QList<std::shared_ptr<Operation>>> read(const QString& csvPath);
+    bool getFiatPrice(QList<std::shared_ptr<Operation>>& operations);
+
+    // Virtual puras
+    virtual bool parseHeader(QFile& csv) = 0;
+    virtual bool parseBody(QFile& csv) = 0;
     virtual QDateTime datetimeStrToDatetime(QByteArray dtimeStr) = 0;
-    virtual std::optional<QList<std::shared_ptr<Operation>>> read(const QString& csvPath)
-    {
-        qDebug() << "File: IExchange.h Func: Import Description: Importing file " << csvPath;
-        QFile csv;
-        csv.setFileName(csvPath);
-        if(csv.exists() == false)
-        {
-            qDebug() << "File: IExchange.h Func: Import Description: File does not exist " << csvPath;
-            return std::nullopt;
-        }
-        return parse(csv);
-    }
 protected:
     QList<std::shared_ptr<Operation>> operations_;
     QMap<EN_COLUMN_NAMES, int> header_;
