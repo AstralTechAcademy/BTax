@@ -152,7 +152,7 @@ void ImporterTest::importB2m()
     importer->import(EN_Exchange::B2M, pathB2m_1);
     QCOMPARE(true, importer->opsAddedSize() == 2);
     QCOMPARE(true, importer->opsAlrdyAddedSize() == 2);
-    QCOMPARE(true, importer->opsWithError() == 0);
+    QCOMPARE(true, importer->opsWithErrorSize() == 0);
 }
 
 void ImporterTest::importBinance()
@@ -167,7 +167,7 @@ void ImporterTest::importBinance()
     importer->import(EN_Exchange::BINANCE, pathBinance_1);
     QCOMPARE(true, importer->opsAddedSize() == 2);
     QCOMPARE(true, importer->opsAlrdyAddedSize() == 4);
-    QCOMPARE(true, importer->opsWithError() == 0);
+    QCOMPARE(true, importer->opsWithErrorSize() == 0);
 }
 
 void ImporterTest::OperationsDuplicatedImporting()

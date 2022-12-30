@@ -60,7 +60,7 @@ void Wallet::setAmount(const double amount)
 {
     amount_ = amount;
 }
-void Wallet::setFiatCoin(const double fiatCoin)
+void Wallet::setFiatCoin(const QString fiatCoin)
 {
     fiatCoin_ = fiatCoin;
 }

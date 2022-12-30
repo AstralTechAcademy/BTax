@@ -246,7 +246,7 @@ std::optional<std::vector<Deposit*>> SQLManager::getDeposits(void)
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     if(result)
@@ -284,7 +284,7 @@ std::optional<std::vector<Deposit*>> SQLManager::getDeposits(const uint32_t user
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     std::cout << "RES: " << result << std::endl;
@@ -361,7 +361,7 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& u
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     if(result)
@@ -1090,7 +1090,7 @@ double SQLManager::getInvested(const QString& user, const QString& exchange, con
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     if(result)

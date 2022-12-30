@@ -24,9 +24,9 @@ if(LINUX)
 endif()
 
 if(WIN)
-    set(CMAKE_PREFIX_PATH "C:/Qt/5.15.2/mingw81_64/lib/cmake/Qt5")
-    set(Qt5_DIR "C:/Qt/5.15.2/mingw81_64/bin")
-    set(Qt5Core_VERSION "5.15")
+    set(QtCore_VERSION "6.4.1")
+    set(Qt_DIR "G:/Qt/${QtCore_VERSION}")
+    set(CMAKE_PREFIX_PATH "${Qt_DIR}/mingw_64/lib/cmake/Qt6")
 endif()
 
 if(ANDROID)
@@ -68,18 +68,28 @@ endif()
 if(ANDROID)
     find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth AndroidExtras Svg Test)
 else()
-    find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg Test)
+    find_package(Qt6 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg Test)
 endif()
 
+if(LINUX)
 include_directories(~/Qt/5.15.2/gcc_64/include/)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtNetworkAuth)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtNetwork)
 include_directories(~/Qt/5.15.2/gcc_64/include/QtWidgets)
+endif()
+
+if(WIN)
+include_directories(G:/Qt/6.4.1/mingw64/include/)
+include_directories(G:/Qt/6.4.1/mingw64/include/QtNetworkAuth)
+include_directories(G:/Qt/6.4.1/mingw64/include/QtNetwork)
+include_directories(G:/Qt/6.4.1/mingw64/include/QtWidgets)
+endif()
+
 include_directories(./)
 include_directories(./IfExchanges)
 include_directories(./IMarketData)
 
-qt5_add_resources(RESOURCES ./qml.qrc)
+qt6_add_resources(RESOURCES ./qml.qrc)
 
 set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.cpp
@@ -133,10 +143,10 @@ endif()
 
 
 if(WIN)
-    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets)
+    target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets)
 endif()
 
-if(LINUX AND GTEST)
+if(LINUX OR WIN AND GTEST)
 #################### QT TEST ####################
 add_definitions(-DGTEST)
 enable_testing(true)
@@ -158,10 +168,10 @@ add_test(NAME B2mTest COMMAND B2mTest)
 add_test(NAME BinanceTest COMMAND BinanceTest)
 add_test(NAME ImporterTest COMMAND ImporterTest)
 
-target_link_libraries(BrokerManagerTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
-target_link_libraries(BrokerTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
-target_link_libraries(B2mTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
-target_link_libraries(BinanceTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
-target_link_libraries(ImporterTest PRIVATE Qt5::Test Qt5::Sql Qt5::Qml Qt5::Network Qt5::NetworkAuth)
+target_link_libraries(BrokerManagerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
+target_link_libraries(BrokerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
+target_link_libraries(B2mTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
+target_link_libraries(BinanceTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
+target_link_libraries(ImporterTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 endif()
 
