@@ -48,21 +48,19 @@ void BinanceTest::parse()
         {
             QCOMPARE(true, op->getPair2() == "ADA");
             QCOMPARE(true, op->getPair2Amount() == 0.166666);
-            QCOMPARE(true, op->getPair2AmountFiat() == 0.079312212);
-            QCOMPARE(true, op->getGanancia() == 0.166666*0.079312212);
-            qDebug() << op->getDate() << "  " << op->getDateTime();
-            QCOMPARE(true, op->getDate() == "30/12/2021 00:35:48");
-            QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "Binance") == "2021-12-30 00:35:48.000");
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "1.19921");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.199868"); // = "0.166666*1.19921" 
+            qDebug() << op->getDate();
+            QCOMPARE(true, op->getDate() == "31/12/2021 00:35:48");
+            QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "Binance") == "2021-12-31 00:35:48.000");
             //TODO: Date UTC+0
         }
         if(index == 1)
         {
             QCOMPARE(true, op->getPair2() == "ADA");
             QCOMPARE(true, op->getPair2Amount() == 0.13784104);
-            QCOMPARE(true, op->getPair2AmountFiat() == 0.06558892405595308);
-            QCOMPARE(true, op->getGanancia() == 0.13784104*0.06558892405595308);
-            qDebug() << op->getDate() << "  " << op->getDateTime();
-
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "1.87601");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.258591"); // = 0.13784104*1.87601
             QCOMPARE(true, op->getDate() == "15/10/2021 01:44:48");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "Binance") == "2021-10-15 01:44:48.000");
         }     
@@ -70,11 +68,10 @@ void BinanceTest::parse()
         {
             QCOMPARE(true, op->getPair2() == "SHIB");
             QCOMPARE(true, op->getPair2Amount() == 4516.28000000);
-            QCOMPARE(true, op->getPair2AmountFiat() == 0.06558892405595308);
-            QCOMPARE(true, op->getGanancia() == 4516.28000000*0.06558892405595308);
-            qDebug() << op->getDate() << "  " << op->getDateTime();
-
-            QCOMPARE(true, op->getDate() == "14/10/2021 2:19:9");
+            qDebug() <<   QString::number(op->getPair2AmountFiat()) <<" "<< QString::number(op->getGanancia());
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "2.50331e-05");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.113056");
+            QCOMPARE(true, op->getDate() == "14/10/2021 02:19:09");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "Binance") == "2021-10-14 02:19:09.000");
         }   
     }   
@@ -85,5 +82,7 @@ void BinanceTest::cleanupTestCase()
     qDebug("Clean BinanceTest");
 }
 
-QTEST_MAIN(BinanceTest)
+QTEST_GUILESS_MAIN(BinanceTest)
+
+//Run specific testo run command: ./BinanceTest read parse
 #include "BinanceTest.moc"

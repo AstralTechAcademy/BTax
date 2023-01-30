@@ -37,10 +37,7 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
         if(id == std::nullopt)
             return false;
         
-        qDebug() << o->getDate() << " " << o->getDateTime();
-
         auto price = coingecko->getPrice(id.value(), o->getDateTime());
-
         if(price == std::nullopt)
             opsWithoutPrice.push_back(id.value() + " " + o->getDateTime().toString() );
         
@@ -58,4 +55,10 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
     }
     else
         return true;
+}
+
+void IExchange::calcFiatReward(QList<std::shared_ptr<Operation>>& operations)
+{
+    for(auto o : operations)
+        o->setGanancia(o->getPair2Amount() * o->getPair2AmountFiat());
 }

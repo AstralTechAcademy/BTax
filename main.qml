@@ -18,7 +18,6 @@ Window {
     //OperationsModel{id: operationsModel}
 
     Component.onCompleted: {
-        console.log(BrokerImpl.getHost())
         bodyLoader.source = "WalletsBody.qml"
         console.log("Server: " + BrokerImpl.getServer())
     }

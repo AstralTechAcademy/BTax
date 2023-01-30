@@ -88,7 +88,7 @@ bool Broker::isOpened(void) const
 
 void Broker::load(void)
 {
-    qDebug() << "Loading";
+    qDebug() << "[Broker::load] Loading";
     BrokerManager::getInstance()->load();
     emit loaded();
 }

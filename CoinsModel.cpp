@@ -65,3 +65,8 @@ QString CoinsModel::getColor(const QString& name) const
 
     return "black";
 }
+
+void CoinsModel::clear(void) noexcept
+{
+    coins_ .clear();
+}

@@ -20,7 +20,7 @@ Window
     y: Screen.height / 2 - height / 2
 
     Component.onCompleted: {
-        console.log("New Deposit Form")
+        console.log("New Asset Form")
     }
 
     signal close()

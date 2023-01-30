@@ -129,8 +129,8 @@ public:
         auto date = rhs.getDate();
         QDateTime datetime;
         cnvStrToDateTime(date, datetime);
-        if(rhs.getDate().contains("/"))
-            date = cnvDateTime2StrFormat(datetime, EN_DateFormat::QT);
+        qDebug() << date << " " << BTime::toString(datetime) << " " << 
+                    BTime::toString(QLocale(QLocale::Spanish).toDateTime(date_, "ddd. MMM. d hh:mm:ss yyyy")) ;
         return date_ == date &&
                 pair1_ == rhs.getPair1() && pair1Amount_ == rhs.getPair1Amount() &&
                 pair2_ == rhs.getPair2() && pair2Amount_== rhs.getPair2Amount() &&

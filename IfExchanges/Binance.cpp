@@ -64,6 +64,7 @@ bool Binance::parseBody(QFile& csv)
     }
 
     auto allOpsWithPrice = getFiatPrice(operations_);
+    calcFiatReward(operations_);
     if(operations_.size() > 0 && allOpsWithPrice)
         return true;
     else

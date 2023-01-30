@@ -58,3 +58,5 @@ ImporterTest_autogen/
 BinanceTest_autogen/
 B2mTest_autogen/
 build/
+release/
+B2mV2Test_autogen/

@@ -16,6 +16,11 @@ set(CMAKE_AUTOUIC ON)
 
 #add_definitions(-DOFICIAL)
 
+if(MANUAL_TEST)
+#################### QT TEST ####################
+add_definitions(-DMANUAL_TEST)
+endif()
+
 if(LINUX)
     set(Qt5Core_VERSION "5.15")
     set(CMAKE_MODULE_PATH "~/Qt/5.15.2")
@@ -68,7 +73,8 @@ endif()
 if(ANDROID)
     find_package(Qt5 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth AndroidExtras Svg Test)
 else()
-    find_package(Qt6 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg Test)
+    find_package(Qt6 REQUIRED COMPONENTS Qml Quick Network Widgets Sql NetworkAuth Svg Test Core5Compat QuickControls2)
+    qt_standard_project_setup()
 endif()
 
 if(LINUX)
@@ -115,7 +121,9 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         CoinsModel.cpp CoinsModel.h
         AssetTypeModel.cpp AssetTypeModel.h
         IfExchanges/IExchange.h IfExchanges/IExchange.cpp
-        IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h IfExchanges/B2m.cpp IfExchanges/B2m.h
+        IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h 
+        IfExchanges/B2m.cpp IfExchanges/B2m.h
+        IfExchanges/B2mV2.cpp IfExchanges/B2mV2.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
         IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h
@@ -143,7 +151,17 @@ endif()
 
 
 if(WIN)
-    target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets)
+    target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat)
+    install(TARGETS Broker
+        BUNDLE  DESTINATION .
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+    qt_generate_deploy_app_script(
+        TARGET Broker
+        FILENAME_VARIABLE deploy_script
+        NO_UNSUPPORTED_PLATFORM_ERROR
+    )
+    install(SCRIPT ${deploy_script})
 endif()
 
 if(LINUX OR WIN AND GTEST)
@@ -153,24 +171,28 @@ enable_testing(true)
 add_executable(BrokerManagerTest Test/BrokerManagerTest.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(BrokerTest Test/BrokerTest.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(B2mTest Test/B2mTest.cpp ${RESOURCES} ${APP_SOURCES})
+add_executable(B2mV2Test Test/B2mV2Test.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(BinanceTest Test/BinanceTest.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(ImporterTest Test/ImporterTest.cpp ${RESOURCES} ${APP_SOURCES})
 
 set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(BrokerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(B2mTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+set_target_properties(B2mV2Test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(BinanceTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(ImporterTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 
 add_test(NAME BrokerTest COMMAND BrokerTest)
 add_test(NAME BrokerManagerTest COMMAND BrokerManagerTest)
 add_test(NAME B2mTest COMMAND B2mTest)
+add_test(NAME B2mV2Test COMMAND B2mV2Test)
 add_test(NAME BinanceTest COMMAND BinanceTest)
 add_test(NAME ImporterTest COMMAND ImporterTest)
 
 target_link_libraries(BrokerManagerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(BrokerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(B2mTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
+target_link_libraries(B2mV2Test PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(BinanceTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(ImporterTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 endif()

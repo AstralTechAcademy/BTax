@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
+#include <QLocale>
 #include <future>
 #include <unistd.h>
 #include "Broker.h"
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
 {
     QString version = "1.1.0";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QQuickStyle::setStyle("Imagine");
 
 
     QApplication app(argc, argv);

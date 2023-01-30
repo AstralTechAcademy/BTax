@@ -4,6 +4,7 @@
 #include <QDate>
 #include <QTime>
 #include <QString>
+#include <QLocale>
 
 void cnvDateTime2Str(QDateTime datetime, QString& datetimeStr)
 {
@@ -27,7 +28,6 @@ QString cnvDateTime2DMYhms(QDateTime datetime)
 
 QString cnvDateTime2StrFormat(QDateTime datetime, EN_DateFormat format)
 {
-    std::cout << datetime.toString().toStdString() << std::endl; 
     QString str;
     switch(format)
     {
@@ -35,11 +35,11 @@ QString cnvDateTime2StrFormat(QDateTime datetime, EN_DateFormat format)
             str = "1970-01-01 00:00:00";
             break;
         case EN_DateFormat::DMYhms:
-            str = cnvDateTime2DMYhms(datetime);
+            str = BTime::toString(datetime, QLocale::Spanish, EN_DateFormat::DMYhms);
             break;
         case EN_DateFormat::QT:
         default:
-            str = datetime.toString();
+            str = BTime::toString(datetime);
             break;
     }
 
@@ -48,13 +48,18 @@ QString cnvDateTime2StrFormat(QDateTime datetime, EN_DateFormat format)
 
 QDateTime cnvDBStr2DateTime(QString datetime)
 {
-     return QDateTime::fromString(datetime);
+    auto locale = QLocale(QLocale::Spanish);
+    QString format = "ddd. MMM. d hh:mm:ss yyyy";
+    qDebug() << datetime;
+    auto r = locale.toDateTime(datetime, format);
+    qDebug() << r;
+    return r;
 }
 
 void cnvStrToDateTime(QString& datetimeStr, QDateTime& dateTime)
 {
     if(datetimeStr == "")
-        datetimeStr = QDateTime::currentDateTime().toString();
+        datetimeStr =   BTime::toString(QDateTime::currentDateTime());
     else if(datetimeStr.contains(" ") and datetimeStr.contains("/"))
     {
 
@@ -64,12 +69,12 @@ void cnvStrToDateTime(QString& datetimeStr, QDateTime& dateTime)
         dateTime.setTime(QTime(datetimeStr.split(" ")[1].split(":")[0].toInt(),
                                datetimeStr.split(" ")[1].split(":")[1].toInt(),
                                datetimeStr.split(" ")[1].split(":")[2].toInt()));
-        datetimeStr = dateTime.toString();
-        //dateTime.setTimeZone(QTimeZone::utc());
+        datetimeStr = BTime::toString(dateTime);
     }
     else if(datetimeStr.contains(" ") and datetimeStr.split(" ").size() == 5)
     {
-        dateTime = QDateTime::fromString(datetimeStr);
+        dateTime = BTime::toDateTime(datetimeStr, QLocale::Spanish, EN_DateFormat::QT);
+        //dateTime = QDateTime::fromString(datetimeStr);
     }
 }
 
@@ -79,14 +84,14 @@ QString dateTimeToUTC0(QDateTime time, QString exchange)
     {
         QTimeZone zone("Europe/Madrid");
         time.setTimeZone(zone);
-        std::cout << time.toString(Qt::ISODateWithMs).replace('T', ' ').toStdString() << " ";
-        std::cout << time.toUTC().toString(Qt::ISODateWithMs).replace('T', ' ').toStdString() << std::endl;
         return time.toUTC().toString(Qt::ISODateWithMs).replace('T', ' ').replace('Z', "");
     }
     else if(exchange == "Binance" or exchange == "Crypto" or exchange == "Coinbase")
     {
         // No conversion required
-        return time.toString(Qt::ISODateWithMs).replace('T', ' ').replace('Z', "");
+        auto locale = QLocale(QLocale::Spanish);
+        QString format = "yyyy-MM-dd hh:mm:ss.zzz";
+        return locale.toString(time, format);
     }
     else
     {
@@ -100,6 +105,7 @@ QString EN_Exchange2String(EN_Exchange exh)
     switch (exh)
     {
     case EN_Exchange::B2M:
+    case EN_Exchange::B2M_V2:
         return "B2M";
         break;
     case EN_Exchange::BINANCE:
@@ -114,4 +120,45 @@ QString EN_Exchange2String(EN_Exchange exh)
     default:
         break;
     }
+}
+
+
+QString BTime::toString(QDateTime time, QLocale::Language lang, EN_DateFormat format)
+{
+    QString f = "ddd. MMM. d hh:mm:ss yyyy";
+    switch(format)
+    {
+        case EN_DateFormat::ISO_8601: 
+            f = "yyyy-MM-dd hh:mm:ss";
+            break;
+        case EN_DateFormat::DMYhms: 
+            f = "dd/MM/yyyy hh:mm:ss";
+            break;   
+        case EN_DateFormat::QT:
+        default:
+            f = "ddd. MMM. d hh:mm:ss yyyy";
+            break;                  
+    }
+
+    return QLocale(lang).toString(time, f);
+}
+
+QDateTime BTime::toDateTime(QString time, QLocale::Language lang, EN_DateFormat format)
+{
+    QString f = "ddd. MMM. d hh:mm:ss yyyy";
+    switch(format)
+    {
+        case EN_DateFormat::ISO_8601: 
+            f = "yyyy-MM-dd hh:mm:ss";
+            break;
+        case EN_DateFormat::DMYhms: 
+            f = "dd/MM/yyyy hh:mm:ss";
+            break;   
+        case EN_DateFormat::QT:
+        default:
+            f = "ddd. MMM. d hh:mm:ss yyyy";
+            break;                  
+    }
+
+    return QLocale(lang).toDateTime(time, f);
 }

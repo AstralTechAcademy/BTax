@@ -63,7 +63,7 @@ void B2mTest::parse()
             QCOMPARE(true, op->getGanancia() == 10.13447556*0.06558892405595308);
                         qDebug() << op->getDate() << "  " << op->getDateTime();
 
-            QCOMPARE(true, op->getDate() == "31/12/2021 15:15:3");
+            QCOMPARE(true, op->getDate() == "31/12/2021 15:15:03");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2021-12-31 14:15:03.000");
         }       
     }   

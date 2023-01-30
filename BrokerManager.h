@@ -16,7 +16,7 @@
 
 class BrokerManager : public QObject{
     Q_OBJECT
-
+    friend class Importer;
 public:
 
     enum class NewOperationRes
@@ -76,7 +76,7 @@ public:
     static BrokerManager* getInstance(void) {
         return instance;
     }
-    bool checkDuplicity(std::shared_ptr<Operation> operation);
+    bool checkDuplicity(const QString& exchange, std::shared_ptr<Operation> operation);
     std::optional<std::vector<WalletOperation*>>  getAvailableBalancesOrdered(const QString& coinID, const QString exchange = "");
 
     void load(void);
@@ -100,12 +100,10 @@ public slots:
     bool newAsset(const QString& type, const QString& name, const QString& color);
     bool addWalletIfNotExist(const QString coinName, const QString exchange);
     bool addWallet(const QString coinName, const QString exchange);
-    bool importOperations(void);
     uint32_t getUserID(const QString& username);
     QStringList getWalletsCBox(const QString& username);
     void setUserID(const QString& username);
     void setYear(const QString& year);
-    bool importPreviewOperations(const QString& csvFilePath);
     void updateCurrentPrice(void);
     std::optional<double>  getCurrentPrice(Coin* coin);
 
@@ -116,7 +114,7 @@ private:
     WalletsPercModel* walletsModelPerc_;
     CoinsModel* coinsModel_;
     AssetTypeModel* assetTypesModel_;
-    std::vector<Operation*> importPreview;
+    std::vector<Operation*> operationsToAdd;
 
     inline static BrokerManager *instance;
 
