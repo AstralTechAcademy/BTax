@@ -22,7 +22,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
     wOpsModified.clear();
     auto [r1, wallet1] = getWallet(data.walletID1);
     auto [r2, wallet2] = getWallet(data.walletID2);
-
+    qDebug() << data.date;
     //Ambas wallets existen
     if(r1 and r2)
     {
@@ -82,7 +82,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
                 wOpsModified.push_back(WalletOperation(id, query2.value(0).toInt(),
                                                        query2.value(1).toDouble(), available,
                                                        retired, query2.value(4).toDouble(),
-                                                       QDateTime::fromString(query2.value(5).toString())));
+                                                       QLocale(QLocale::Spanish).toDateTime(query2.value(5).toString(), "ddd. MMM. d hh:mm:ss yyyy")));
                 index++;
             }
         }
@@ -124,7 +124,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
 
                 ganancia = 0.0; // Formula reviwed. OK.
 
-                QDateTime time = QDateTime::fromString(data.date);
+                QDateTime time = QLocale(QLocale::Spanish).toDateTime(data.date, "ddd. MMM. d hh:mm:ss yyyy");
  
                 //Restar la cantidad de PAIR1
                 QSqlQuery query2 = QSqlQuery(database);
@@ -136,8 +136,6 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
                 query2.bindValue(":available", available);
                 query2.exec();
 
-                std::cout << "BYE: " << id << retired << available << std::endl;
-
                 query2.prepare("SELECT wallet, amount, retired, available, fiat, date FROM WalletOperations"
                                " WHERE id=:id");
                 query2.bindValue(":id", id);
@@ -146,7 +144,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
                 wOpsModified.push_back(WalletOperation(id, query2.value(0).toInt(),
                                                        query2.value(1).toDouble(), available,
                                                        retired, query2.value(4).toDouble(),
-                                                       QDateTime::fromString(query2.value(5).toString())));
+                                                       QLocale(QLocale::Spanish).toDateTime(query2.value(5).toString(), "ddd. MMM. d hh:mm:ss yyyy")));
                 
                 // Nueva entrada con la cantidad de moneda en la wallet destino
                 query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat,wallet, date, datetimeUTC)"
@@ -156,7 +154,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
                 query.bindValue(":retired", 0.0);
                 query.bindValue(":available", amount);
                 query.bindValue(":walletID", data.walletID2);
-                query.bindValue(":date", date);
+                query.bindValue(":date", BTime::toString(QLocale(QLocale::Spanish).toDateTime(query2.value(5).toString(), "ddd. MMM. d hh:mm:ss yyyy")));
                 query.bindValue(":datetimeUTC", dateTimeUtc);
                 query.exec();
                 
@@ -165,7 +163,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
             }
         }
 
-        QDateTime time = QDateTime::fromString(data.date);
+        auto time = QLocale(QLocale::Spanish).toDateTime(data.date, "ddd. MMM. d hh:mm:ss yyyy");
         if (data.type != "Transferencia")
         {
             // Nueva entrada con la cantidad de moneda en la wallet destino
@@ -246,7 +244,7 @@ std::optional<std::vector<Deposit*>> SQLManager::getDeposits(void)
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     if(result)
@@ -284,7 +282,7 @@ std::optional<std::vector<Deposit*>> SQLManager::getDeposits(const uint32_t user
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     std::cout << "RES: " << result << std::endl;
@@ -342,6 +340,8 @@ void SQLManager::setWalletData(Wallet& wallet)
                 wallet.setUser(query.value(1).toString());
             }
             amount += query.value(7).toDouble();
+
+            // available * fiat
             invested += (query.value(7).toDouble() * query.value(8).toDouble());
 
             wallet.setAmount(amount);
@@ -361,7 +361,7 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& u
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     if(result)
@@ -715,6 +715,9 @@ std::optional<Wallet> SQLManager::getWallets(const uint32_t userID, const QStrin
 
 std::optional<std::vector<WalletOperation*>> SQLManager::getWalletsOps(const uint32_t userID, const QString& coin, const QString exchange)
 {
+    auto locale = QLocale(QLocale::Spanish);
+    QString format = "ddd. MMM. d hh:mm:ss yyyy";
+
     QSqlQuery query = QSqlQuery(database);
     if(exchange == "")
     {
@@ -749,7 +752,8 @@ std::optional<std::vector<WalletOperation*>> SQLManager::getWalletsOps(const uin
         auto retired = query.value(2).toDouble();
         auto fiat = query.value(4).toDouble();
         auto coin = query.value(6).toString();
-        auto date = QDateTime::fromString(query.value(5).toString());
+        auto date = locale.toDateTime(query.value(5).toString(), format);
+        qDebug() << query.value(10).toString();
         auto datetimeUtc = DatetimeUTCStrToDatetime(query.value(10).toString());
         auto exchange = query.value(7).toString();
         auto user = query.value(8).toString();
@@ -859,8 +863,7 @@ std::optional<std::tuple<uint32_t, QString, QString, QString>> SQLManager::getCo
     query.prepare("SELECT id, name, type, color FROM Coins WHERE name=:coin");
     query.bindValue(":coin", coin);
     query.exec();
-    bool result = query.result()->handle().isValid();
-    if(!result)
+    if(query.size() == 0)
         return std::nullopt;
 
     while(query.next())
@@ -1091,7 +1094,7 @@ double SQLManager::getInvested(const QString& user, const QString& exchange, con
     query.exec();
     bool result = false;
     while (query.next()) {
-        result = query.value(0) > 0;
+        result = query.value(0).toInt() > 0;
     }
 
     if(result)
@@ -1120,8 +1123,6 @@ double SQLManager::getInvested(const QString& user, const QString& exchange, con
 bool SQLManager::depositOperation(const int walletID, const QString exchange, double amount, double amountFiat,  double fees, const QString& comments, QString& date)
 {
     QSqlQuery query = QSqlQuery(database);
-    std::cout << "TRACE 1" << std::endl;
-
     query.prepare("INSERT INTO Deposits(amount, fees, date, wallet)"
                   " VALUES (:amount, :fees, :date,:wallet)");
     query.bindValue(":amount", amount);
@@ -1130,7 +1131,6 @@ bool SQLManager::depositOperation(const int walletID, const QString exchange, do
     query.bindValue(":wallet", walletID);
     if(query.exec())
     {
-        std::cout << "TRACE 2" << std::endl;
         QDateTime time = QDateTime::fromString(date);
         query.prepare("INSERT INTO WalletOperations(amount, retired, available, fiat, wallet, date, datetimeUTC)"
                       " VALUES (:amount, :retired, :available, :fiat,:wallet, :date, :datetimeUTC)");
@@ -1141,7 +1141,6 @@ bool SQLManager::depositOperation(const int walletID, const QString exchange, do
         query.bindValue(":wallet", walletID);
         query.bindValue(":date", date);
         query.bindValue(":datetimeUTC", dateTimeToUTC0(time, exchange));
-        std::cout << "TRACE 3" << std::endl;
         if(query.exec())
             return true;
     }
@@ -1225,7 +1224,7 @@ std::vector<WalletOperation*>  SQLManager::getLastNWalletOperation(int limit) co
     {
         auto opW = new WalletOperation(query.value(0).toInt(), query.value(4).toInt(), query.value(1).toString(), query.value(2).toString(), query.value(3).toString(),
                                        query.value(5).toDouble(), query.value(7).toDouble(), query.value(6).toDouble(), query.value(8).toDouble(),
-                                       QDateTime::fromString(query.value(9).toString()),
+                                        QLocale(QLocale::Spanish).toDateTime(query.value(9).toString(), "ddd. MMM. d hh:mm:ss yyyy"),
                                        DatetimeUTCStrToDatetime(query.value(10).toString()));
         opW->print();
         wOps.push_back(opW);

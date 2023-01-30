@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
+#include <QLocale>
 #include <future>
 #include <unistd.h>
 #include "Broker.h"
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
 {
     QString version = "1.1.0";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QQuickStyle::setStyle("Imagine");
 
 
     QApplication app(argc, argv);
@@ -65,7 +68,7 @@ int main(int argc, char *argv[])
 
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
-    engine.addImportPath("/home/gabridc/Repositorio/Astral_Academy/medium/Components");
+    engine.addImportPath("G:/Repositorio/Astral_Academy/medium/Components");
 
     Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, DBRemote::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);

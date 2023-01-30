@@ -1,29 +1,53 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "shell",
-			"label": "Build Broker w/ GTEST",
-			"command": "cmake -DLINUX=1 -DGTEST=1 -DCMAKE_BUILD_TYPE=Debug . && make",
-			"group": "build",
-			"problemMatcher": [],
-			"detail": "Build Broker w/ GTEST"
-		},
-		{
-			"type": "shell",
-			"label": "Build Broker no GTEST",
-			"command": "cmake -DLINUX=1 -DCMAKE_BUILD_TYPE=Debug . && make",
-			"group": "build",
-			"problemMatcher": [],
-			"detail": "Build Broker no GTEST"
-		},
-		{
-			"type": "shell",
-			"label": "Clean",
-			"command": "rm CMakeCache.txt",
-			"group": "build",
-			"problemMatcher": [],
-			"detail": "Clean"
-		}
-	]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build Broker w/ GTEST",
+            "command": "cmake -DLINUX=1 -DGTEST=1 -DCMAKE_BUILD_TYPE=Debug . && make",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Build Broker w/ GTEST"
+        },
+        {
+            "type": "shell",
+            "label": "Build Broker w/ GTEST WIN",
+            "command": "cmake -DWIN=1 -DGTEST=1 -DCMAKE_BUILD_TYPE=Debug -G \"Ninja\" . ; ninja",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Build Broker w/ GTEST WIN"
+        },
+        {
+            "type": "shell",
+            "label": "Build Broker no GTEST",
+            "command": "cmake -DLINUX=1 -DCMAKE_BUILD_TYPE=Debug . && make",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Build Broker no GTEST"
+        },
+        {
+            "type": "shell",
+            "label": "Build Broker no GTEST WIN",
+            "command": "cmake -DWIN=1 -DCMAKE_BUILD_TYPE=Debug -GNinja . ; ninja",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Build Broker no GTEST WIN"
+        },
+        {
+            "type": "shell",
+            "label": "Package Broker",
+            "command": "cmake -DWIN=1 -DCMAKE_BUILD_TYPE=Release -GNinja . ; ninja ; copy Broker.exe release\\win ; cd release\\win ; windeployqt.exe --qmldir G:\\Qt\\6.4.1\\mingw_64\\qml Broker.exe",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Package Broker"
+        },
+        {
+            "type": "shell",
+            "label": "Clean",
+            "command": "rm CMakeCache.txt",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Clean"
+        }
+    ]
 }

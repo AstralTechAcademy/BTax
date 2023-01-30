@@ -52,25 +52,28 @@ bool B2m::parseBody(QFile& csv)
 {
     while (!csv.atEnd()) {
         QByteArray line = csv.readLine();
-        auto lineV = line.split(separator_);
-        if(lineV[header_[EN_COLUMN_NAMES::TYPE]] == "earn")
+        if(line.isEmpty() == false and line.size() > 1 and line.contains(separator_))
         {
-            qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble();
-            operations_.push_back(std::make_shared<Operation>(0, 
-                        lineV[header_[EN_COLUMN_NAMES::FEE]],  // Pair 1 Coin
-                        lineV[header_[EN_COLUMN_NAMES::PAIR2]], // Pair 2 Coin
-                        0.0, // Pair1Amount
-                        1.0, // Pair1AmountFiat
-                        lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble(), // Pair2Amount
-                        lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble(), // Pair2AmountFiat
-                        0.0, // Fees Amount
-                        1.0, // Fees Amount fiat
-                        "Accepted", // Status
-                        cnvDateTime2StrFormat(datetimeStrToDatetime(lineV[header_[EN_COLUMN_NAMES::DATE]]), EN_DateFormat::DMYhms), // Date //TODO: This variable must be dateTime type
-                        "", // Description 
-                        "Earn", // Type
-                        lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble()*lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble() // Ganancia
-                        ));
+            auto lineV = line.split(separator_);
+            if(lineV.size() > 0 && lineV[header_[EN_COLUMN_NAMES::TYPE]] == "earn")
+            {
+                qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble();
+                operations_.push_back(std::make_shared<Operation>(0, 
+                            lineV[header_[EN_COLUMN_NAMES::FEE]],  // Pair 1 Coin
+                            lineV[header_[EN_COLUMN_NAMES::PAIR2]], // Pair 2 Coin
+                            0.0, // Pair1Amount
+                            1.0, // Pair1AmountFiat
+                            lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble(), // Pair2Amount
+                            lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble(), // Pair2AmountFiat
+                            0.0, // Fees Amount
+                            1.0, // Fees Amount fiat
+                            "Accepted", // Status
+                            cnvDateTime2StrFormat(datetimeStrToDatetime(lineV[header_[EN_COLUMN_NAMES::DATE]]), EN_DateFormat::DMYhms), // Date //TODO: This variable must be dateTime type
+                            "", // Description 
+                            "Earn", // Type
+                            lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble()*lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble() // Ganancia
+                            ));
+            }
         }
     }
 

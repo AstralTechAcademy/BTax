@@ -50,7 +50,7 @@ public:
     void setFiatPrice(const double average);
     void setAmount(const double average);
     void setExchange(const QString exchange);
-    void setFiatCoin(const double average);
+    void setFiatCoin(const QString average);
     void setCoin(const QString coin);
     void setUser(const QString user);
     void setCoin(Coin* coin);

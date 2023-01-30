@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Dialogs 1.3
+import QtQuick.Dialogs
 import QtQuick.Controls 2.14
 import es.broker.components.material 1.0
 
@@ -54,7 +54,7 @@ Window
             id: coins
             model: coinsModel
             textRole: "name"
-            popup.onClosed: console.log("Combo Cliked " + coinsModel.get(currentIndex))
+            popup.onClosed: console.log("Combo Cliked " + coins.currentText)
 
         }
 
@@ -69,7 +69,8 @@ Window
             id: acceptBtnNewWaa
             text: "Accept"
             onClicked: {
-                if(brokerManager.addWallet(coins.currentText.split(" ")[0], exchangeCBox.currentText) == false)
+                console.log(coins.currentText  + " "  +exchangeCBox.currentText) 
+                if(brokerManager.addWallet(coins.currentText.split(" ")[1], exchangeCBox.currentText) == false)
                     console.log("Error al crear la wallet")
                 newWalletsCombox.visible = false
             }

@@ -31,7 +31,7 @@ QString Operation::getStatus(void) const noexcept{
 }
 
 QString Operation::getDate(void) const noexcept{
-    return date_;
+    return date_; // dd/MM/yyyy hh:mm:ss
 }
 
 QDateTime Operation::getDateTime(void) const noexcept

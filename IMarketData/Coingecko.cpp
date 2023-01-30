@@ -8,7 +8,7 @@
 #include <QThread>
 #include <tuple>
 
-Coingecko* Coingecko::instance_ = nullptr;
+std::shared_ptr<Coingecko> Coingecko::instance_ = nullptr;
 
 Coingecko::Coingecko(void)
 {
@@ -20,10 +20,10 @@ Coingecko::Coingecko(void)
     }
 }
 
-Coingecko* Coingecko::getInstace(void)
+std::shared_ptr<Coingecko> Coingecko::getInstace(void)
 {
     if(instance_ == nullptr)
-        instance_ = new Coingecko();    
+        instance_ = std::make_shared<Coingecko>();    
     return instance_;
 }
 
@@ -33,6 +33,9 @@ std::optional<double> Coingecko::getCurrentPrice(const QString& coin)
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/" + coin.toLower() + "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false"));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
+    auto resCode = processResponse(response_doc);
+    if(resCode != EN_ResponseCode::OK)
+        return std::nullopt;
 
     if(response_doc.isNull() == false && response_doc.isObject() == true)
         return response_doc.object().value("market_data").toObject().value("current_price").toObject().value(BrokerManager::DEF_FIAT.toLower()).toDouble();
@@ -46,6 +49,9 @@ std::optional<std::unordered_map<QString, double>> Coingecko::getCurrentPrices(v
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/markets?vs_currency=" + BrokerManager::DEF_FIAT.toLower()));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
+    auto resCode = processResponse(response_doc);
+    if(resCode != EN_ResponseCode::OK)
+        return std::nullopt;
 
     if(response_doc.isNull() == false && response_doc.isArray() == true)
     {
@@ -66,8 +72,10 @@ std::optional<QString> Coingecko::getCoinID(const QString& exchange, const QStri
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/list"));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
+    auto resCode = processResponse(response_doc);
 
-    if(response_doc.isNull() == false && response_doc.isObject())
+
+    if(response_doc.isNull() == false && response_doc.isObject() && resCode != EN_ResponseCode::OK)
         return std::nullopt;
 
     if(response_doc.isNull() == false && response_doc.isArray() == true)
@@ -89,6 +97,10 @@ std::optional<double> Coingecko::getPrice(const QString& coin, const QDateTime& 
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/" + coin.toLower() + "/history?date="+ QString::number(date.date().day()) + "-" + QString::number(date.date().month()) + "-" + QString::number(date.date().year())));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
+    auto resCode = processResponse(response_doc);
+    if(resCode != EN_ResponseCode::OK)
+        return std::nullopt;
+
     if(response_doc.isNull() == false && response_doc.isObject())
     {
         if(response_doc.object().value("market_data").toObject().value("current_price").isObject() == true)
@@ -108,6 +120,9 @@ std::optional<QMap<QString, QString>> Coingecko::getCoins(void)
     request->setUrl(QUrl("https://api.coingecko.com/api/v3/coins/list" ));
     request->setRawHeader("accept", "application/json");
     auto response_doc = IMarketData::send(request);
+    auto resCode = processResponse(response_doc);
+    if(resCode != EN_ResponseCode::OK)
+        return std::nullopt;
 
     if(response_doc.isNull() == false && response_doc.isObject())
         return std::nullopt;
@@ -147,4 +162,15 @@ std::optional<QString> Coingecko::getCoinID(const QString& coinName)
         return std:: nullopt;
 
     return coins_[coinName.toLower()];
+}
+
+uint32_t Coingecko::processResponse(QJsonDocument& doc)
+{
+    if(doc.toJson().contains("\"error_code\":429"))
+    {
+        std::cout << "[ERROR] IMarketData::send " << "You've exceeded the Rate Limit." << std::endl;
+        return EN_ResponseCode::RATE_LIMIT;
+    }
+
+    return EN_ResponseCode::OK;
 }

@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Dialogs 1.3
+import QtQuick.Dialogs
 import QtQuick.Controls 2.14
 import es.broker.components.material 1.0
 import Astral 1.0
@@ -20,7 +20,7 @@ Window
     y: Screen.height / 2 - height / 2
 
     Component.onCompleted: {
-        console.log("New Deposit Form")
+        console.log("New Asset Form")
     }
 
     signal close()

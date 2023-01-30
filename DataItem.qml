@@ -1,17 +1,19 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Dialogs 1.3
+import QtQuick.Dialogs
 import QtQuick.Controls 2.14
 
 Rectangle
 {
     id: itemRec
-    radius: 10
-    color: "#00000000" //"lightgrey"
 
     property var title: ""
     property var value: ""
+    property var backgroundColor: "#00000000"
     property var colorValue: ""
+
+    radius: 10
+    color:  backgroundColor
 
     Text{
         id: titleTxt

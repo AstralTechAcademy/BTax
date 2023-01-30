@@ -25,10 +25,12 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
 bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
                 const QString comment, QString date)
 {
+    auto locale = QLocale(QLocale::Spanish);
+    QString format = "ddd. MMM. d hh:mm:ss yyyy";
     QDateTime dateTime;
     dateTime.setDate(QDate(1900, 1, 1));
     if(date == "")
-        date = QDateTime::currentDateTime().toString();
+        date =  locale.toString(QDateTime::currentDateTime(), format);
     else
     {
 
@@ -38,7 +40,9 @@ bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
         dateTime.setTime(QTime(date.split(" ")[1].split(":")[0].toInt(),
                                date.split(" ")[1].split(":")[1].toInt(),
                                date.split(" ")[1].split(":")[2].toInt()));
-        date = dateTime.toString();
+
+        date = locale.toString(dateTime, format);
+
     }
 
     auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID);
@@ -83,7 +87,6 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
     QDateTime dateTime;
     dateTime.setDate(QDate(1900, 1, 1));
     cnvStrToDateTime(data.date, dateTime);
-
     if(data.status == "")
         data.status = "Confirmed";
 
@@ -122,7 +125,7 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
             ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()), wallet1->getExchange());   //Se comprueba que haya saldo suficiente para la compra antes de proceder
         else
             ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()));
-
+        qDebug() << data.date;
          if(coin.value()->type() == "fiat")
         {          
             if (ws == std::nullopt)
@@ -217,7 +220,7 @@ int BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operati
     auto res = setWallets(exchange, operation);
     if(res != static_cast<int>(NewOperationRes::OK)) return res; 
 
-    if(checkDuplicity(operation))
+    if(checkDuplicity(exchange, operation))
     {
         std::cout << "La operacion con fecha " +  operation->getDate().toStdString() + " ya existe en la base de datos" << std::endl;
         return static_cast<int>( NewOperationRes::ALREADY_ADDED);
@@ -239,7 +242,11 @@ bool BrokerManager::newAsset(const QString& type, const QString& name, const QSt
         return false;
     }
 
-    return DBLocal::GetInstance()->registerAsset(type, name, color);
+    auto res = DBLocal::GetInstance()->registerAsset(type, name, color);
+
+    if(res)
+        loadCoinsFromDB();
+    return res;
 }
 
 bool BrokerManager::addWalletIfNotExist(const QString exchange, 
@@ -291,49 +298,18 @@ bool BrokerManager::addWallet(const QString coinName, const QString exchange)
         if(res == std::nullopt)
             return false;
         auto coin = res.value();
-        return (DBLocal::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID) > 0);
-    }
-
-}
-
-bool BrokerManager::importPreviewOperations(const QString& csvFilePath)
-{
-    std::cout << "Import Path: " << csvFilePath.toStdString() << std::endl;
-
-    importPreview.clear();
-
-    QFile file(csvFilePath.split("file://")[1]);
-    if (!file.open(QIODevice::ReadOnly)) {
-        return false;
-    }
-
-    QStringList wordList;
-  /*  while (!file.atEnd()) {
-        QByteArray line = file.readLine();
-        QString operation = line.split(';')[0];
-        importPreview.push_back({});
-
-        if(type == "Staking" && operation.size() == IMPORT_STAKING_OP_ATRS)
+        auto result = DBLocal::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID);
+        if ( result > 0)
         {
-            wordList.append();
+            loadWalletsFromDB(userID);
+            return true;
         }
+        else
+            return false;
 
-    }*/
+    }
 
-    for(auto s : wordList)
-        std::cout << s.toStdString() << std::endl;
 }
-
-bool BrokerManager::importOperations(void)
-{
-    //TODO: Grabr en DB las operaciones
-
-    importPreview.clear();
-
-    /*return DBLocal::GetInstance()->registerOperation(std::get<1>(w)->getWalletID(), walletID2, exchange, pair1, pair2, pair1Amount, pair1AmountFiat, pair2Amount, pair2AmountFiat,
-                                                     comision, comisionFiat, comments, type, status, date);*/
-}
-
 
 uint32_t BrokerManager::getUserID(const QString& username)
 {
@@ -363,12 +339,15 @@ QStringList BrokerManager::getWalletsCBox(const QString& username)
 
 void BrokerManager::setUserID(const QString& username)
 {
-    userID = getUserID(username);
-    std::cout << "user ID: " << userID << std::endl;
-    walletsModel_->clear();
-    operationsModel_->clear();
-    loadWalletsFromDB(userID);
-    loadOperationsFromDB(userID);
+    if(!username.isEmpty())
+    {
+        userID = getUserID(username);
+        qDebug() << "[BrokerManager::setUserID] User ID: " << userID  << " Username: " << username;
+        walletsModel_->clear();
+        operationsModel_->clear();
+        loadWalletsFromDB(userID);
+        loadOperationsFromDB(userID);
+    }
 }
 
 void BrokerManager::setYear(const QString& year)
@@ -408,6 +387,7 @@ void BrokerManager::loadOperationsFromDB(const uint32_t userID, const uint32_t y
 
 void BrokerManager::loadCoinsFromDB(void)
 {
+    coinsModel_->clear();
     auto coins = DBLocal::GetInstance()->getCoins();
     for(auto c : coins)
         coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c), std::get<3>(c)));
@@ -518,11 +498,12 @@ double  BrokerManager::getAvailableAmounts(const std::vector<WalletOperation*>& 
     return totalAvailableAmt;
 }
 
-bool BrokerManager::checkDuplicity(std::shared_ptr<Operation> operation)
+bool BrokerManager::checkDuplicity(const QString& exchange, std::shared_ptr<Operation> operation)
 {
-    auto res = DBLocal::GetInstance()->getOperations(operation->getWalletID1());
-    if(std::get<0>(res) ==  false)
-        return false;
+    if(setWallets(exchange, operation) != static_cast<int>(NewOperationRes::OK)) return true; // Return as duplicated
+
+    auto res = DBLocal::GetInstance()->getOperations(QString::number(operation->getWalletID1()));
+    if(std::get<0>(res) ==  false) return false;
     
     auto ops = std::get<1>(res);
     operation->print();
@@ -530,9 +511,9 @@ bool BrokerManager::checkDuplicity(std::shared_ptr<Operation> operation)
                               [&](Operation* op){return *op == *operation.get();});
     if(exist != ops.end())
     {
-        std::cout << "La operacion ya existe en la base de datos" << std::endl;
+        qDebug() << "[BrokerManager::checkDuplicity] Operation is already in database (duplicated)";
         operation->print();
-        return true;
+        return true; // Return duplicated
     }
     return false;
 }
@@ -608,19 +589,30 @@ std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
 void BrokerManager::load(void)
 {
     UsersModel::setUsers();
-    userID = std::get<0> (UsersModel::getUsers()[0]);
-    year_ = 2022;
+    
+    if(UsersModel::getUsers().size() == 0)
+    {
+        qDebug() << "[BrokerManager::load] No users in database. Please, create one before continue.";
+    }
+    else
+    {
+    
+        userID = std::get<0> (UsersModel::getUsers()[0]);
+        year_ = 2022;
 
-    std::cout << "usr ID: " << userID << std::endl;
+        std::cout << "usr ID: " << userID << std::endl;
 
-    loadOperationsFromDB(userID);
-    loadCoinsFromDB();
-    loadAssetTypesFromDB();
-    loadWalletsFromDB(userID);
-    //updateCurrentPrice(); //TODO: Run using threads after open app
-    loadDepositsFromDB(userID);
+        loadOperationsFromDB(userID);
+        loadCoinsFromDB();
+        loadAssetTypesFromDB();
+        loadWalletsFromDB(userID);
+        //updateCurrentPrice(); //TODO: Run using threads after open app
+        loadDepositsFromDB(userID);
 
-    std::cout << "Loaded" << std::endl;
+        std::cout << "[BrokerManager::load] Loaded" << std::endl;
+    }
+        
+
 }
 
 Operation* BrokerManager::getLastOperation(void) const

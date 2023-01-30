@@ -14,7 +14,7 @@ public:
     {
         std::cout << market.toStdString() << std::endl;
         if("Coingecko" == market)
-            return std::make_shared<Coingecko>();
+            return Coingecko::getInstace();
         return nullptr;
     }
 

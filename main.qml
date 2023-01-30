@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Dialogs 1.3
+import QtQuick.Dialogs
 import QtQuick.Controls 2.14
 import es.broker 1.0
 import Astral 1.0
@@ -18,7 +18,6 @@ Window {
     //OperationsModel{id: operationsModel}
 
     Component.onCompleted: {
-        console.log(BrokerImpl.getHost())
         bodyLoader.source = "WalletsBody.qml"
         console.log("Server: " + BrokerImpl.getServer())
     }

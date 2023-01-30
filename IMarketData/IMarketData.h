@@ -27,17 +27,16 @@ public:
     virtual std::optional<std::unordered_map<QString, double>> getCurrentPrices(void) = 0;
     virtual std::optional<double> getPrice(const QString& coin, const QDateTime& date) = 0;
     virtual std::optional<QString> getCoinID(const QString& exchange, const QString& coin) = 0;
+    virtual uint32_t processResponse(QJsonDocument& doc) = 0;
     virtual QJsonDocument send(std::shared_ptr<QNetworkRequest> request)
     {
-        QThread::msleep(2000);
+        QThread::msleep(5000);
         QNetworkAccessManager nManager;
 
         auto reply = nManager.get(*request.get());
         while (!reply->isFinished()) qApp->processEvents();
         QByteArray response_data = reply->readAll();
-
-        //std::cout << response_data.toStdString() << std::endl;
-        return QJsonDocument().fromJson(response_data);;
+        return QJsonDocument().fromJson(response_data);
     };
 
 };

@@ -11,6 +11,7 @@
 #include <QMap>
 #include "Operation.h"
 #include "BrokerManager.h"
+#include "MarketDataFactory.h"
 
 class IExchange {
 public:
@@ -34,6 +35,7 @@ public:
     virtual std::optional<QList<std::shared_ptr<Operation>>> parse(QFile& csv);
     virtual std::optional<QList<std::shared_ptr<Operation>>> read(const QString& csvPath);
     bool getFiatPrice(QList<std::shared_ptr<Operation>>& operations);
+    void calcFiatReward(QList<std::shared_ptr<Operation>>& operations);
 
     // Virtual puras
     virtual bool parseHeader(QFile& csv) = 0;

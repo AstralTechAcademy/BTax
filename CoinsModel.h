@@ -64,6 +64,7 @@ public:
     QList<Coin*> coins(void);
     void add(Coin* coin);
     QString getColor(const QString& name) const;
+    void clear(void) noexcept;
 public slots:
     int getID(const int index);
 

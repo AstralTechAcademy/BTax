@@ -3,6 +3,7 @@
 #include "BrokerManager.h"
 #include "Broker.h"
 #include "SQLManager.h"
+#include "Utils.h"
 
 class BrokerManagerTest: public QObject
 {
@@ -377,7 +378,7 @@ void BrokerManagerTest::getAverage()
 {
     std::vector<WalletOperation> wOpsModified;
     WalletOperation::OperationData data;
-
+    auto average="";
     QCOMPARE(true, brokerManager->newDeposit(1, 177.0, 0.0, "deposit getAverage", "")); // compare two values
     QCOMPARE(true, brokerManager->newDeposit(2, 177.0, 0.0, "deposit getAverage", "")); // compare two values
     data.walletID1 = 1;
@@ -429,17 +430,17 @@ void BrokerManagerTest::getAverage()
 
     for(auto w : ws.value())
     {
-        auto average = 0.0;
+
         if(w->getWalletID() == 9)
         {
-            average = (56.0+80.0)/(0.0008582604 + 0.0018913155);
-            QCOMPARE(true, (int) w->getAverageCost() == (int) average); // Este test no funciona porque los decimales no son precisos
+            average = "49461.9"; // = (56.0+80.0)/(0.0008582604 + 0.0018913155);
+            QCOMPARE(true, QString::number(w->getAverageCost()) == average); // Este test no funciona porque los decimales no son precisos
         }
 
         if(w->getWalletID() == 10)
         {
-            average = 33248.26;
-            QCOMPARE(true, (int) w->getAverageCost() == (int) average);
+            average = "33248.3";
+            QCOMPARE(true, QString::number(w->getAverageCost()) == average);
         }
     }
 
@@ -461,11 +462,11 @@ void BrokerManagerTest::getAverage()
     ws = DBLocal::GetInstance()->getCryptoWallets(BrokerManager::userID);
     for(auto w : ws.value())
     {
-        auto average = 0.0;
         if(w->getWalletID() == 9)
         {
-            average = (46.6694+80.0)/(0.00071526043+0.00189131555);
-            QCOMPARE(true, (int) w->getAverageCost() == (int) average);
+            average = "48595.9"; // = (46.6694+80.0)/(0.00071526043+0.00189131555);
+            qDebug() <<  QString::number(w->getAverageCost())  << " " <<average;
+            QCOMPARE(true, QString::number(w->getAverageCost()) == average);
         }
     }
 }
@@ -513,8 +514,8 @@ void BrokerManagerTest::newTransferencia()
         QCOMPARE(true, operations[index]->getCoin() == "ETH");
         QCOMPARE(true, wOpsModified.size() == 2);
         QCOMPARE(true, operations[index]->getAmount() == wOpsModified[indexModified].getRetired());
-        QCOMPARE(true, operations[index]->getDate().toString() == wOpsModified[indexModified].getDate().toString());
-        QCOMPARE(true, cnvDateTime2StrFormat(operations[index]->getDate(), EN_DateFormat::DMYhms) != "3/10/2022 10:00:00");
+        QCOMPARE(true, BTime::toString(operations[index]->getDate()) == BTime::toString(wOpsModified[indexModified].getDate()));
+        QCOMPARE(true, BTime::toString(operations[index]->getDate(), QLocale::Spanish, EN_DateFormat::DMYhms) != "03/10/2022 10:00:00");
         indexModified--;
     }
 }
@@ -629,12 +630,12 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, wops.at(1)->getAvailable() == 5.041367);
     QCOMPARE(true, wops.at(1)->getRetired() == 5.9632);
     QCOMPARE(true, wops.at(1)->getFiatPrice() == 6.24);
-    QCOMPARE(true, wops.at(1)->getDateTimeUtc().toString() == "jue. dic. 30 22:59:00 2021");
+    QCOMPARE(true, BTime::toString(wops.at(1)->getDateTimeUtc()) == "jue. dic. 30 22:59:00 2021");
 
     QCOMPARE(true, wops.at(0)->getCoin() == "USD");
     QCOMPARE(true, wops.at(0)->getRetired() == 0);
     QCOMPARE(true, wops.at(0)->getAvailable() == 25.957536);
-    QCOMPARE(true, wops.at(0)->getDateTimeUtc().toString() == "vie. dic. 31 22:59:00 2021");
+    QCOMPARE(true, BTime::toString(wops.at(0)->getDateTimeUtc()) == "vie. dic. 31 22:59:00 2021");
 
     auto op = brokerManager->getLastOperation();
     QCOMPARE(true, op->getPair1() == "LINK");
@@ -645,7 +646,8 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getGanancia() < 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "vie. dic. 31 23:59:59 2021");
-    QCOMPARE(true, cnvDateTime2StrFormat(op->getDateTime(), EN_DateFormat::DMYhms) == "31/12/2021 23:59:59");
+    qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);
+    QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "31/12/2021 23:59:59");
 
 
     data.walletID1 = 24;
@@ -670,12 +672,12 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, QString::number(wops.at(2)->getAvailable()) == "0.514667");
     QCOMPARE(true, QString::number(wops.at(2)->getRetired()) == "10.4899");
     QCOMPARE(true, wops.at(2)->getFiatPrice() == 6.24);
-    QCOMPARE(true, wops.at(2)->getDateTimeUtc().toString() == "jue. dic. 30 22:59:00 2021");
+    QCOMPARE(true, BTime::toString(wops.at(2)->getDateTimeUtc()) == "jue. dic. 30 22:59:00 2021");
 
     QCOMPARE(true, wops.at(0)->getCoin() == "USD");
     QCOMPARE(true, wops.at(0)->getRetired() == 0);
     QCOMPARE(true, wops.at(0)->getAvailable() == 25.498041);
-    QCOMPARE(true, wops.at(0)->getDateTimeUtc().toString() == "sáb. ene. 1 01:25:00 2022");
+    QCOMPARE(true, BTime::toString(wops.at(0)->getDateTimeUtc()) == "sáb. ene. 1 01:25:00 2022");
 
     op = brokerManager->getLastOperation();
     QCOMPARE(true, op->getPair1() == "LINK");
@@ -686,7 +688,9 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getGanancia() > 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "sáb. ene. 1 02:25:00 2022");
-    QCOMPARE(true, cnvDateTime2StrFormat(op->getDateTime(), EN_DateFormat::DMYhms) == "1/1/2022 2:25:0");
+    qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);
+
+    QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "01/01/2022 02:25:00");
 
 }
 

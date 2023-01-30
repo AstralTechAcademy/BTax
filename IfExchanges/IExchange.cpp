@@ -1,5 +1,6 @@
 #include "IExchange.h"
 
+
 std::optional<QList<std::shared_ptr<Operation>>> IExchange::parse(QFile& csv)
 {
     csv.open(QIODevice::ReadOnly);
@@ -29,18 +30,14 @@ std::optional<QList<std::shared_ptr<Operation>>> IExchange::read(const QString& 
 bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
 {
     QList<QString> opsWithoutPrice;
-    auto coingecko = Coingecko::getInstace();
-
+    auto coingecko = MarketDataFactory::createMarketData("Coingecko");
     for(auto o : operations)
     {
         auto id = coingecko->getCoinID(o->getPair2());
         if(id == std::nullopt)
             return false;
         
-        qDebug() << o->getDate() << " " << o->getDateTime();
-
         auto price = coingecko->getPrice(id.value(), o->getDateTime());
-
         if(price == std::nullopt)
             opsWithoutPrice.push_back(id.value() + " " + o->getDateTime().toString() );
         
@@ -58,4 +55,10 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
     }
     else
         return true;
+}
+
+void IExchange::calcFiatReward(QList<std::shared_ptr<Operation>>& operations)
+{
+    for(auto o : operations)
+        o->setGanancia(o->getPair2Amount() * o->getPair2AmountFiat());
 }

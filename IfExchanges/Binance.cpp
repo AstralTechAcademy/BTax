@@ -39,28 +39,32 @@ bool Binance::parseBody(QFile& csv)
 {
     while (!csv.atEnd()) {
         QByteArray line = csv.readLine();
-        auto lineV = line.split(separator_);
-        //Defaults
-        double pair1Amount = 0.0;
-        double pair1AmountFiat = 1.0;
-        double pair2AmountFiat = 0.0;
-
-        if(lineV[header_[EN_COLUMN_NAMES::TYPE]] == "POS savings interest")
+        if(line.isEmpty() == false and line.size() > 1 and line.contains(separator_))
         {
-            qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble();
-            operations_.push_back(std::make_shared<Operation>(0, BrokerManager::DEF_FIAT,  // Pair 1 Coin
-                                                                lineV[header_[EN_COLUMN_NAMES::PAIR2]],  // Pair 2 Coin
-                                                                pair1Amount, pair1AmountFiat,
-                                                                lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble(),
-                                                                pair2AmountFiat,
-                                                                0.0, 1.0, "Accepted",
-                                                                cnvDateTime2StrFormat(datetimeStrToDatetime(lineV[header_[EN_COLUMN_NAMES::DATE]]), EN_DateFormat::DMYhms),                                                                 "", "Earn", 
-                                                                pair2AmountFiat*lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble()) // Ganancia
-                                                                );
+            auto lineV = line.split(separator_);
+            //Defaults
+            double pair1Amount = 0.0;
+            double pair1AmountFiat = 1.0;
+            double pair2AmountFiat = 0.0;
+
+            if(lineV.size() > 0 && lineV[header_[EN_COLUMN_NAMES::TYPE]] == "POS savings interest")
+            {
+                qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble();
+                operations_.push_back(std::make_shared<Operation>(0, BrokerManager::DEF_FIAT,  // Pair 1 Coin
+                                                                    lineV[header_[EN_COLUMN_NAMES::PAIR2]],  // Pair 2 Coin
+                                                                    pair1Amount, pair1AmountFiat,
+                                                                    lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble(),
+                                                                    pair2AmountFiat,
+                                                                    0.0, 1.0, "Accepted",
+                                                                    cnvDateTime2StrFormat(datetimeStrToDatetime(lineV[header_[EN_COLUMN_NAMES::DATE]]), EN_DateFormat::DMYhms),                                                                 "", "Earn", 
+                                                                    pair2AmountFiat*lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble()) // Ganancia
+                                                                    );
+            }
         }
     }
 
     auto allOpsWithPrice = getFiatPrice(operations_);
+    calcFiatReward(operations_);
     if(operations_.size() > 0 && allOpsWithPrice)
         return true;
     else
