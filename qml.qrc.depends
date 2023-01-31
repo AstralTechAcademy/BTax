@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Init.qml</file>
         <file>body.qml</file>
         <file>MaterialTextInput.qml</file>
         <file>Operation.qml</file>
@@ -9,10 +10,13 @@
         <file>Wallet.qml</file>
         <file>IconButton.qml</file>
         <file>NewOperationForm.qml</file>
+        <file>NewTransferForm.qml</file>
         <file>ImportOperationForm.qml</file>
         <file>NewDepositForm.qml</file>
+        <file>NewAssetForm.qml</file>
         <file>DateSelector.qml</file>
         <file>DataItem.qml</file>
+        <file>Notifications/AMessageDialog.qml</file>
     </qresource>
 
     <qresource prefix="/assets">
@@ -24,5 +28,7 @@
         <file alias="lock-open-black">assets/lock_open_black_48dp.svg</file>
         <file alias="wallets-black">assets/account_balance_wallet_black_48dp.svg</file>
         <file alias="wallets-white">assets/account_balance_wallet_white_48dp.svg</file>
+        <file alias="upload-file-black">assets/upload_file_black_48dp.svg</file>
+
     </qresource>
 </RCC>

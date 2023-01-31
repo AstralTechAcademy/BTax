@@ -35,6 +35,13 @@ public:
 
     };
 
+    enum class LoadResCode
+    {
+        UNKNOWN = 0,
+        OK = 1,
+        NO_USERS
+    };
+
     struct NewOperationData
     {
         const int walletID1;
@@ -79,7 +86,7 @@ public:
     bool checkDuplicity(const QString& exchange, std::shared_ptr<Operation> operation);
     std::optional<std::vector<WalletOperation*>>  getAvailableBalancesOrdered(const QString& coinID, const QString exchange = "");
 
-    void load(void);
+    LoadResCode load(void);
     Operation* getLastOperation(void) const;
     std::vector<WalletOperation*> getLastNWalletOperation(int limit = 1) const;
     int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation, std::vector<WalletOperation>& wOpsModified);
@@ -90,6 +97,7 @@ signals:
 
 
 public slots:
+    bool newUser(const QString& name);
     bool newDeposit(const int walletID, double pairAmount, double fees,
                     const QString comment, QString date);
     int newOperation(const int walletID1,const int walletID2, double pair1Amount, double pair1AmountFiat,

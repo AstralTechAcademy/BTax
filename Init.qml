@@ -60,6 +60,15 @@ Window {
                 winld.source = "main.qml"
                 initWindow.visible = false
         }
+
+        function onNoUsers(){
+            footer.text = "No users in database. Please, create one before continue."
+            userTxt.visible = true
+        }
+
+        function onUserAlready(){
+            footer.text = "The user is already in database"
+        }
     }
 
     Text
@@ -80,4 +89,27 @@ Window {
         target: winld.item
         function onClosing () { BrokerImpl.close(); }
      }
+
+    ATextInput
+    {
+        id: userTxt
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible:false
+        text_: "Username"
+        lineColor_: "black"
+    }
+
+    Button
+    {
+        id: create
+        anchors.top: userTxt.bottom
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "Create"
+        onClicked: {
+            var r = BrokerImpl.newUser(userTxt.text_)
+            console.log("Create User " + userTxt.text_ + " " + r)
+        }
+    }
 }

@@ -22,6 +22,12 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     assetTypesModel_ = assetTypesModel;
 }
 
+
+bool BrokerManager::newUser(const QString& name)
+{
+    return DBLocal::GetInstance()->registerUser(name);
+}
+
 bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
                 const QString comment, QString date)
 {
@@ -587,13 +593,14 @@ std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
     return coingecko->getCurrentPrice(c.value());
 }
 
-void BrokerManager::load(void)
+BrokerManager::LoadResCode BrokerManager::load(void)
 {
     UsersModel::setUsers();
     
     if(UsersModel::getUsers().size() == 0)
     {
         qDebug() << "[BrokerManager::load] No users in database. Please, create one before continue.";
+        return LoadResCode::NO_USERS;
     }
     else
     {
@@ -611,7 +618,10 @@ void BrokerManager::load(void)
         loadDepositsFromDB(userID);
 
         std::cout << "[BrokerManager::load] Loaded" << std::endl;
+        return LoadResCode::OK;
     }
+
+    return LoadResCode::UNKNOWN;
         
 
 }

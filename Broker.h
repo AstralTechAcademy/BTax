@@ -54,6 +54,9 @@ signals:
     void connectingDatabase(void);
     void opened(void);
     void loaded(void);
+    void notLoaded(void);
+    void noUsers(void);
+    void userAlready(void);
     void loading(void);
 
 public slots:
@@ -63,7 +66,12 @@ public slots:
     QString getDatabase(void) const;
     bool isOpened(void) const;
     bool openDatabase(void);
+    #ifdef GTEST
+    BrokerManager::LoadResCode load(void);
+    #else
     void load(void);
+    #endif
+    void newUser(const QString& name);
     void close(void) const noexcept { qApp->exit(0);}
 
 
