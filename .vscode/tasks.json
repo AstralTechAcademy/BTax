@@ -19,6 +19,14 @@
         },
         {
             "type": "shell",
+            "label": "Build Broker w/ MANUAL TEST WIN",
+            "command": "cmake -DWIN=1 -DMANUAL_TEST=1 -DCMAKE_BUILD_TYPE=Debug -G \"Ninja\" . ; ninja",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Build Broker w/ MANUAL TEST"
+        },
+        {
+            "type": "shell",
             "label": "Build Broker no GTEST",
             "command": "cmake -DLINUX=1 -DCMAKE_BUILD_TYPE=Debug . && make",
             "group": "build",

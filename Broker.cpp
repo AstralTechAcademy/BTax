@@ -85,10 +85,56 @@ bool Broker::isOpened(void) const
     return dbOpened_;
 }
 
-
+#ifdef GTEST
+BrokerManager::LoadResCode Broker::load(void)
+#else
 void Broker::load(void)
+#endif
 {
     qDebug() << "[Broker::load] Loading";
-    BrokerManager::getInstance()->load();
-    emit loaded();
+    auto res = BrokerManager::getInstance()->load();
+
+    switch(res)
+    {
+        case BrokerManager::LoadResCode::OK:
+            emit loaded();
+            break;
+        case BrokerManager::LoadResCode::NO_USERS:
+            emit noUsers();
+            break;
+        case BrokerManager::LoadResCode::UNKNOWN:
+        default:
+            emit notLoaded();
+            break;
+    }
+#ifdef GTEST
+return res;
+#endif
+
 }
+
+void Broker::newUser(const QString& name)
+{
+    if(!BrokerManager::getInstance()->newUser(name))
+    {
+        qDebug() << "[Broker::newUser] Error creating the user " << name << ". The user could be already in database.";
+        emit userAlready();
+        return;
+    }
+
+    auto res = BrokerManager::getInstance()->load();
+    switch(res)
+    {
+        case BrokerManager::LoadResCode::OK:
+            emit loaded();
+            break;
+        case BrokerManager::LoadResCode::NO_USERS:
+            emit noUsers();
+            break;
+        case BrokerManager::LoadResCode::UNKNOWN:
+        default:
+            emit notLoaded();
+            break;
+    }
+}
+

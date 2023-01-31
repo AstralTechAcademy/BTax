@@ -76,7 +76,9 @@
 			"qtime": "cpp",
 			"qdate": "cpp",
 			"qtimezone": "cpp",
-			"qdatetime": "cpp"
+			"qdatetime": "cpp",
+			"numbers": "cpp",
+			"semaphore": "cpp"
 		}
 	}
 }
