@@ -105,6 +105,7 @@ public slots:
                      QString status, QString date);
     int newTransfer(const int walletID1,const int walletID2, double walletOAmount, double walletDAmount, QString feesCoin, 
                         double comision, double comisionFiat, QString comments, QString status, QString date);
+    bool newAssetIfNotExist(const QString& type, const QString& name, const QString& color);
     bool newAsset(const QString& type, const QString& name, const QString& color);
     bool addWalletIfNotExist(const QString coinName, const QString exchange);
     bool addWallet(const QString coinName, const QString exchange);

@@ -237,6 +237,17 @@ int BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operati
     return newOperation(data, wOpsModified);
 }
 
+bool BrokerManager::newAssetIfNotExist(const QString& type, const QString& name, const QString& color)
+{
+    if(findCoin(name) != std::nullopt)
+        return false;
+    
+    auto res = DBLocal::GetInstance()->registerAsset(type, name, color);
+    if(res)
+        loadCoinsFromDB();
+    return res;
+}
+
 bool BrokerManager::newAsset(const QString& type, const QString& name, const QString& color)
 {
     auto assets = coinsModel_->coins();
