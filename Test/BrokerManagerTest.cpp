@@ -14,6 +14,7 @@ private slots:
     void loadTestData();
     void newAsset();
     void cleanupTestCase();
+    void newAssetIfNotExist();
     void newOperation();
     void newSaleAssetMultiExchange();
     void newOperationWallet1NotExist();
@@ -25,6 +26,7 @@ private slots:
     void getGlobalAverage();
     void calculatePortfolio();
     void updateTimeUTC();
+
 
     void fullUseCase();
 
@@ -171,6 +173,12 @@ void BrokerManagerTest::loadTestData()
 void BrokerManagerTest::newAsset()
 {
     QCOMPARE(true, brokerManager->newAsset("stock", "prueba", "#FFFFFF")); // compare two values
+}
+
+void BrokerManagerTest::newAssetIfNotExist()
+{
+    QCOMPARE(true, brokerManager->newAssetIfNotExist("crypto", "MONEDA1", "#FFFFFFF")); // No exist -> Create
+    QCOMPARE(false, brokerManager->newAssetIfNotExist("crypto", "MONEDA1", "#FFFFFFF")); // Already created
 }
 
 void BrokerManagerTest::newOperation()
@@ -795,5 +803,5 @@ void BrokerManagerTest::cleanupTestCase()
     qDebug("Clean BrokerManagerTest");
 }
 
-QTEST_MAIN(BrokerManagerTest)
+QTEST_GUILESS_MAIN(BrokerManagerTest)
 #include "BrokerManagerTest.moc"

@@ -96,6 +96,8 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
     std::vector<WalletOperation> wOpsModified;
     for(auto index = 0; index < ops.size();)
     {
+        brokerManager_->newAssetIfNotExist("crypto", ops[index]->getPair1(), "#2acaea");
+        brokerManager_->newAssetIfNotExist("crypto", ops[index]->getPair2(), "#2acaea");
         brokerManager_->addWalletIfNotExist(EN_Exchange2String(exchange), ops[index]->getPair1());
         brokerManager_->addWalletIfNotExist(EN_Exchange2String(exchange), ops[index]->getPair2());
 
