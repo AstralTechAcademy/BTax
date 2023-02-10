@@ -23,19 +23,20 @@
 class SQLManager {
 
 public:
-    SQLManager() {};
-
     SQLManager(const SQLManager&) = delete;
     SQLManager(SQLManager&&) = delete;
     auto operator=(SQLManager &) -> SQLManager& = delete;
     auto operator=(SQLManager &&) -> SQLManager& = delete;
 
 
+    static SQLManager *GetInstance(void);
+
     /*
      * Funciones comunes
      */
-    virtual bool createDatabase(void) = 0;
-    virtual bool openDatabase(void) = 0;
+    bool update(void) const;
+    uint32_t getVersion(void) const;
+    bool openDatabase(void);
     uint32_t getUserID(const QString& username);
     QString getServer(void) const;
     QString getDatabase(void) const;
@@ -82,12 +83,44 @@ public:
     QDateTime DatetimeUTCStrToDatetime(QString timeUtc) const;
     QString updateDateTimeUTCFromQTFormat(QString table,QString id, QDateTime time, QString exchange);
 
+
+    /*
+     * Create database and tables functions
+     */
+    bool createTables(void);
+    bool createAssetTypes(void) const;
+    bool createVersion(void) const;
+    bool createCoins(void) const;
+    bool createUsers(void) const;
+    bool createWallets(void) const;
+    bool createWalletOperations(void) const;
+    bool createOperations(void) const;
+    bool createWithdraws(void) const;
+    bool createDeposits(void) const;
+
+    /*
+     * DB updates
+     */
+    bool insertVersion(uint32_t version, QString remark) const;
+    bool updateVersion(uint32_t version, QString remark) const;
+    bool update200000(void) const;
+
+    /*
+     * Add default values
+     */
+    bool defaultCoins(void) const;
+    bool defaultAssetTypes(void) const;
+
+
 protected:
     static QSqlDatabase database;
     static QString server;
     static QString databaseName;
 
 private:
+    SQLManager() {};
+    
+    static SQLManager* instance_;
     std::tuple<bool, std::vector<Operation*>> processGetOperations(QSqlQuery& query);
     QString query_view_operations = "SELECT OP.date, OP.type, OP.wallet1, W1.exchange, C1.name, OP.pair1Amount, OP.pair1AmountFiat,"
                                     "    OP.wallet2, W2.exchange, C2.name, OP.pair2Amount, OP.pair2AmountFiat,"

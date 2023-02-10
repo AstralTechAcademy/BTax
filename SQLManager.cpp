@@ -3,11 +3,46 @@
 //
 
 #include "SQLManager.h"
+#include "DBCredential_NotPush.h"
 #include <unistd.h>
 
 QSqlDatabase SQLManager::database = QSqlDatabase();
 QString SQLManager::server = "None";
 QString SQLManager::databaseName = "None";
+SQLManager* SQLManager::instance_ = nullptr;
+
+
+SQLManager* SQLManager::GetInstance(void)
+{
+    server = SERVER;
+    databaseName = DATABASENAME;
+    if(instance_ == nullptr){
+        instance_ = new SQLManager();
+    }
+    return instance_;
+}
+
+bool SQLManager::createTables(void)
+{
+    bool created = false;
+    createAssetTypes();
+
+    return created;
+};
+
+bool SQLManager::openDatabase(void)
+{
+    bool opened = false;
+    database = QSqlDatabase::addDatabase("QMYSQL");
+    database.setUserName(USERNAME);
+    database.setPort(PORT);
+    database.setHostName(SERVER);
+    database.setDatabaseName(DATABASENAME);
+    database.setPassword(PASSWORD);
+    server = SERVER;
+    databaseName = DATABASENAME;
+    return database.open();
+};
 
 bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> walletOperations,
                                       const WalletOperation::OperationData& data,
@@ -1230,6 +1265,303 @@ std::vector<WalletOperation*>  SQLManager::getLastNWalletOperation(int limit) co
         wOps.push_back(opW);
     }
     return wOps;
+}
+
+bool SQLManager::createAssetTypes(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE AssetType ( \
+                id int(11) NOT null AUTO_INCREMENT, \
+                name varchar(10) NOT null, \
+                UNIQUE KEY id (id), \
+                UNIQUE KEY name (name)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+
+    qDebug() << "[SQLManager::createAssetTypes] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createVersion(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Version ( \
+                    version INT NOT null primary key, \
+                    remark varchar(20) NOT null) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    qDebug() << "[SQLManager::createVersion] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createUsers(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Users (\
+                id int(11) NOT null AUTO_INCREMENT,\
+                username varchar(20) DEFAULT null,\
+                PRIMARY KEY (id),\
+                UNIQUE KEY Users_UN (username)\
+                ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4");
+
+  //  qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createCoins(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Coins ( \
+                id int(11) NOT null AUTO_INCREMENT, \
+                name varchar(10) DEFAULT null, \
+                type varchar(10) DEFAULT 'crypto', \
+                color varchar(10) DEFAULT null, \
+                marketcapid varchar(100) DEFAULT null, \
+                PRIMARY KEY (id) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+
+ //   qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createDeposits(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Deposits ( \
+                id int(11) NOT null AUTO_INCREMENT, \
+                wallet int(11) DEFAULT null, \
+                amount double DEFAULT 0, \
+                fees double DEFAULT 0, \
+                date varchar(50) DEFAULT null, \
+                PRIMARY KEY (id),\
+                KEY wallet (wallet),\
+                CONSTRAINT Deposits_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id) \
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+
+ //   qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createWallets(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Wallets (\
+                id int(11) NOT null AUTO_INCREMENT,\
+                coin int(11) DEFAULT null,\
+                exchange varchar(50) DEFAULT null,\
+                user int(11) DEFAULT 1,\
+                pubkey varchar(256) DEFAULT null,\
+                PRIMARY KEY (id),\
+                KEY user (user),\
+                KEY coin (coin),\
+                CONSTRAINT Wallets_ibfk_1 FOREIGN KEY (user) REFERENCES Users (id),\
+                CONSTRAINT Wallets_ibfk_2 FOREIGN KEY (coin) REFERENCES Coins (id)\
+                ) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4");
+
+   // qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createWalletOperations(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE WalletOperations (\
+                id int(11) NOT null AUTO_INCREMENT,\
+                wallet int(11) DEFAULT null,\
+                amount double DEFAULT 0,\
+                retired double DEFAULT 0,\
+                available double DEFAULT 0,\
+                fiat double DEFAULT 0,\
+                date varchar(50) DEFAULT null,\
+                PRIMARY KEY (id),\
+                KEY wallet (wallet),\
+                CONSTRAINT WalletOperations_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id)\
+                ) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8mb4");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createOperations(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Operations ( \
+                id int(11) NOT null AUTO_INCREMENT, \
+                wallet1 int(11) DEFAULT null, \
+                wallet2 int(11) DEFAULT null, \
+                pair1Amount double DEFAULT 0, \
+                pair1AmountFiat double DEFAULT 0, \
+                pair2Amount double DEFAULT 0, \
+                pair2AmountFiat double DEFAULT 0, \
+                comision double DEFAULT 0, \
+                comisionFiat double DEFAULT 0, \
+                ganancia double DEFAULT 0, \
+                status varchar(50) DEFAULT 'Not Confirmed',\
+                date varchar(50) DEFAULT null, \
+                comments varchar(512) DEFAULT null, \
+                type varchar(20) DEFAULT null, \
+                PRIMARY KEY (id), \
+                KEY wallet1 (wallet1), \
+                KEY wallet2 (wallet2), \
+                CONSTRAINT Operations_ibfk_1 FOREIGN KEY (wallet1) REFERENCES Wallets (id), \
+                CONSTRAINT Operations_ibfk_2 FOREIGN KEY (wallet2) REFERENCES Wallets (id) \
+                ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::createWithdraws(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Withdraws ( \
+                id int(11) NOT null AUTO_INCREMENT,\
+                wallet int(11) DEFAULT null,\
+                amount double DEFAULT 0,\
+                date varchar(50) DEFAULT null,\
+                PRIMARY KEY (id),\
+                KEY wallet (wallet),\
+                CONSTRAINT Withdraws_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id)\
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::update200000(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("ALTER TABLE WalletOperations \
+                ADD datetimeUTC datetime");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::insertVersion(uint32_t version, QString remark) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("INSERT INTO Version (version, remark) VALUES (:version, :remark)");
+    query.bindValue(":version", version);
+    query.bindValue(":remark", remark);
+    query.exec();
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::updateVersion(uint32_t version, QString remark) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("UPDATE Version"
+                    " SET version=:version, remark=:remark");
+    query.bindValue(":version", version);
+    query.bindValue(":remark", remark);
+    query.exec();
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::defaultCoins(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("INSERT INTO Coins (id, name, type,color,marketcapid)\
+                    VALUES \
+                        (1, 'EUR','fiat','#001489', null),\
+                        (2, 'USD','fiat','#85bb65', null),\
+                        (3, 'BTC','crypto','#F28E16', 'bitcoin'),\
+                        (4, 'ETH','crypto','#454A75', 'etherum'),\
+                        (5, 'ADA','crypto','#0033AD', 'cardano'),\
+                        (6, 'AVAX','crypto','#DB4342', 'avalanche-2'),\
+                        (7, 'DOT','crypto','#E9007A', 'polkadot'),\
+                        (8, 'BNB','crypto','#EAB32D', 'binancecoin'),\
+                        (9, 'SHIB','crypto','#FCA400', 'shiba-inu'),\
+                        (10, 'SOL','crypto','#4DA6BF', 'solana'),\
+                        (11, 'XRP','crypto',null, 'ripple'),\
+                        (12, 'DOGE','crypto',null, 'dogecoin'),\
+                        (13, 'LUNA','crypto',null, 'terra-luna'),\
+                        (14, 'UNI','crypto', null, 'uniswap'),\
+                        (15, 'LINK','crypto', null, 'link'),\
+                        (16, 'ALGO','crypto', null, null),\
+                        (17, 'MATIC','crypto','#7D41E4', 'matic-network'),\
+                        (18, 'XLM','crypto',null, null),\
+                        (19, 'VET','crypto','#15BBFB', 'vechain'),\
+                        (20, 'ATOM','crypto',null, null),\
+                        (21, 'CRO','crypto','#061121', null),\
+                        (22, 'IOTA','crypto',null, null),\
+                        (23, 'LUNA2','crypto','#F86F19', 'terra-luna-2'),\
+                        (24, 'USDT','crypto',null, null),\
+                        (25, 'USDC','crypto',null, null),\
+                        (26, 'BUSD','crypto',null, null)");
+
+    query.exec();
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::defaultAssetTypes(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("INSERT INTO AssetType (id, name)\
+                    VALUES \
+                    (1, 'crypto'),\
+                    (2, 'debt'), \
+                    (3, 'etf'),\
+                    (4, 'fiat'),\
+                    (5, 'fund'),\
+                    (6, 'share'),\
+                    (7, 'real state')");
+    query.exec();
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+
+uint32_t SQLManager::getVersion(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("SELECT version FROM Version");
+
+    if(query.lastError().type() == 2 and query.lastError().text().contains("doesn't exist"))
+        return 0;
+    else
+    {
+        query.next();
+        return query.value(0).toInt();
+    }
+
+}
+
+bool SQLManager::update(void) const
+{
+    auto version = getVersion();
+
+    // Version format is an integer that follows this schema removing dot characters XXXX.YY.ZZZ
+    qDebug() << "[SQLManager::"<< __func__ << "] Current Version: "  << version;
+
+
+    if(version == 0)
+    {
+        if(createVersion() == false) return false;
+        if(createAssetTypes() == false) return false;
+        if(createUsers() == false) return false;
+        if(createCoins() == false) return false;
+        if(createWallets() == false) return false;
+        if(createDeposits() == false) return false;
+        if(createWithdraws() == false) return false;
+        if(createWalletOperations() == false) return false;
+        if(createOperations() == false) return false;
+        if(defaultAssetTypes() == false) return false;
+        if(defaultCoins() == false) return false;
+        if(insertVersion(100000, "1.00.000") == false) return false;
+    }
+
+    if(version < 200000)
+    {
+        if(update200000() == false) return false;
+        if(updateVersion(200000, "2.00.000") == false) return false;
+    }
+
+    return true;
 }
 
 

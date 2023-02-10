@@ -4,7 +4,7 @@
 
 #include "Binance.h"
 #include <QFile>
-#include "DBLocal.h"
+#include "SQLManager.h"
 
 Binance::Binance(void){};
 

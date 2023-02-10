@@ -95,7 +95,7 @@ double WalletsModel::getTotalInvestedFiat(void) const
 {
     double invested = 0.0 ;
 
-    auto result = DBLocal::GetInstance()->getDeposits();
+    auto result = SQLManager::GetInstance()->getDeposits();
 
     if (result == std::nullopt)
         return 0.0;
@@ -111,7 +111,7 @@ double WalletsModel::getCryptoInvested(void) const
 {
     double invested = 0.0 ;
 
-    auto ws = DBLocal::GetInstance()->getCryptoWallets(BrokerManager::userID);
+    auto ws = SQLManager::GetInstance()->getCryptoWallets(BrokerManager::userID);
 
     if(ws == std::nullopt)
         return 0.0;

@@ -64,6 +64,7 @@ Window {
         function onNoUsers(){
             footer.text = "No users in database. Please, create one before continue."
             userTxt.visible = true
+            create.visible = true
         }
 
         function onUserAlready(){
@@ -107,6 +108,7 @@ Window {
         anchors.topMargin: 20
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Create"
+        visible: false
         onClicked: {
             var r = BrokerImpl.newUser(userTxt.text_)
             console.log("Create User " + userTxt.text_ + " " + r)

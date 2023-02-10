@@ -25,7 +25,7 @@ private:
 
 void BrokerTest::prepareScenario()
 {
-    QSqlQuery query(DBLocal::getDb());
+    QSqlQuery query(SQLManager::getDb());
 
     query.prepare("drop table WalletOperations, Operations, Deposits, Wallets, Users, Coins");
     query.exec();
@@ -101,7 +101,7 @@ void BrokerTest::openDatabase()
 {
     QString version = "1.1.0";
     QQmlApplicationEngine engine;
-    Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, DBRemote::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     QCOMPARE(true, broker->openDatabase());
@@ -111,7 +111,7 @@ void BrokerTest::noUsersInDatabase()
 {
     QString version = "1.1.0";
     QQmlApplicationEngine engine;
-    Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, DBRemote::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     QCOMPARE(BrokerManager::LoadResCode::NO_USERS, broker->load());
@@ -121,10 +121,10 @@ void BrokerTest::userAvailable()
 {
     QString version = "1.1.0";
     QQmlApplicationEngine engine;
-    Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, DBRemote::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
-    DBLocal::GetInstance()->registerUser("user1");
-    DBLocal::GetInstance()->registerAsset("fiat", "EUR", "#FF0000");
+    SQLManager::GetInstance()->registerUser("user1");
+    SQLManager::GetInstance()->registerAsset("fiat", "EUR", "#FF0000");
 
     brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
     brokerManager->load();    

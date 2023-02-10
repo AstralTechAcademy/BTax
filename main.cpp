@@ -9,8 +9,7 @@
 #include "Broker.h"
 #include "OperationsModel.h"
 #include "BrokerManager.h"
-#include "DBLocal.h"
-#include "DBRemote.h"
+#include "SQLManager.h"
 #include "WalletsModel.h"
 #include "WalletsPercModel.h"
 #include "UsersModel.h"
@@ -29,7 +28,7 @@ void timeout(void)
 
 int main(int argc, char *argv[])
 {
-    QString version = "1.1.0";
+    QString version = "2.00.000";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QQuickStyle::setStyle("Imagine");
 
@@ -68,9 +67,11 @@ int main(int argc, char *argv[])
 
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
+
+    //Required the qmldir if the QMl files are outside binary directory so it is required in development. In release/deployed mode is disabled.
     engine.addImportPath("G:/Repositorio/Astral_Academy/medium/Components");
 
-    Broker* broker = Broker::getInstance(DBRemote::GetInstance()->getServer(), version, DBRemote::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     const QUrl url(QStringLiteral("qrc:/Init.qml"));

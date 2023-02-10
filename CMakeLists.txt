@@ -14,7 +14,16 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+#Avoid open windows terminal when the application is in Release Mode and deployed
+if(${CMAKE_BUILD_TYPE} MATCHES Release)
+
 #add_definitions(-DOFICIAL)
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows") #Mingw Linker
+
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup") #Visual Studio linker
+endif()
 
 if(MANUAL_TEST)
 #################### QT TEST ####################
@@ -102,8 +111,6 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.h
         SQLManager.cpp
         SQLManager.h
-        DBLocal.cpp
-        DBLocal.h
         Broker.cpp
         Broker.h
         OperationsModel.cpp
@@ -117,7 +124,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Statistics.cpp
         DBCredential_NotPush.h
         WalletsPercModel.cpp WalletsPercModel.h
-        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h DBRemote.cpp DBRemote.h UsersModel.cpp UsersModel.h
+        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h
+        UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h
         AssetTypeModel.cpp AssetTypeModel.h
         IfExchanges/IExchange.h IfExchanges/IExchange.cpp

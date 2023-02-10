@@ -43,9 +43,9 @@ bool Broker::openDatabase (void)
 {
     QFuture<bool> future = QtConcurrent::run([&](){
         emit connectingDatabase();
-        dbOpened_ = DBRemote::GetInstance()->openDatabase();
+        dbOpened_ = SQLManager::GetInstance()->openDatabase();
         std:: cout << "DB Server Opened: " <<  dbOpened_ << std::endl;
-        server_ = DBRemote::GetInstance()->getServer();
+        server_ = SQLManager::GetInstance()->getServer();
         if(!dbOpened_)
         {
                 emit notOpened();
@@ -53,8 +53,16 @@ bool Broker::openDatabase (void)
         }
         else
         {
-                emit opened();
-                return true;
+            auto updated = SQLManager::GetInstance()->update();
+            if(!updated)
+            {
+                emit notOpened();
+                return false;
+            }
+
+
+            emit opened();
+            return true;
         }
     });
 

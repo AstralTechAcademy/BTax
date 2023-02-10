@@ -3,7 +3,7 @@
 //
 
 #include "UsersModel.h"
-#include "DBLocal.h"
+#include "SQLManager.h"
 
 
 QList<std::tuple<uint32_t , QString>> UsersModel::users;
@@ -15,7 +15,7 @@ QList<std::tuple<uint32_t , QString>>  UsersModel::getUsers(void)
 }
 void UsersModel::setUsers(void)
 {
-    users = DBLocal::GetInstance()->getUsers();
+    users = SQLManager::GetInstance()->getUsers();
 }
 
 QVariant UsersModel::data(const QModelIndex & index, int role) const {

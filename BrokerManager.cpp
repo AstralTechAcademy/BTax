@@ -25,7 +25,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
 
 bool BrokerManager::newUser(const QString& name)
 {
-    return DBLocal::GetInstance()->registerUser(name);
+    return SQLManager::GetInstance()->registerUser(name);
 }
 
 bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
@@ -51,11 +51,11 @@ bool BrokerManager::newDeposit(const int walletID, double amount, double fees,
 
     }
 
-    auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(walletID);
+    auto [r1, wallet1] = SQLManager::GetInstance()->getWallet(walletID);
     if(!r1)
         return false;
 
-    auto res = DBLocal::GetInstance()->depositOperation(walletID, wallet1->getExchange() ,amount, 1, fees, comment, date);
+    auto res = SQLManager::GetInstance()->depositOperation(walletID, wallet1->getExchange() ,amount, 1, fees, comment, date);
 
     loadWalletsFromDB(userID);
     if(res)
@@ -98,8 +98,8 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
 
     double totalAmount = 0.0;
 
-    auto [r1, wallet1] = DBLocal::GetInstance()->getWallet(data.walletID1);
-    auto [r2, wallet2] = DBLocal::GetInstance()->getWallet(data.walletID2);
+    auto [r1, wallet1] = SQLManager::GetInstance()->getWallet(data.walletID1);
+    auto [r2, wallet2] = SQLManager::GetInstance()->getWallet(data.walletID2);
 
     if(r1 and r2)
     {
@@ -145,7 +145,7 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
 
             if(totalAvailableAmt >= totalAmount)
             {
-                auto res = DBLocal::GetInstance()->registerOperationNew(wallets, data, wOpsModified);
+                auto res = SQLManager::GetInstance()->registerOperationNew(wallets, data, wOpsModified);
                 return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
             }
             else
@@ -166,7 +166,7 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
 
             if(totalAvailableAmt >= totalAmount)
             {
-                auto res = DBLocal::GetInstance()->registerOperationNew(wallets, data, wOpsModified);
+                auto res = SQLManager::GetInstance()->registerOperationNew(wallets, data, wOpsModified);
                 return res ? static_cast<int>( NewOperationRes::ADDED) :  static_cast<int>( NewOperationRes::NOT_ADDED);
             }
             else
@@ -242,7 +242,7 @@ bool BrokerManager::newAssetIfNotExist(const QString& type, const QString& name,
     if(findCoin(name) != std::nullopt)
         return false;
     
-    auto res = DBLocal::GetInstance()->registerAsset(type, name, color);
+    auto res = SQLManager::GetInstance()->registerAsset(type, name, color);
     if(res)
         loadCoinsFromDB();
     return res;
@@ -259,7 +259,7 @@ bool BrokerManager::newAsset(const QString& type, const QString& name, const QSt
         return false;
     }
 
-    auto res = DBLocal::GetInstance()->registerAsset(type, name, color);
+    auto res = SQLManager::GetInstance()->registerAsset(type, name, color);
 
     if(res)
         loadCoinsFromDB();
@@ -271,13 +271,13 @@ bool BrokerManager::addWalletIfNotExist(const QString exchange,
 {
     bool exist = false;
 
-    auto res = DBLocal::GetInstance()->getWallets();
+    auto res = SQLManager::GetInstance()->getWallets();
     if(std::get<0>(res) == false)
     {
-        return (DBLocal::GetInstance()->addWallet(coinName, exchange, userID) > 0);
+        return (SQLManager::GetInstance()->addWallet(coinName, exchange, userID) > 0);
     }
 
-    auto uname = DBLocal::GetInstance()->getUsername(userID);
+    auto uname = SQLManager::GetInstance()->getUsername(userID);
     auto wallets = std::get<1>(res);
     for(auto w : wallets)
     {
@@ -291,7 +291,7 @@ bool BrokerManager::addWalletIfNotExist(const QString exchange,
         if(res == std::nullopt)
             return false;
         auto coin = res.value();
-        return (DBLocal::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID) > 0);
+        return (SQLManager::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID) > 0);
     }
 
     return exist;
@@ -315,7 +315,7 @@ bool BrokerManager::addWallet(const QString coinName, const QString exchange)
         if(res == std::nullopt)
             return false;
         auto coin = res.value();
-        auto result = DBLocal::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID);
+        auto result = SQLManager::GetInstance()->addWallet(QString::number(coin->id()), exchange, userID);
         if ( result > 0)
         {
             loadWalletsFromDB(userID);
@@ -330,7 +330,7 @@ bool BrokerManager::addWallet(const QString coinName, const QString exchange)
 
 uint32_t BrokerManager::getUserID(const QString& username)
 {
-    return DBLocal::GetInstance()->getUserID(username);
+    return SQLManager::GetInstance()->getUserID(username);
 }
 
 
@@ -339,9 +339,9 @@ QStringList BrokerManager::getWalletsCBox(const QString& username)
     QStringList result;
     std::vector<Wallet *> wallets;
     if(username != "")
-        wallets = std::get<1>(DBLocal::GetInstance()->getWallets(getUserID(username)));
+        wallets = std::get<1>(SQLManager::GetInstance()->getWallets(getUserID(username)));
     else
-        wallets = std::get<1>(DBLocal::GetInstance()->getWallets(userID));
+        wallets = std::get<1>(SQLManager::GetInstance()->getWallets(userID));
 
     if(wallets.empty() == false)
     {
@@ -380,7 +380,7 @@ void BrokerManager::setYear(const QString& year)
 
 void BrokerManager::loadOperationsFromDB(const uint32_t userID)
 {
-    auto operations = DBLocal::GetInstance()->getOperations(userID);
+    auto operations = SQLManager::GetInstance()->getOperations(userID);
     if(std::get<0>(operations) == true)
     {
         for(auto op : std::get<1>(operations))
@@ -390,7 +390,7 @@ void BrokerManager::loadOperationsFromDB(const uint32_t userID)
 
 void BrokerManager::loadOperationsFromDB(const uint32_t userID, const uint32_t year)
 {
-    auto operations = DBLocal::GetInstance()->getOperations(userID);
+    auto operations = SQLManager::GetInstance()->getOperations(userID);
     if(std::get<0>(operations) == true)
     {
         for(auto op : std::get<1>(operations))
@@ -405,14 +405,14 @@ void BrokerManager::loadOperationsFromDB(const uint32_t userID, const uint32_t y
 void BrokerManager::loadCoinsFromDB(void)
 {
     coinsModel_->clear();
-    auto coins = DBLocal::GetInstance()->getCoins();
+    auto coins = SQLManager::GetInstance()->getCoins();
     for(auto c : coins)
         coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c), std::get<3>(c)));
 }
 
 void BrokerManager::loadAssetTypesFromDB(void)
 {
-    auto assets = DBLocal::GetInstance()->getAssetTypes();
+    auto assets = SQLManager::GetInstance()->getAssetTypes();
     for(auto c : assets)
         assetTypesModel_->add(new AssetType(std::get<0>(c), std::get<1>(c)));
 }
@@ -421,7 +421,7 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
 {
     walletsModel_->clear();
     walletsModelAll_->clear();
-    auto result = DBLocal::GetInstance()->getWallets(userID);
+    auto result = SQLManager::GetInstance()->getWallets(userID);
     if(std::get<0>(result) == true)
     {
         auto wallets = std::get<1>(result);
@@ -447,7 +447,7 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
 {
     double totalInvested = 0.0;
-    auto result = DBLocal::GetInstance()->getDeposits(userID);
+    auto result = SQLManager::GetInstance()->getDeposits(userID);
 
     if(result == std::nullopt)
         return;
@@ -496,7 +496,7 @@ void BrokerManager::setCoinPtrInWallets()
 
 std::optional<std::vector<WalletOperation*>>  BrokerManager::getAvailableBalancesOrdered(const QString& coinID, const QString exchange)
 {
-    auto wallets = DBLocal::GetInstance()->getWalletsOps(BrokerManager::userID, coinID, exchange);
+    auto wallets = SQLManager::GetInstance()->getWalletsOps(BrokerManager::userID, coinID, exchange);
     if (wallets == std::nullopt)
         return std::nullopt;
 
@@ -519,7 +519,7 @@ bool BrokerManager::checkDuplicity(const QString& exchange, std::shared_ptr<Oper
 {
     if(setWallets(exchange, operation) != static_cast<int>(NewOperationRes::OK)) return true; // Return as duplicated
 
-    auto res = DBLocal::GetInstance()->getOperations(QString::number(operation->getWalletID1()));
+    auto res = SQLManager::GetInstance()->getOperations(QString::number(operation->getWalletID1()));
     if(std::get<0>(res) ==  false) return false;
     
     auto ops = std::get<1>(res);
@@ -543,13 +543,13 @@ std::optional<std::vector<Wallet*>> BrokerManager::findWallets(const QString& co
 
 std::optional<Wallet> BrokerManager::findWallet(const QString& exchange, const QString& coin)
 {
-    return DBLocal::GetInstance()->getWallets(BrokerManager::userID, coin, exchange); //walletsModelAll_->find(exchange, coin);
+    return SQLManager::GetInstance()->getWallets(BrokerManager::userID, coin, exchange); //walletsModelAll_->find(exchange, coin);
 }
 
 std::optional<Coin*> BrokerManager::findCoin(const QString& coin)
 {
 
-    auto res = DBLocal::GetInstance()->getCoin(coin);
+    auto res = SQLManager::GetInstance()->getCoin(coin);
 
     if(res == std::nullopt)
         return std::nullopt;
@@ -639,12 +639,12 @@ BrokerManager::LoadResCode BrokerManager::load(void)
 
 Operation* BrokerManager::getLastOperation(void) const
 {
-    return DBLocal::GetInstance()->getLastOperation();
+    return SQLManager::GetInstance()->getLastOperation();
 }
 
 std::vector<WalletOperation*> BrokerManager::getLastNWalletOperation(int limit) const
 {
-    return DBLocal::GetInstance()->getLastNWalletOperation(limit);
+    return SQLManager::GetInstance()->getLastNWalletOperation(limit);
 }
 
 

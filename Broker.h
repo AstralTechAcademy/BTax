@@ -11,8 +11,7 @@
 #include <QDebug>
 #include "OperationsModel.h"
 #include "BrokerManager.h"
-#include "DBLocal.h"
-#include "DBRemote.h"
+#include "SQLManager.h"
 #include "WalletsModel.h"
 #include "WalletsPercModel.h"
 #include "UsersModel.h"

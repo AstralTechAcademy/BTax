@@ -4,9 +4,9 @@
 
 #include "BrokerManager.h"
 #include "Statistics.h"
-#include "DBLocal.h"
+#include "SQLManager.h"
 
 double Statistics::getCurrentRevenue(void)
 {
-    DBLocal::GetInstance()->getWallets(BrokerManager::userID);
+    SQLManager::GetInstance()->getWallets(BrokerManager::userID);
 }

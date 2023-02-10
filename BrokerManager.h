@@ -10,8 +10,7 @@
 #include "WalletsPercModel.h"
 #include "CoinsModel.h"
 #include "AssetTypeModel.h"
-#include "DBLocal.h"
-#include "DBRemote.h"
+#include "SQLManager.h"
 #include "IMarketData/Coingecko.h"
 
 class BrokerManager : public QObject{
