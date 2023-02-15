@@ -19,6 +19,7 @@ private:
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
     AssetTypeModel assetTypeModel;
+    ExchangesModel exchangesModel;
     NotificationManager notificationManager;
     BrokerManager* brokerManager;
 };
@@ -126,7 +127,7 @@ void BrokerTest::userAvailable()
     SQLManager::GetInstance()->registerUser("user1");
     SQLManager::GetInstance()->registerAsset("fiat", "EUR", "#FF0000");
 
-    brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
+    brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     brokerManager->load();    
 
     QCOMPARE(BrokerManager::LoadResCode::OK, broker->load());

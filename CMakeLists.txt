@@ -182,6 +182,8 @@ add_executable(B2mTest Test/B2mTest.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(B2mV2Test Test/B2mV2Test.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(BinanceTest Test/BinanceTest.cpp ${RESOURCES} ${APP_SOURCES})
 add_executable(ImporterTest Test/ImporterTest.cpp ${RESOURCES} ${APP_SOURCES})
+add_executable(SQLManagerTest Test/SQLManagerTest.cpp ${RESOURCES} ${APP_SOURCES})
+
 
 set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(BrokerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
@@ -189,6 +191,8 @@ set_target_properties(B2mTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(B2mV2Test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(BinanceTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
 set_target_properties(ImporterTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+set_target_properties(SQLManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+
 
 add_test(NAME BrokerTest COMMAND BrokerTest)
 add_test(NAME BrokerManagerTest COMMAND BrokerManagerTest)
@@ -196,7 +200,10 @@ add_test(NAME B2mTest COMMAND B2mTest)
 add_test(NAME B2mV2Test COMMAND B2mV2Test)
 add_test(NAME BinanceTest COMMAND BinanceTest)
 add_test(NAME ImporterTest COMMAND ImporterTest)
+add_test(NAME SQLManagerTest COMMAND ImporterTest)
 
+
+target_link_libraries(SQLManagerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(BrokerManagerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(BrokerTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)
 target_link_libraries(B2mTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth)

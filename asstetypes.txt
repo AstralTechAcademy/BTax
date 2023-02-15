@@ -1,0 +1,6 @@
+4	crypto
+10	debt
+7	etf
+5	fiat
+8	fund
+6	share

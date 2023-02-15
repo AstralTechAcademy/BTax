@@ -31,10 +31,11 @@ private:
     WalletsModel walletsModelAll;
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
+    ExchangesModel exchangesModel;
     AssetTypeModel assetTypeModel;
     NotificationManager notificationManager;
 
-    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     Importer *importer = Importer::getInstance(std::shared_ptr<BrokerManager>(brokerManager));
 
     QString pathB2m;
@@ -146,7 +147,7 @@ void ImporterTest::loadTestData()
     QCOMPARE(true, SQLManager::GetInstance()->registerAsset("crypto", "SHIB", "#FFF000")); // ID = 8
 
 
-    brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
+    brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     brokerManager->load();
 
 }

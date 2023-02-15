@@ -74,4 +74,6 @@ Test/BrokerManagerTest.exe
 Test/BrokerTest.exe
 Test/gtest_resume.log
 Test/ImporterTest.exe
+Test/SQLManagerTest.exe
 Test/testlog.txt
+SQLManagerTest_autogen/

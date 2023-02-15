@@ -40,6 +40,7 @@ private slots:
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
     AssetTypeModel assetTypeModel;
+    ExchangesModel exchangesModel;
     NotificationManager notificationManager;
     BrokerManager* brokerManager;
 };
@@ -165,7 +166,7 @@ void BrokerManagerTest::loadTestData()
     QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("6", "Coinbase", 1));
     QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("6", "Bitpanda", 1)); // ID = 24
 
-    brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
+    brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     brokerManager->load();
 
 }
