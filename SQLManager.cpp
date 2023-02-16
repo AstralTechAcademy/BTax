@@ -892,6 +892,20 @@ QList<std::tuple<uint32_t, QString, QString, QString>> SQLManager::getCoins(void
     return coins;
 }
 
+QList<std::tuple<uint32_t, QString, QString>> SQLManager::getExchanges(void)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT * FROM Exchanges");
+    query.exec();
+    QList<std::tuple<uint32_t, QString, QString>> exchanges;
+    while(query.next())
+    {
+        exchanges.push_back({query.value(0).toUInt(),  query.value(1).toString(), query.value(2).toString()});
+    }
+
+    return exchanges;
+}
+
 std::optional<std::tuple<uint32_t, QString, QString, QString>> SQLManager::getCoin(const QString& coin)
 {
     QSqlQuery query = QSqlQuery(database);
@@ -1299,7 +1313,7 @@ bool SQLManager::createUsers(void) const
                 username varchar(20) DEFAULT null,\
                 PRIMARY KEY (id),\
                 UNIQUE KEY Users_UN (username)\
-                ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4");
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
   //  qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
     return query.lastError().type() == QSqlError::NoError;
@@ -1352,7 +1366,7 @@ bool SQLManager::createWallets(void) const
                 KEY coin (coin),\
                 CONSTRAINT Wallets_ibfk_1 FOREIGN KEY (user) REFERENCES Users (id),\
                 CONSTRAINT Wallets_ibfk_2 FOREIGN KEY (coin) REFERENCES Coins (id)\
-                ) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4");
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
    // qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
     return query.lastError().type() == QSqlError::NoError;
@@ -1372,7 +1386,7 @@ bool SQLManager::createWalletOperations(void) const
                 PRIMARY KEY (id),\
                 KEY wallet (wallet),\
                 CONSTRAINT WalletOperations_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id)\
-                ) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8mb4");
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
     return query.lastError().type() == QSqlError::NoError;
@@ -1401,7 +1415,7 @@ bool SQLManager::createOperations(void) const
                 KEY wallet2 (wallet2), \
                 CONSTRAINT Operations_ibfk_1 FOREIGN KEY (wallet1) REFERENCES Wallets (id), \
                 CONSTRAINT Operations_ibfk_2 FOREIGN KEY (wallet2) REFERENCES Wallets (id) \
-                ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4");
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
     return query.lastError().type() == QSqlError::NoError;
@@ -1429,6 +1443,40 @@ bool SQLManager::update200000(void) const
     QSqlQuery query = QSqlQuery(database);
     query.exec("ALTER TABLE WalletOperations \
                 ADD datetimeUTC datetime");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
+bool SQLManager::update201000(void) const
+{
+
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("CREATE TABLE Exchanges ( \
+                id int(11) NOT null AUTO_INCREMENT,\
+                name varchar(50) NOT null,\
+                timezone varchar(50) NOT null,\
+                PRIMARY KEY (id), \
+                UNIQUE KEY Exchanges_UN (name)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    auto res = query.lastError().type() == QSqlError::NoError;
+
+    if(!res)
+        return res;
+
+    query.prepare("INSERT INTO Exchanges (id, name, timezone) \
+                    VALUES \
+                        (1, 'Binance', 'GMT'),\
+                        (2, 'B2M', 'CET'),\
+                        (3, 'Bitpanda', 'GMT'),\
+                        (4, 'Coinbase', 'GMT'),\
+                        (5, 'Cryptocom', 'GMT'),\
+                        (6, 'Degiro', 'GMT'),\
+                        (7, 'MyInvestor', 'CET'),\
+                        (8, 'Solflare', 'GMT'),\
+                        (9, 'Metamask', 'GMT')");
+    query.exec();
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
     return query.lastError().type() == QSqlError::NoError;
@@ -1531,6 +1579,11 @@ uint32_t SQLManager::getVersion(void) const
 
 }
 
+bool SQLManager::init(void) const
+{
+    return update();
+}
+
 bool SQLManager::update(void) const
 {
     auto version = getVersion();
@@ -1559,6 +1612,12 @@ bool SQLManager::update(void) const
     {
         if(update200000() == false) return false;
         if(updateVersion(200000, "2.00.000") == false) return false;
+    }
+
+    if(version < 201000)
+    {
+        if(update201000() == false) return false;
+        if(updateVersion(201000, "2.01.000") == false) return false;
     }
 
     return true;

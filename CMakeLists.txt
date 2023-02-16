@@ -127,6 +127,7 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h
         UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h
+        ExchangesModel.cpp ExchangesModel.h
         AssetTypeModel.cpp AssetTypeModel.h
         IfExchanges/IExchange.h IfExchanges/IExchange.cpp
         IfExchanges/Cryptocom.cpp IfExchanges/Cryptocom.h 

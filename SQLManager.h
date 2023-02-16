@@ -34,6 +34,7 @@ public:
     /*
      * Funciones comunes
      */
+    bool init(void) const;
     bool update(void) const;
     uint32_t getVersion(void) const;
     bool openDatabase(void);
@@ -42,6 +43,7 @@ public:
     QString getDatabase(void) const;
     static QSqlDatabase getDb(void) { return database;};
     QList<std::tuple<uint32_t, QString, QString, QString>> getCoins(void);
+    QList<std::tuple<uint32_t, QString, QString>> getExchanges(void);
     std::optional<std::tuple<uint32_t, QString, QString, QString>> getCoin(const QString& coin);
     QList<std::tuple<uint32_t, QString>> getAssetTypes(void);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
@@ -104,6 +106,7 @@ public:
     bool insertVersion(uint32_t version, QString remark) const;
     bool updateVersion(uint32_t version, QString remark) const;
     bool update200000(void) const;
+    bool update201000(void) const;
 
     /*
      * Add default values

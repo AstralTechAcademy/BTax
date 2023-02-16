@@ -14,6 +14,7 @@
 #include "WalletsPercModel.h"
 #include "UsersModel.h"
 #include "CoinsModel.h"
+#include "ExchangesModel.h"
 #include "AssetTypeModel.h"
 #include "IfExchanges/Importer.h"
 #include "IMarketData/Coingecko.h"
@@ -82,6 +83,7 @@ int main(int argc, char *argv[])
     WalletsModel walletsModelAll;
     WalletsPercModel walletsPercModel;
     CoinsModel coinsModel;
+    ExchangesModel exchangesModel;
     AssetTypeModel assetTypeModel;
     NotificationManager notificationManager;
 
@@ -91,10 +93,11 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("walletsPercModel", &walletsPercModel);
     engine.rootContext()->setContextProperty("usersModel", &usersModel);
     engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
+    engine.rootContext()->setContextProperty("exchangesModel", &exchangesModel);
     engine.rootContext()->setContextProperty("assetTypesModel", &assetTypeModel);
     engine.rootContext()->setContextProperty("notificationManager", &notificationManager);
 
-    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel);
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);
 
     Importer *importer = Importer::getInstance(std::shared_ptr<BrokerManager>(brokerManager));

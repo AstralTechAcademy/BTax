@@ -14,6 +14,7 @@ private slots:
     void loadTestData();
     void newAsset();
     void cleanupTestCase();
+    void loadExchangesFromDB();
     void newAssetIfNotExist();
     void newOperation();
     void newSaleAssetMultiExchange();
@@ -60,111 +61,41 @@ void BrokerManagerTest::loadTestData()
 {
     QSqlQuery query(SQLManager::getDb());
 
-    query.prepare("drop table WalletOperations, Operations, Deposits, Wallets, Users, Coins");
+    query.prepare("drop table  WalletOperations, Operations, Withdraws, Deposits, Wallets, Coins, Version, Exchanges, AssetType, Users");
     query.exec();
 
-    query.prepare("create or replace table Coins("
-                  "    id    int auto_increment primary key,"
-                  "    name  varchar(10)                  null,"
-                  "    type  varchar(10) default 'crypto' null,"
-                  "    color varchar(10)                  null);");
-    query.exec();
-    query.prepare("create or replace table Users("
-                  " id    int auto_increment primary key,"
-                  " username varchar(20) null);");
-    query.exec();
-    query.prepare("create or replace table Wallets("
-                  " id    int auto_increment primary key,"
-                  " coin     int           null,"
-                  " exchange varchar(50)   null,"
-                  " user     int default 1 null,"
-                  " pubkey   varchar(256)  null,"
-                  " constraint Wallets_ibfk_1"
-                  " foreign key (user) references Users (id),"
-                  " constraint Wallets_ibfk_2"
-                  " foreign key (coin) references Coins (id));");
-    query.exec();
-    query.prepare("create or replace table Deposits("
-                  " id    int auto_increment primary key,"
-                  " wallet int              null,"
-                  " amount double default 0 null,"
-                  " fees   double default 0 null,"
-                  " date   varchar(50)      null,"
-                  " constraint Deposits_ibfk_1"
-                  " foreign key (wallet) references Wallets (id));");
-    query.exec();
-
-    query.prepare("create or replace table Operations("
-                  " id    int auto_increment primary key,"
-                  "    wallet1         int                                 null,"
-                  "    wallet2         int                                 null,"
-                  "    pair1Amount     double      default 0               null,"
-                  "    pair1AmountFiat double      default 0               null,"
-                  "    pair2Amount     double      default 0               null,"
-                  "    pair2AmountFiat double      default 0               null,"
-                  "    comision        double      default 0               null,"
-                  "    comisionFiat    double      default 0               null,"
-                  "    ganancia        double      default 0               null,"
-                  "    status          varchar(50) default 'Not Confirmed' null,"
-                  "    date            varchar(50)                         null,"
-                  "    comments        varchar(512)                        null,"
-                  "    type            varchar(20)                         null,"
-                  "    constraint Operations_ibfk_1"
-                  "        foreign key (wallet1) references Wallets (id),"
-                  "    constraint Operations_ibfk_2"
-                  "        foreign key (wallet2) references Wallets (id));");
-    query.exec();
-
-    query.prepare("create or replace table WalletOperations("
-                  " id    int auto_increment primary key,"
-                  "    wallet      int              null,"
-                  "    amount      double default 0 null,"
-                  "    retired     double default 0 null,"
-                  "    available   double default 0 null,"
-                  "    fiat        double default 0 null,"
-                  "    date        varchar(50)      null,"
-                  "    datetimeUTC datetime         null,"
-                  "    available3  double as (`amount` - `retired`) stored,"
-                  "    constraint WalletOperations_ibfk_1"
-                  "        foreign key (wallet) references Wallets (id));");
-    query.exec();
+    SQLManager::GetInstance()->init();
     QCOMPARE(true, SQLManager::GetInstance()->registerUser("user1"));
-    QCOMPARE(true, SQLManager::GetInstance()->registerAsset("crypto", "ETH", "#FFFFF0")); // ID = 1
-    QCOMPARE(true, SQLManager::GetInstance()->registerAsset("crypto", "ADA", "#FFFF00")); // ID = 2
-    QCOMPARE(true, SQLManager::GetInstance()->registerAsset("crypto", "BTC", "#FFF000")); // ID = 3
-    QCOMPARE(true, SQLManager::GetInstance()->registerAsset("fiat", "EUR", "#FF0000")); // ID = 4
-    QCOMPARE(true, SQLManager::GetInstance()->registerAsset("fiat", "USD", "#FF0000")); // ID = 5
-    QCOMPARE(true, SQLManager::GetInstance()->registerAsset("crypto", "LINK", "#FFF000")); // ID = 6
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Binance", 1)); // ID = 1
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Crypto", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Binance", 1)); // ID = 1 //ETH
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "B2M", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Coinbase", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Crypto", 1));
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Binance", 1)); // ID = 5
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Crypto", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Binance", 1)); // ID = 5 //ADA
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "B2M", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Coinbase", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Crypto", 1));
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Binance", 1)); // ID = 9
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Binance", 1)); // ID = 9 //BTC
     QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "B2M", 1));
     QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Coinbase", 1));
     QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Crypto", 1));
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Binance", 1)); // ID = 13
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Crypto", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Binance", 1)); // ID = 13 //EUR
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "B2M", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Coinbase", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Crypto", 1));
     
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Binance", 1)); // ID = 17
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Bitpanda", 1)); // ID = 20
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Binance", 1)); // ID = 17 //USD
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "B2M", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Coinbase", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Bitpanda", 1)); // ID = 20
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("6", "Binance", 1)); // ID = 21
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("6", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("6", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("6", "Bitpanda", 1)); // ID = 24
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Binance", 1)); // ID = 21 //LINK
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "B2M", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Coinbase", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Bitpanda", 1)); // ID = 24
 
     brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     brokerManager->load();
@@ -180,6 +111,12 @@ void BrokerManagerTest::newAssetIfNotExist()
 {
     QCOMPARE(true, brokerManager->newAssetIfNotExist("crypto", "MONEDA1", "#FFFFFFF")); // No exist -> Create
     QCOMPARE(false, brokerManager->newAssetIfNotExist("crypto", "MONEDA1", "#FFFFFFF")); // Already created
+}
+
+void BrokerManagerTest::loadExchangesFromDB()
+{
+    brokerManager->loadExchangesFromDB();
+    QCOMPARE(true, exchangesModel.exchanges().count() == 9);
 }
 
 void BrokerManagerTest::newOperation()

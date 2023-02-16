@@ -9,6 +9,7 @@
 #include "WalletsModel.h"
 #include "WalletsPercModel.h"
 #include "CoinsModel.h"
+#include "ExchangesModel.h"
 #include "AssetTypeModel.h"
 #include "SQLManager.h"
 #include "IMarketData/Coingecko.h"
@@ -66,16 +67,18 @@ public:
     inline static QString DEF_FIAT_ID = "7";
 
     BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel,WalletsModel*const walletsModelAll,
-                    WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel);
+                    WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel, 
+                    ExchangesModel*const exchangesModel);
     inline static uint32_t userID ;
     inline static uint32_t year_;
     std::optional<std::vector<Wallet*>> findWallets(const QString& coin);
     std::optional<Wallet> findWallet(const QString& exchange, const QString& coin);
     std::optional<Coin*> findCoin(const QString& coin);
     static BrokerManager* getInstance(OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll,
-                                      WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel) {
+                                      WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel,
+                                      ExchangesModel*const exchangesModel) {
         if (!instance)
-            instance = new BrokerManager(0, operationsModel, walletsModel, walletsModelAll, walletsPercModel, coinsModel, assetTypesModel);
+            instance = new BrokerManager(0, operationsModel, walletsModel, walletsModelAll, walletsPercModel, coinsModel, assetTypesModel, exchangesModel);
         return instance;
     }
 
@@ -116,29 +119,32 @@ public slots:
     std::optional<double>  getCurrentPrice(Coin* coin);
 
 private:
+    inline static BrokerManager *instance;
+
+#ifdef GTEST
+public:
+#endif
     OperationsModel* operationsModel_;
     WalletsModel* walletsModel_;
     WalletsModel* walletsModelAll_;
     WalletsPercModel* walletsModelPerc_;
     CoinsModel* coinsModel_;
+    ExchangesModel* exchangesModel_;
     AssetTypeModel* assetTypesModel_;
     std::vector<Operation*> operationsToAdd;
-
-    inline static BrokerManager *instance;
 
     void loadOperationsFromDB(const uint32_t userID);
     void loadOperationsFromDB(const uint32_t userID, const uint32_t year);
     void loadWalletsFromDB(const uint32_t userID);
     void loadCoinsFromDB(void);
+    void loadExchangesFromDB(void);
     void loadAssetTypesFromDB(void);
     void loadDepositsFromDB(const uint32_t userID);
     void groupCoinBySymbol(void);
     void setCoinPtrInWallets();
     double getAvailableAmounts(const std::vector<WalletOperation*>& wallets) const;
 
-#ifdef GTEST
-public:
-#endif
+
     int newOperation(WalletOperation::OperationData data, std::vector<WalletOperation>& wOpsModified);
     int newTransfer(WalletOperation::OperationData data, std::vector<WalletOperation>& wOpsModified);
 

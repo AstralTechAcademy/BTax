@@ -61,7 +61,9 @@ Window
         ComboBox
         {
             id: exchangeCBox
-            model: ["Binance", "B2M", "Coinbase", "Crypto", "Solflare", "Phantom"]
+            textRole: "name"
+            model: exchangesModel //["Binance", "B2M", "Coinbase", "Crypto", "Solflare", "Phantom"]
+            popup.onClosed: console.log("Combo Cliked " + exchangeCBox.currentText)
         }
 
         Button
@@ -70,7 +72,7 @@ Window
             text: "Accept"
             onClicked: {
                 console.log(coins.currentText  + " "  +exchangeCBox.currentText) 
-                if(brokerManager.addWallet(coins.currentText.split(" ")[1], exchangeCBox.currentText) == false)
+                if(brokerManager.addWallet(coins.currentText.split(" ")[1], exchangeCBox.currentText.split(" ")[1]) == false)
                     console.log("Error al crear la wallet")
                 newWalletsCombox.visible = false
             }

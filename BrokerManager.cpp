@@ -11,7 +11,9 @@
 #include "Validators/VOperation.h"
 
 
-BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, AssetTypeModel*const assetTypesModel)
+BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operationsModel, WalletsModel*const walletsModel, 
+                            WalletsModel*const walletsModelAll, WalletsPercModel*const walletsPercModel, CoinsModel*const coinsModel, 
+                            AssetTypeModel*const assetTypesModel,  ExchangesModel*const exchangesModel)
 {
     parent = 0;
     operationsModel_ = operationsModel;
@@ -19,6 +21,7 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     walletsModelAll_ = walletsModelAll;
     walletsModelPerc_ = walletsPercModel;
     coinsModel_ = coinsModel;
+    exchangesModel_ = exchangesModel;
     assetTypesModel_ = assetTypesModel;
 }
 
@@ -410,6 +413,14 @@ void BrokerManager::loadCoinsFromDB(void)
         coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c), std::get<3>(c)));
 }
 
+void BrokerManager::loadExchangesFromDB(void)
+{
+    exchangesModel_->clear();
+    auto exchanges = SQLManager::GetInstance()->getExchanges();
+    for(auto e : exchanges)
+        exchangesModel_->add(new Exchange(std::get<0>(e), std::get<1>(e), std::get<2>(e)));
+}
+
 void BrokerManager::loadAssetTypesFromDB(void)
 {
     auto assets = SQLManager::GetInstance()->getAssetTypes();
@@ -623,6 +634,7 @@ BrokerManager::LoadResCode BrokerManager::load(void)
 
         loadOperationsFromDB(userID);
         loadCoinsFromDB();
+        loadExchangesFromDB();
         loadAssetTypesFromDB();
         loadWalletsFromDB(userID);
         //updateCurrentPrice(); //TODO: Run using threads after open app
