@@ -38,9 +38,7 @@ if(LINUX)
 endif()
 
 if(WIN)
-    set(QtCore_VERSION "6.4.1")
-    set(Qt_DIR "G:/Qt/${QtCore_VERSION}")
-    set(CMAKE_PREFIX_PATH "${Qt_DIR}/mingw_64/lib/cmake/Qt6")
+    set(CMAKE_PREFIX_PATH "$ENV{Qt_DIR}/mingw_64/lib/cmake/Qt6")
 endif()
 
 if(ANDROID)

@@ -800,6 +800,49 @@ std::optional<std::vector<WalletOperation*>> SQLManager::getWalletsOps(const uin
     return wallets;
 }
 
+std::optional<std::vector<Wallet*>> SQLManager::getNonCryptoWallets(const uint32_t userID)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT C.name,U.username, W.*, C.id, C.type, C.color FROM Wallets W"
+                  " LEFT JOIN Coins C ON C.id = W.coin"
+                  " LEFT JOIN Users U ON U.id = W.user"
+                  " WHERE W.user=:user AND C.type != \"crypto\" AND C.type != \"fiat\"");
+
+    query.bindValue(":user", userID);
+    query.exec();
+    bool result = query.result()->handle().isValid();
+    if(result)
+    {
+        std::vector<Wallet*> wallets;
+        while (query.next())
+        {
+            auto id = query.value(2).toInt();
+            auto coinName = query.value(0).toString();
+            auto exchange = query.value(4).toString();
+            auto user = query.value(1).toString();
+            auto coinID = query.value(7).toInt();
+            auto color = query.value(9).toString();
+            auto type = query.value(8).toString();
+
+            auto ws = getWalletOperations(QString::number(id));
+            Wallet* wallet;
+            if (ws == std::nullopt)
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+            else
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+
+            setWalletData(*wallet);
+            wallets.push_back(wallet);
+        }
+        return wallets;
+    }
+    else
+    {
+        std::cout << "Wallets not found" << std::endl;
+        return std::nullopt;
+    }
+}
+
 std::optional<std::vector<Wallet*>> SQLManager::getCryptoWallets(const uint32_t userID)
 {
     QSqlQuery query = QSqlQuery(database);
@@ -1482,6 +1525,16 @@ bool SQLManager::update201000(void) const
     return query.lastError().type() == QSqlError::NoError;
 }
 
+bool SQLManager::update201001(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("ALTER TABLE Coins \
+                ADD iconPath TEXT");
+
+    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    return query.lastError().type() == QSqlError::NoError;
+}
+
 bool SQLManager::insertVersion(uint32_t version, QString remark) const
 {
     QSqlQuery query = QSqlQuery(database);
@@ -1620,7 +1673,13 @@ bool SQLManager::update(void) const
         if(updateVersion(201000, "2.01.000") == false) return false;
     }
 
-    return true;
+    if(version < 201001)
+    {
+        if(update201001() == false) return false;
+        if(updateVersion(201001, "2.01.001") == false) return false;
+    }
+
+    return getVersion() == 201001;
 }
 
 

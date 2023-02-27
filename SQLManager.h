@@ -54,6 +54,7 @@ public:
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
     std::optional<Wallet> getWallets(const uint32_t userID, const QString& coin, const QString exchange);
     std::optional<std::vector<WalletOperation*>>  getWalletsOps(const uint32_t userID, const QString& coin, const QString exchange = "");
+    std::optional<std::vector<Wallet*>> getNonCryptoWallets(const uint32_t userID);
     std::optional<std::vector<Wallet*>> getCryptoWallets(const uint32_t userID);
     std::tuple<bool, Wallet*> getWallet(const uint32_t user, const QString& exchange, const QString& coin);
     std::tuple<bool, Wallet*> getWallet(const uint32_t walletID);
@@ -107,6 +108,8 @@ public:
     bool updateVersion(uint32_t version, QString remark) const;
     bool update200000(void) const;
     bool update201000(void) const;
+    bool update201001(void) const;
+
 
     /*
      * Add default values

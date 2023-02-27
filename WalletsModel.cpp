@@ -82,27 +82,18 @@ void WalletsModel::clear(void)
     emit layoutChanged();
 }
 
-double WalletsModel::getTotalInvested(void) const
+double WalletsModel::getNonCryptoInvested(void) const
 {
     double invested = 0.0 ;
 
-    for(auto w : wallets_)
-        invested += w->getInvested();
-    return invested;
-}
+    auto ws = SQLManager::GetInstance()->getNonCryptoWallets(BrokerManager::userID);
 
-double WalletsModel::getTotalInvestedFiat(void) const
-{
-    double invested = 0.0 ;
-
-    auto result = SQLManager::GetInstance()->getDeposits();
-
-    if (result == std::nullopt)
+    if(ws == std::nullopt)
         return 0.0;
 
-    auto deposits = result.value();
-    for(auto deposit : deposits)
-        invested += deposit->getAmount();
+    auto wallets = ws.value();
+    for(auto w : wallets)
+        invested += w->getInvested();
 
     return invested;
 }
@@ -123,7 +114,41 @@ double WalletsModel::getCryptoInvested(void) const
     return invested;
 }
 
+double WalletsModel::getTotalInvested(void) const
+{
+    double invested = 0.0 ;
 
+    for(auto w : wallets_)
+        invested += w->getInvested();
+    return invested;
+}
+
+double WalletsModel::getTotalInvested2(void) const
+{
+    double invested = 0.0 ;
+
+    auto wsNon = SQLManager::GetInstance()->getNonCryptoWallets(BrokerManager::userID);
+    auto wsCry = SQLManager::GetInstance()->getCryptoWallets(BrokerManager::userID);
+
+    if(wsNon == std::nullopt and wsCry == std::nullopt)
+        return 0.0;
+
+    if(wsNon != std::nullopt)
+    {
+        auto wallets = wsNon.value();
+        for(auto w : wallets)
+            invested += w->getInvested();
+    }
+
+    if(wsCry != std::nullopt)
+    {
+        auto wallets = wsCry.value();
+        for(auto w : wallets)
+            invested += w->getInvested();
+    }
+
+    return invested;
+}
 QList<Wallet*> WalletsModel::wallets(void){return wallets_;}
 
 double WalletsModel::calculatePortfolioPercentage(const double invested) const
@@ -133,7 +158,7 @@ double WalletsModel::calculatePortfolioPercentage(const double invested) const
 
 double WalletsModel::getPortfolioPercentage(const int index) const
 {
-    return (wallets_.at(index)->getInvested() * 100) / getTotalInvested();
+    return (wallets_.at(index)->getInvested() * 100) / getTotalInvested2();
 }
 
 int WalletsModel::getWalletID(const int index) const

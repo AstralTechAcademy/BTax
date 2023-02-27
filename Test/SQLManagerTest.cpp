@@ -40,7 +40,7 @@ void SQLManagerTest::getVersion_0(void)
 void SQLManagerTest::update(void)
 {
     QCOMPARE(true, SQLManager::GetInstance()->update());
-    QCOMPARE(true, SQLManager::GetInstance()->getVersion() == 201000);
+    QCOMPARE(true, SQLManager::GetInstance()->getVersion() == 201001);
 }
 
 void SQLManagerTest::cleanupTestCase()

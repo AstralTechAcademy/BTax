@@ -70,7 +70,8 @@ signals:
 
 public slots:
     double getTotalInvested(void) const;
-    double getTotalInvestedFiat(void) const;
+    double getTotalInvested2(void) const;
+    double getNonCryptoInvested(void) const;
     double getCryptoInvested(void) const;
     double calculatePortfolioPercentage(const double amount) const;
     double calculateGlobalAverageCost(const QString& coin) const;

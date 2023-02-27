@@ -33,7 +33,6 @@ private:
     CoinsModel coinsModel;
     ExchangesModel exchangesModel;
     AssetTypeModel assetTypeModel;
-    ExchangesModel exchangesModel;
     NotificationManager notificationManager;
 
     BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);

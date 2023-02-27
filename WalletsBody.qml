@@ -14,10 +14,24 @@ Item
 
     Components.Data
     {
-        id: cryptoInvested
+        id: noNcryptoInvested
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.left: walletsBody.left
+        anchors.leftMargin: 40
+        width: 80
+        visible: true
+        title: "Non Crypto Invested"
+        value: parseFloat( walletsModel.getNonCryptoInvested().toFixed(6) ) + " " + "EUR"
+        colorValue: "black"
+    }    
+
+    Components.Data
+    {
+        id: cryptoInvested
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.left: noNcryptoInvested.right
         anchors.leftMargin: 40
         width: 80
         visible: true
@@ -35,25 +49,10 @@ Item
         anchors.leftMargin: 60
         width: 80
         visible: true
-        title: "Deposited"
-        value: parseFloat( walletsModel.getTotalInvestedFiat().toFixed(6) ) + " " + "EUR"
+        title: "Total Invested"
+        value: parseFloat( walletsModel.getTotalInvested2().toFixed(6) ) + " " + "EUR"
         colorValue: "black"
     }
-
-    Components.Data
-    {
-        id: totalEarnings
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.left: totalInvested.right
-        anchors.leftMargin: 60
-        width: 80
-        visible: true
-        title: "Total Earnings"
-        value: parseFloat( operationsModel.totalEarnings.toFixed(6) ) + " " + "EUR"
-        colorValue: "black"
-    }
-
 
     Button
     {

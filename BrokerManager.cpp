@@ -475,20 +475,25 @@ void BrokerManager::groupCoinBySymbol(void)
     auto index = 0;
     for(index = 0; index <  walletsModel_->count() ; index++ )
     {
-        bool exist = false;
-        auto index2 = 0;
-        for(index2 = 0; index2 <  walletsModelPerc_->count() && exist == false ; index2++ )
-        {
-            exist = walletsModelPerc_->getCoin(index2) == walletsModel_->getCoin(index);
-        }
+        auto coin = findCoin(walletsModel_->getCoin(index));
 
-        if(exist)
-            walletsModelPerc_->addPercValue(index2-1, walletsModel_->getPortfolioPercentage(index));
-        else
-            walletsModelPerc_->add(new WalletPercItem {walletsModel_->getCoin(index),
-                                    walletsModel_->getPortfolioPercentage(index),
-                                    "",
-                                    coinsModel_->getColor(walletsModel_->getCoin(index))});
+        if(coin != std::nullopt && coin.value()->type() != "fiat")
+        {
+            bool exist = false;
+            auto index2 = 0;
+            for(index2 = 0; index2 <  walletsModelPerc_->count() && exist == false ; index2++ )
+            {
+                exist = walletsModelPerc_->getCoin(index2) == walletsModel_->getCoin(index);
+            }
+
+            if(exist)
+                walletsModelPerc_->addPercValue(index2-1, walletsModel_->getPortfolioPercentage(index));
+            else
+                walletsModelPerc_->add(new WalletPercItem {walletsModel_->getCoin(index),
+                                        walletsModel_->getPortfolioPercentage(index),
+                                        "",
+                                        coinsModel_->getColor(walletsModel_->getCoin(index))});
+        }
     }
     walletsModelPerc_->orderBy(WalletsPercModel::Order::ASC);
 
