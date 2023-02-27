@@ -1529,7 +1529,7 @@ bool SQLManager::update201001(void) const
 {
     QSqlQuery query = QSqlQuery(database);
     query.exec("ALTER TABLE Coins \
-                ADD iconPath TEXT");
+                ADD iconpath TEXT");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
     return query.lastError().type() == QSqlError::NoError;
