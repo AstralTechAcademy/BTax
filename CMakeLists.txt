@@ -109,6 +109,10 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.h
         SQLManager.cpp
         SQLManager.h
+        Host.cpp
+        Host.h
+        Config.cpp
+        Config.h
         Broker.cpp
         Broker.h
         OperationsModel.cpp
@@ -120,7 +124,6 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Utils.h
         Utils.cpp
         Statistics.cpp
-        DBCredential_NotPush.h
         WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h
         UsersModel.cpp UsersModel.h

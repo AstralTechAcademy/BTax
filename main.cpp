@@ -6,6 +6,8 @@
 #include <QLocale>
 #include <future>
 #include <unistd.h>
+#include "Host.h"
+#include "Config.h"
 #include "Broker.h"
 #include "OperationsModel.h"
 #include "BrokerManager.h"
@@ -32,7 +34,6 @@ int main(int argc, char *argv[])
     QString version = "2.00.000";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QQuickStyle::setStyle("Imagine");
-
 
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
@@ -71,6 +72,16 @@ int main(int argc, char *argv[])
 
     //Required the qmldir if the QMl files are outside binary directory so it is required in development. In release/deployed mode is disabled.
     engine.addImportPath("G:/Repositorio/Astral_Academy/medium/Components");
+
+    Host::getInstance();
+    auto res = Config::getInstance()->read();
+
+    if(!res)
+    {
+        qDebug() << "[main] Error reading configuration file";
+        return app.exec();
+    }
+        
 
     Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
