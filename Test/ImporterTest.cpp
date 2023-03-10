@@ -95,6 +95,7 @@ void ImporterTest::detectExchange()
 
 void ImporterTest::importB2m()
 {
+
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2);
     QCOMPARE(true, importer->opsAddedSize() == 4);
     

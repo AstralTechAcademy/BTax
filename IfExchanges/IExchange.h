@@ -6,12 +6,24 @@
 #define BROKER_IEXCHANGE_H
 #include <memory>
 #include <QList>
+#include <QMutex>
 #include <QFile>
 #include <QDateTime>
 #include <QMap>
 #include "Operation.h"
 #include "BrokerManager.h"
 #include "MarketDataFactory.h"
+
+
+constexpr std::string_view method_name(const char* s)
+{
+    std::string_view prettyFunction(s);
+    size_t bracket = prettyFunction.rfind("(");
+    size_t space = prettyFunction.rfind(" ", bracket) + 1;
+    return prettyFunction.substr(0, bracket);
+}
+#define __METHOD_NAME__ method_name(__PRETTY_FUNCTION__)
+
 
 class IExchange {
 public:
@@ -44,6 +56,8 @@ public:
 protected:
     QList<std::shared_ptr<Operation>> operations_;
     QMap<EN_COLUMN_NAMES, int> header_;
+private:
+    QMutex mutex;
 };
 
 

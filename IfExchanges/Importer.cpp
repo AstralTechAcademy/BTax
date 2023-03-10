@@ -94,8 +94,10 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
         return false;
     auto ops = operations_ = rOps.value();
     std::vector<WalletOperation> wOpsModified;
+    double ganancia = 0.0;
     for(auto index = 0; index < ops.size();)
     {
+        ganancia +=  ops[index]->getGanancia();
         brokerManager_->newAssetIfNotExist("crypto", ops[index]->getPair1(), "#2acaea");
         brokerManager_->newAssetIfNotExist("crypto", ops[index]->getPair2(), "#2acaea");
         brokerManager_->addWalletIfNotExist(EN_Exchange2String(exchange), ops[index]->getPair1());
@@ -103,7 +105,6 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
 
         if(ops[index]->getPair2AmountFiat() != -1.0)
         {
-            ops[index]->print();
             auto res = brokerManager_->checkDuplicity(EN_Exchange2String(exchange), ops[index]);
             if(res)
             {
@@ -117,6 +118,8 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
             index++;
         }
     }
+
+    qDebug() <<  "[Info][Importer::preview] Ganancia: " << ganancia;
     return true;
 }
 

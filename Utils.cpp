@@ -50,9 +50,7 @@ QDateTime cnvDBStr2DateTime(QString datetime)
 {
     auto locale = QLocale(QLocale::Spanish);
     QString format = "ddd. MMM. d hh:mm:ss yyyy";
-    qDebug() << datetime;
     auto r = locale.toDateTime(datetime, format);
-    qDebug() << r;
     return r;
 }
 

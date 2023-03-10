@@ -57,7 +57,7 @@ bool B2m::parseBody(QFile& csv)
             auto lineV = line.split(separator_);
             if(lineV.size() > 0 && lineV[header_[EN_COLUMN_NAMES::TYPE]] == "earn")
             {
-                qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble();
+                //qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT_FIAT]].toDouble();
                 operations_.push_back(std::make_shared<Operation>(0, 
                             lineV[header_[EN_COLUMN_NAMES::FEE]],  // Pair 1 Coin
                             lineV[header_[EN_COLUMN_NAMES::PAIR2]], // Pair 2 Coin

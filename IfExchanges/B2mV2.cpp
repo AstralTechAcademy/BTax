@@ -12,8 +12,6 @@ QDateTime B2mV2::datetimeStrToDatetime(QByteArray dtimeStr)
 {
     auto dateTime = QDateTime::fromString(dtimeStr, Qt::DateFormat::ISODateWithMs);
     dateTime.setTimeZone(QTimeZone("Europe/London"));
-    qDebug() << dateTime;
-    qDebug() << dateTime.toTimeZone(QTimeZone("Europe/Madrid")); // Date
     return dateTime.toTimeZone(QTimeZone("Europe/Madrid")); // Date
 }
 
@@ -75,7 +73,7 @@ bool B2mV2::parseBody(QFile& csv)
                 double pair1Amount = 0.0;
                 double pair1AmountFiat = 1.0;
                 double pair2AmountFiat = 0.0;
-                qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble();
+                //qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR1]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble();
                 operations_.push_back(std::make_shared<Operation>(0, 
                             BrokerManager::DEF_FIAT,  // Pair 1 Coin
                             lineV[header_[EN_COLUMN_NAMES::PAIR2]], // Pair 2 Coin

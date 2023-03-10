@@ -438,7 +438,6 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
         auto wallets = std::get<1>(result);
         for(auto w : wallets)
         {
-            //w->print();
             if(w->getAmount() > 0.00000000000)
             {
                 walletsModel_->add(w);
@@ -539,14 +538,11 @@ bool BrokerManager::checkDuplicity(const QString& exchange, std::shared_ptr<Oper
     if(std::get<0>(res) ==  false) return false;
     
     auto ops = std::get<1>(res);
-    qDebug() << ops.size();
-    operation->print();
     auto exist = std::find_if(ops.begin(), ops.end(),
                               [&](Operation* op){return *op == *operation.get();});
     if(exist != ops.end())
     {
         qDebug() << "[BrokerManager::checkDuplicity] Operation is already in database (duplicated)";
-        operation->print();
         return true; // Return duplicated
     }
     return false;
@@ -678,8 +674,6 @@ int BrokerManager::setWallets(const QString& exchange, std::shared_ptr<Operation
 
     if(walletPair1 == std::nullopt) return static_cast<int>(NewOperationRes::ORI_WALLET_NOT_EXIST);
     if(walletPair2 == std::nullopt) return static_cast<int>(NewOperationRes::DEST_WALLET_NOT_EXIST);
-
-    qDebug() << "Pair1: " << walletPair1->getWalletID() << " " << operation->getPair1();
 
     operation->setWalletID1(walletPair1->getWalletID());
     operation->setWalletID2(walletPair2->getWalletID());

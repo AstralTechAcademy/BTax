@@ -874,7 +874,6 @@ std::optional<std::vector<Wallet*>> SQLManager::getCryptoWallets(const uint32_t 
             else
                 wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
 
-            wallet->print();
             setWalletData(*wallet);
             wallets.push_back(wallet);
         }
@@ -1295,7 +1294,6 @@ Operation* SQLManager::getLastOperation(void) const
                            query.value(5).toDouble(),query.value(6).toDouble(), query.value(7).toDouble(), query.value(8).toDouble(),
                            query.value(9).toString(), query.value(10).toString(), "", query.value(11).toString(), query.value(12).toDouble());
 
-    op->print();
     return op;
 }
 
@@ -1318,7 +1316,6 @@ std::vector<WalletOperation*>  SQLManager::getLastNWalletOperation(int limit) co
                                        query.value(5).toDouble(), query.value(7).toDouble(), query.value(6).toDouble(), query.value(8).toDouble(),
                                         QLocale(QLocale::Spanish).toDateTime(query.value(9).toString(), "ddd. MMM. d hh:mm:ss yyyy"),
                                        DatetimeUTCStrToDatetime(query.value(10).toString()));
-        opW->print();
         wOps.push_back(opW);
     }
     return wOps;

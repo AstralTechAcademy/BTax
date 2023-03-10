@@ -131,7 +131,7 @@ std::optional<QMap<QString, QString>> Coingecko::getCoins(void)
     {
          for (auto c : response_doc.array())
          {
-            auto ticker = c.toObject().value("symbol").toString();
+            auto ticker = c.toObject().value("symbol").toString().toLower();
             auto id = c.toObject().value("id").toString();
 
             if(!coins.contains(ticker))
