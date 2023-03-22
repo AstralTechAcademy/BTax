@@ -3,6 +3,7 @@
 //
 
 #include "VDate.h"
+#include "Logger.h"
 #include <QDebug>
 
 
@@ -12,19 +13,19 @@ bool VDate::validate(void) const
 
     if (dateTime_.date().year() == 1900)
     {
-        qDebug() << "Validation Error: Year has not been modified is 1900";
+        LOG_ERROR("Year has not been modified is 1900");
         return false;
     }
 
     if (dateTime_ > current)
     {
-        qDebug() << "Validation Error: datetime is over current time";
+        LOG_ERROR("Datetime is over current time");
         return false;
     }
 
     if (dateTime_.date().year() != 1900 && dateTime_ <= current)
         return true;
 
-    qDebug() << "Validation Error: Datetime unknown error";
+    LOG_ERROR("Datetime unknown error");
     return false;
 }

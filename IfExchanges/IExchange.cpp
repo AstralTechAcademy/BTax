@@ -1,5 +1,5 @@
 #include "IExchange.h"
-
+#include "Logger.h"
 
 std::optional<QList<std::shared_ptr<Operation>>> IExchange::parse(QFile& csv)
 {
@@ -16,12 +16,14 @@ std::optional<QList<std::shared_ptr<Operation>>> IExchange::parse(QFile& csv)
 }
 std::optional<QList<std::shared_ptr<Operation>>> IExchange::read(const QString& csvPath)
 {
-    qDebug() << "File: IExchange.h Func: Import Description: Importing file " << csvPath;
+    LOG_INFO("read");
+    LOG_DEBUG("Importing file %s", csvPath);
+
     QFile csv;
     csv.setFileName(csvPath);
     if(csv.exists() == false)
     {
-        qDebug() << "File: IExchange.h Func: Import Description: File does not exist " << csvPath;
+        LOG_ERROR("File does not exist %s", csvPath);
         return std::nullopt;
     }
     return parse(csv);
@@ -29,7 +31,7 @@ std::optional<QList<std::shared_ptr<Operation>>> IExchange::read(const QString& 
 
 bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
 {
-    qDebug() << "[" << QString::fromStdString(__METHOD_NAME__.data()) << "] STARTED";
+    LOG_INFO("getFiatPrice");
 
     QList<QString> opsWithoutPrice;
     auto coingecko = MarketDataFactory::createMarketData("Coingecko");
@@ -44,13 +46,13 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
         if(coins.contains(o->getPair2().toLower()))
             coinID = coins.value(o->getPair2().toLower());
         else
-            qDebug() << "[IExchange::" << __func__ << "] " << "Coin ID "<< o->getPair2() << " not found";
+            LOG_ERROR("Coin ID %s not found", qPrintable(o->getPair2()));
 
         if(coinID.isEmpty())
             opsWithoutPrice.push_back(coinID + " " + o->getDateTime().toString()); 
         else
         {
-            qDebug() << "Operation: " << coinID  << " " << o->getDateTime();
+            LOG_DEBUG("Operation: %s %s",  qPrintable(coinID), qPrintable(o->getDateTime().toString()));
             auto price = coingecko->getPrice(coinID, o->getDateTime());
             if(price == std::nullopt)
             {
@@ -58,21 +60,18 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
             }
             else
             {
-                qDebug() << "  Price: " << price.value();
+                LOG_DEBUG("  Price: %lf", price.value());
                 o->setPair2AmountFiat(price.value());
             }
         }
 
     }
-    mutex.unlock();
-
-    qDebug() << "[" <<  QString::fromStdString(__METHOD_NAME__.data()) << "] FINISHED";
-        
+    mutex.unlock();        
     if(opsWithoutPrice.size() > 0)
     {
-        qDebug() << "[IExchange::" << __func__ << "] " << "There are " << opsWithoutPrice.size()  << " operations without fiat price";
+        LOG_WARN("There are %d operations without fiat price", opsWithoutPrice.size());
         for(auto l : opsWithoutPrice)
-            qDebug() << "[IExchange::" << __func__ << "] " << l;
+            LOG_DEBUG("%s", l.toStdString());
         return false;
     }
     else

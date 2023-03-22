@@ -72,7 +72,6 @@ void cnvStrToDateTime(QString& datetimeStr, QDateTime& dateTime)
     else if(datetimeStr.contains(" ") and datetimeStr.split(" ").size() == 5)
     {
         dateTime = BTime::toDateTime(datetimeStr, QLocale::Spanish, EN_DateFormat::QT);
-        //dateTime = QDateTime::fromString(datetimeStr);
     }
 }
 

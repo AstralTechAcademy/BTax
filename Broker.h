@@ -8,7 +8,6 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QVariant>
-#include <QDebug>
 #include "OperationsModel.h"
 #include "BrokerManager.h"
 #include "SQLManager.h"
@@ -59,7 +58,6 @@ signals:
     void loading(void);
 
 public slots:
-    int getHost(void) const;
     QString getServer(void) const;
     QString getVersion(void) const;
     QString getDatabase(void) const;
@@ -76,7 +74,6 @@ public slots:
 
 
 private:
-    static HOSTS host_;
     static QString server_;
     static QString version_;
     inline static QString database_;

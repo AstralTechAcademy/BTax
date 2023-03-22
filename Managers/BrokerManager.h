@@ -13,6 +13,7 @@
 #include "AssetTypeModel.h"
 #include "SQLManager.h"
 #include "IMarketData/Coingecko.h"
+#include "logger.h"
 
 class BrokerManager : public QObject{
     Q_OBJECT

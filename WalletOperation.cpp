@@ -3,28 +3,43 @@
 //
 
 #include "WalletOperation.h"
+#include "Logger.h"
 #include <iostream>
 
 void WalletOperation::print() const noexcept
 {
-    std::cout << "Wallet: " <<  walletID_ << std::endl;
-    std::cout << "  Operation ID: " <<  id_ << std::endl;
-    std::cout << "  Coin: " <<  coinName_.toStdString() << std::endl;
-    std::cout << "  User: " <<  user_.toStdString() << std::endl;
-    std::cout << "  Cantidad de monedas: " <<  amount_  << std::endl;
-    std::cout << "  Retired: " <<  retired_  << std::endl;
-    std::cout << "  Available: " <<  available_ << std::endl;
-    std::cout << "  Fiat: " <<  fiatPrice_ << std::endl;
-    std::cout << "  Date: " <<  date_.toString().toStdString() << std::endl;
-    std::cout << "  DateUTC: " <<  datetimeUTC_.toString().toStdString() << std::endl;
+    LOG_DEBUG("Wallet: %d"
+                "  Operation ID: %d",
+                "  Coin: %s",
+                "  User: %s",
+                "  Amount: %d",
+                "  Retired: %d",
+                "  Available: %d", 
+                "  Fiat: %d", 
+                "  Date: %s", 
+                "  DateUTC: %s", 
+                walletID_, 
+                id_,
+                coinName_.toStdString(),
+                user_.toStdString(),
+                amount_,
+                retired_,
+                available_,
+                fiatPrice_,
+                date_.toString().toStdString(),
+                datetimeUTC_.toString().toStdString());
 }
 
 void WalletOperation::print2() const noexcept
 {
-    std::cout << "      Retired: " <<  retired_  << " ";
-    std::cout << "      Available: " <<  available_ << " ";
-    std::cout << "      Fiat: " <<  fiatPrice_ << " ";
-    std::cout << "      Date: " <<  date_.toString().toStdString() << std::endl;
+    LOG_DEBUG(  "      Retired:  %d"
+                "      Available: %d",
+                "      Fiat: %d",
+                "      Date: %s",
+            retired_,
+            available_,
+            fiatPrice_,
+            date_.toString().toStdString());
 }
 
 double WalletOperation::getAmount(void) const noexcept {return amount_;}

@@ -38,10 +38,6 @@ void Importer::setUri(const QList<QUrl> uri) noexcept
     uris_.clear();
     for(auto u : uri)
         uris_.push_back(u);
-    
-    for(auto u : uris_)
-        qDebug() << u;
-
     emit layoutChanged();
 }
 
@@ -53,11 +49,11 @@ void Importer::setPreviewed(bool p) noexcept
 
 void Importer::importPreview(void) noexcept
 {
-    qDebug() << "[INFO][Importer::importPreview slot]";
+    LOG_INFO("importPreview called");
     clear();
     if(uris_.empty())
     {
-        qDebug() << "[Error][Importer::importPreview] No files to import"; //TODO: Emit signal
+        LOG_ERROR("No files to import"); //TODO: Emit signal
     }
         
     for (auto file : uris_)
@@ -77,7 +73,7 @@ void Importer::importPreview(void) noexcept
             wPreview_->setFuture(future);
         }
         else
-            qDebug() << "[Error][Importer::importPreview] Unknow exchange"; //TODO: Emit signal
+            LOG_ERROR("Unknow exchange"); //TODO: Emit signal
         
 
     }
@@ -119,14 +115,14 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
         }
     }
 
-    qDebug() <<  "[Info][Importer::preview] Ganancia: " << ganancia;
+    LOG_DEBUG("Ganancia %lf", ganancia);
     return true;
 }
 
 
 void Importer::import(void) noexcept
 {
-    qDebug() << "[INFO][Importer::import]" << operationsToAdd_.size();
+    LOG_INFO("import called");
     clear();
     previewed_ = false;
     QFuture<bool> future = QtConcurrent::run(&Importer::write, this);
@@ -138,7 +134,7 @@ void Importer::import(void) noexcept
 bool Importer::write(void) noexcept
 {
     auto ops = operationsToAdd_;
-    qDebug() << "[INFO][Importer::write]" << ops.size();
+    LOG_INFO("write called");
     std::vector<WalletOperation> wOpsModified;
     for(auto index = 0; index < ops.size();)
     {
@@ -148,27 +144,23 @@ bool Importer::write(void) noexcept
         switch(res)
         {
             case static_cast<int>(BrokerManager::NewOperationRes::ADDED):
-                qDebug() << "File: Importer Func: import Description: Operación registrada";
+                LOG_DEBUG("Operation registered");
                 opsAdded_.push_back(ops[index]);
                 index++;
                 break;
             case  static_cast<int>(BrokerManager::NewOperationRes::ORI_WALLET_NOT_EXIST):
-                qDebug() << "File: Importer Func: import Description: Wallet origen no existe";
-                opsWithError_.push_back(ops[index]);
-                index++;
-                break;
-            case  static_cast<int>(BrokerManager::NewOperationRes::NOT_ADDED):
-                qDebug() << "File: Importer Func: import Description: Error desconocido";
+                LOG_DEBUG("Origin Wallet does not exist");
                 opsWithError_.push_back(ops[index]);
                 index++;
                 break;
             case  static_cast<int>(BrokerManager::NewOperationRes::ALREADY_ADDED):
-                qDebug() << "File: Importer Func: import Description: Operación duplicada";
+                LOG_DEBUG("Operation duplicated");
                 opsAlrdyAdded_.push_back(ops[index]);
                 index++;
                 break;
+            case  static_cast<int>(BrokerManager::NewOperationRes::NOT_ADDED):
             default:
-                qDebug() << "File: Importer Func: import Description: Error desconocido";
+                LOG_DEBUG("Unknown Error");
                 opsWithError_.push_back(ops[index]);
                 index++;
                 break;
@@ -225,7 +217,7 @@ EN_Exchange Importer::detectExchange(const QString& path)
     file.setFileName(path);
     if(file.exists() == false)
     {
-        qDebug() << "[Error][Importer::detectExchange] File does not exist " << path;
+        LOG_ERROR("File does not exist");
         return EN_Exchange::UNKNOWN;
     }
 
@@ -252,8 +244,7 @@ EN_Exchange Importer::detectExchange(const QString& path)
     }
 
     file.close();
-
-    qDebug() << "[Error][Importer::detectExchange] File format does not match " << path;
+    LOG_ERROR("File format does not match");
     return EN_Exchange::UNKNOWN;
 
 
@@ -261,7 +252,7 @@ EN_Exchange Importer::detectExchange(const QString& path)
 
 void Importer::printResult(void) noexcept
 {
-    qDebug() << "[INFO][Importer::printResult] Import Operation Result: " << (opsWithError_.empty() == false);
+    /*qDebug() << "[INFO][Importer::printResult] Import Operation Result: " << (opsWithError_.empty() == false);
     qDebug() << "[INFO][Importer::printResult] Details: ";
 
     qDebug() << "Total Earn operations: " <<  operationsSize();
@@ -269,7 +260,7 @@ void Importer::printResult(void) noexcept
     qDebug() << opsWithError();
     qDebug() <<  "Added: " << opsAddedSize() << "\n\n" << opsAdded();
     qDebug() <<  "Already: " << opsAlrdyAddedSize() ;
-    qDebug() << opsAlrdyAdded();
+    qDebug() << opsAlrdyAdded();*/
 }
 
 void Importer::processResult(void) noexcept
@@ -277,12 +268,12 @@ void Importer::processResult(void) noexcept
     auto res = opsWithError_.empty() == true;
     if(res)
     {
-        qDebug() << "[INFO][Importer::processResult] All operations added or had already been added.";
+        LOG_WARN("All operations added or had already been added");
         emit this->imported();
     }
     else
     {
-        qDebug() << "[ERROR][Importer::processResult] Some operations contains wrong data or there are unknown issue with the database.";
+        LOG_WARN("Some operations contains wrong data or there is unknown issue with the database");
         emit this->notimported();
     }
 }

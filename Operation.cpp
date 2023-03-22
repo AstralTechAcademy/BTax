@@ -3,6 +3,7 @@
 //
 
 #include "Operation.h"
+#include "Logger.h"
 #include <iostream>
 
 int Operation::getID(void) const noexcept
@@ -129,5 +130,12 @@ void Operation::setGanancia(double ganancia) {
 
 void Operation::print(void) const
 {
-    std::cout << "Operation Data: " << id_ << pair1_.toStdString() << pair2_.toStdString() << " "  << pair1Amount_  << " " << pair1AmountFiat_ << " " << pair2Amount_ << " " << pair2AmountFiat_ << " " <<comision_ << " " <<comisionFiat_  << " " << status_.toStdString() << " " << date_.toStdString() << " " <<comments_.toStdString() << " " << type_.toStdString() << " " << ganancia_ << " "  << std::endl;
+    LOG_DEBUG("Operation Data: %d %s %s %d %d %d %d %d %d %s %s %s %s %d", 
+                id_, pair1_.toStdString(), pair2_.toStdString(), 
+                pair1Amount_, pair1AmountFiat_,
+                pair2Amount_, pair2AmountFiat_,
+                comision_, comisionFiat_,
+                status_.toStdString(), date_.toStdString(), 
+                comments_.toStdString(), type_.toStdString(),
+                ganancia_);
 }

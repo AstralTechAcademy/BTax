@@ -3,20 +3,29 @@
 //
 
 #include "Wallet.h"
+#include "Logger.h"
 #include <iostream>
 
 void Wallet::print() const noexcept
 {
-    std::cout << "Wallet: " <<  walletID_ << std::endl;
-    std::cout << "  Coin: " <<  coinName_.toStdString() << std::endl;
-    std::cout << "  CoinID: " <<  coin_->id() << std::endl;
-    std::cout << "  Type: " <<  coin_->type().toStdString() << std::endl;
-    std::cout << "  User: " <<  user_.toStdString() << std::endl;
-    std::cout << "  Cantidad de monedas: " <<  amount_  << std::endl;
-    std::cout << "  Invertido: " <<  invested_  << std::endl;
-    std::cout << "  Average Cost: " <<  avgPrice_ << std::endl;
+    LOG_DEBUG("Wallet: %d"
+                "  Coin: %d",
+                "  CoinID: %s",
+                "  Type: %s",
+                "  User: %d",
+                "  Amount: %d",
+                "  Invested: %d", 
+                "  Average Cost: %d",
+                "  Wallet Operations: ",
+                walletID_, 
+                coinName_.toStdString(),
+                coin_->id(),
+                coin_->type().toStdString(),
+                user_.toStdString(),
+                amount_,
+                invested_,
+                avgPrice_);
 
-    std::cout << "  Wallet Operations: " <<  std::endl;
     for(auto op : walletOps_)
         op->print2();
 }

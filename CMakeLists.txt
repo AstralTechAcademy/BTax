@@ -101,16 +101,21 @@ endif()
 include_directories(./)
 include_directories(./IfExchanges)
 include_directories(./IMarketData)
+include_directories(./Logger)
+include_directories(./Managers)
+
+add_subdirectory(Logger)
+add_subdirectory(Managers)
 
 qt6_add_resources(RESOURCES ./qml.qrc)
 
 set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.cpp
         WalletOperation.h
-        SQLManager.cpp
-        SQLManager.h
         Broker.cpp
         Broker.h
+        Host.cpp
+        Host.h        
         OperationsModel.cpp
         OperationsModel.h
         Operation.cpp
@@ -122,7 +127,7 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Statistics.cpp
         DBCredential_NotPush.h
         WalletsPercModel.cpp WalletsPercModel.h
-        Statistics.h WalletsModel.cpp WalletsModel.h BrokerManager.cpp BrokerManager.h
+        Statistics.h WalletsModel.cpp WalletsModel.h
         UsersModel.cpp UsersModel.h
         CoinsModel.cpp CoinsModel.h
         ExchangesModel.cpp ExchangesModel.h
@@ -140,25 +145,27 @@ if(ANDROID)
     add_library(Broker SHARED
             main.cpp
             ${APP_SOURCES}
-            ${RESOURCES})
+            ${RESOURCES}
+            ${MANAGER_SOURCES})
 else()
 add_executable(Broker
         main.cpp
         ${RESOURCES}
-        ${APP_SOURCES})
+        ${APP_SOURCES}
+        ${MANAGER_SOURCES})
 endif()
 
 if(LINUX)
-    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets)
+    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets Logger)
 endif()
 
 if(ANDROID)
-    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets)
+    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets Logger)
 endif()
 
 
 if(WIN)
-    target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat)
+    target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat Logger)
     install(TARGETS Broker
         BUNDLE  DESTINATION .
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

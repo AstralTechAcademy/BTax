@@ -44,7 +44,6 @@ QList<Exchange *> ExchangesModel::exchanges(void) {
 
 void ExchangesModel::add(Exchange *exch) {
     exchanges_.push_back(exch);
-    qDebug() << "add";
 }
 
 int ExchangesModel::getID(const int index)

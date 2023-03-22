@@ -6,36 +6,28 @@
 #include <QSysInfo>
 #include <iostream>
 #include <QtConcurrent/QtConcurrent>
+#include "Host.h"
 
-Broker::HOSTS Broker::host_  = Broker::HOSTS::LINUX;
 QString Broker::server_ = "None";
 QString Broker::version_ = "0.0.0";
 bool Broker::dbOpened_ = false;
 
+using namespace Btax;
+
 Broker::Broker(const QString& server, const QString& version, const QString database, QObject *parent)
 {
 
-    std::cout << "File: Broker.cpp Func: Broker " << QSysInfo::kernelType().toStdString() << std::endl;
+    Host::getInstance();
+    QByteArray ba = QString(Host::getInstance()->getLogPath() + "log.txt").toLocal8Bit();
+    const char *logFPath = ba.data();
+
+    logger_initConsoleLogger(NULL);
+    logger_initFileLogger(logFPath, 0, 0);
+    logger_setLevel(LogLevel_DEBUG);
+    
+    LOG_INFO(QSysInfo::kernelType().toStdString().c_str());
     version_ = version;
     database_ = database;
-    if(QSysInfo::productType() == "linux")
-    {
-        host_ = HOSTS::LINUX;
-    }
-    else if(QSysInfo::productType() == "windows")
-    {
-        host_ = HOSTS::WIN;
-    }
-    else if(QSysInfo::productType() == "darwin")
-    {
-        host_ = HOSTS::MACOSX;
-    }
-    else if(QSysInfo::productType() == "android")
-    {
-        host_ = HOSTS::ANDROIDD;
-    }
-
-
 };
 
 
@@ -69,12 +61,6 @@ bool Broker::openDatabase (void)
     return future.result();
 }
 
-int Broker::getHost(void) const
-{
-    std::cout << "File: Broker.cpp Func: Broker " << QSysInfo::kernelType().toStdString() << std::endl;
-    return int(host_);
-}
-
 QString Broker::getServer(void) const
 {
     return server_;
@@ -99,7 +85,7 @@ BrokerManager::LoadResCode Broker::load(void)
 void Broker::load(void)
 #endif
 {
-    qDebug() << "[Broker::load] Loading";
+    LOG_INFO("Loading");
     auto res = BrokerManager::getInstance()->load();
 
     switch(res)
@@ -125,7 +111,7 @@ void Broker::newUser(const QString& name)
 {
     if(!BrokerManager::getInstance()->newUser(name))
     {
-        qDebug() << "[Broker::newUser] Error creating the user " << name << ". The user could be already in database.";
+        LOG_ERROR("Error creating the user %s The user could be already in database", name);
         emit userAlready();
         return;
     }

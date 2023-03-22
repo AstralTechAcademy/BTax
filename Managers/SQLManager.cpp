@@ -4,6 +4,7 @@
 
 #include "SQLManager.h"
 #include "DBCredential_NotPush.h"
+#include "Logger.h"
 #include <unistd.h>
 
 QSqlDatabase SQLManager::database = QSqlDatabase();
@@ -1331,6 +1332,7 @@ bool SQLManager::createAssetTypes(void) const
                 UNIQUE KEY name (name)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::createAssetTypes] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1342,6 +1344,7 @@ bool SQLManager::createVersion(void) const
                     remark varchar(20) NOT null) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::createVersion] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1356,6 +1359,7 @@ bool SQLManager::createUsers(void) const
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
   //  qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1389,6 +1393,7 @@ bool SQLManager::createDeposits(void) const
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
  //   qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1409,6 +1414,7 @@ bool SQLManager::createWallets(void) const
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
    // qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1429,6 +1435,7 @@ bool SQLManager::createWalletOperations(void) const
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1458,6 +1465,7 @@ bool SQLManager::createOperations(void) const
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1475,6 +1483,7 @@ bool SQLManager::createWithdraws(void) const
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1485,6 +1494,7 @@ bool SQLManager::update200000(void) const
                 ADD datetimeUTC datetime");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1500,6 +1510,7 @@ bool SQLManager::update201000(void) const
                 UNIQUE KEY Exchanges_UN (name)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     auto res = query.lastError().type() == QSqlError::NoError;
 
     if(!res)
@@ -1519,6 +1530,7 @@ bool SQLManager::update201000(void) const
     query.exec();
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1529,6 +1541,7 @@ bool SQLManager::update201001(void) const
                 ADD iconpath TEXT");
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1541,6 +1554,7 @@ bool SQLManager::insertVersion(uint32_t version, QString remark) const
     query.exec();
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1554,6 +1568,7 @@ bool SQLManager::updateVersion(uint32_t version, QString remark) const
     query.exec();
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1592,6 +1607,7 @@ bool SQLManager::defaultCoins(void) const
     query.exec();
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1610,6 +1626,7 @@ bool SQLManager::defaultAssetTypes(void) const
     query.exec();
 
     qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
+    LOG_ERROR("$s",query.lastError().text().toStdString());
     return query.lastError().type() == QSqlError::NoError;
 }
 

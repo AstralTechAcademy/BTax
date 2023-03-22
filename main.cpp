@@ -20,6 +20,8 @@
 #include "IMarketData/Coingecko.h"
 #include "Notifications/NotificationManager.h"
 
+#include "logger.h"
+
 void timeout(void)
 {
     sleep(5);
@@ -32,8 +34,7 @@ int main(int argc, char *argv[])
     QString version = "2.00.000";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QQuickStyle::setStyle("Imagine");
-
-
+    
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
     qmlRegisterUncreatableType<Broker>("es.broker", 1, 0, "Broker", "App Class Instance");
