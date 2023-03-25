@@ -47,7 +47,8 @@ bool Binance::parseBody(QFile& csv)
             double pair1AmountFiat = 1.0;
             double pair2AmountFiat = 0.0;
 
-            if(lineV.size() > 0 && lineV[header_[EN_COLUMN_NAMES::TYPE]] == "POS savings interest")
+            if(lineV.size() > 0 && 
+                (lineV[header_[EN_COLUMN_NAMES::TYPE]] == "Staking Rewards" or lineV[header_[EN_COLUMN_NAMES::TYPE]] == "Simple Earn Locked Rewards" ))
             {
                 qDebug() << "Operation: " << lineV[header_[EN_COLUMN_NAMES::PAIR2]] << " " << lineV[header_[EN_COLUMN_NAMES::PAIR2_AMOUNT]].toDouble();
                 operations_.push_back(std::make_shared<Operation>(0, BrokerManager::DEF_FIAT,  // Pair 1 Coin
