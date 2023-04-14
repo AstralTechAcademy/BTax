@@ -16,6 +16,7 @@
         <file>NewAssetForm.qml</file>
         <file>DateSelector.qml</file>
         <file>DataItem.qml</file>
+        <file>Notifications/AMessage.qml</file>
         <file>Notifications/AMessageDialog.qml</file>
     </qresource>
 

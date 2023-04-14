@@ -30,7 +30,7 @@ public:
     virtual uint32_t processResponse(QJsonDocument& doc) = 0;
     virtual QJsonDocument send(std::shared_ptr<QNetworkRequest> request)
     {
-        QThread::msleep(5000);
+        QThread::msleep(10000);
         QNetworkAccessManager nManager;
 
         auto reply = nManager.get(*request.get());

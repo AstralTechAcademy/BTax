@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:ImportOperationForm.qml"), "es.broker", 1, 0, "ImportOperationForm");
     qmlRegisterType(QUrl("qrc:DateSelector.qml"), "es.broker.components", 1, 0, "DateSelector");
     qmlRegisterType(QUrl("qrc:DataItem.qml"), "es.broker.components", 1, 0, "Data");
+    qmlRegisterType(QUrl("qrc:Notifications/AMessage.qml"), "es.notifications", 1, 0, "AMessage");
     qmlRegisterType(QUrl("qrc:Notifications/AMessageDialog.qml"), "es.notifications", 1, 0, "AMessageDialog");
 
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -86,7 +87,7 @@ int main(int argc, char *argv[])
     CoinsModel coinsModel;
     ExchangesModel exchangesModel;
     AssetTypeModel assetTypeModel;
-    NotificationManager notificationManager;
+    NotificationManager* notificationManager = NotificationManager::getInstance();
 
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("coinsModel", &coinsModel);
     engine.rootContext()->setContextProperty("exchangesModel", &exchangesModel);
     engine.rootContext()->setContextProperty("assetTypesModel", &assetTypeModel);
-    engine.rootContext()->setContextProperty("notificationManager", &notificationManager);
+    engine.rootContext()->setContextProperty("notificationManager", notificationManager);
 
     BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);

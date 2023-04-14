@@ -4,6 +4,7 @@ import QtQuick.Dialogs
 import QtQuick.Controls 2.14
 import es.broker.components.material 1.0 as Material
 import es.broker 1.0
+import es.notifications 1.0
 import Astral 1.0
 
 ListView{
@@ -13,6 +14,25 @@ ListView{
         console.log(operationsModel.rowCount())
     }
 
+    Connections{
+        target: notificationManager
+
+        function onNewOperationError(message)
+        {
+            errorMessage.message = message
+            errorMessage.visible = true
+        }
+    }
+    
+    AMessage
+    {
+        id: errorMessage
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: false
+    }
+    
     Button
     {
         id: newOperation
@@ -22,6 +42,7 @@ ListView{
         anchors.leftMargin: 20
         text: "New Operation"
         onClicked: {
+            errorMessage.visible = false
             formsLoader.source = "NewOperationForm.qml"
         }
     }
@@ -35,6 +56,7 @@ ListView{
         anchors.leftMargin: 20
         text: "New Transfer"
         onClicked: {
+            errorMessage.visible = false
             formsLoader.source = "NewTransferForm.qml"
         }
     }
@@ -48,6 +70,7 @@ ListView{
         anchors.leftMargin: 20
         text: "Import"
         onClicked: {
+            errorMessage.visible = false
             formsLoader.source = "ImportOperationForm.qml"
         }
     }

@@ -17,13 +17,13 @@ std::optional<QList<std::shared_ptr<Operation>>> IExchange::parse(QFile& csv)
 std::optional<QList<std::shared_ptr<Operation>>> IExchange::read(const QString& csvPath)
 {
     LOG_INFO("read");
-    LOG_DEBUG("Importing file %s", csvPath);
+    LOG_DEBUG("Importing file %s", qPrintable(csvPath));
 
     QFile csv;
     csv.setFileName(csvPath);
     if(csv.exists() == false)
     {
-        LOG_ERROR("File does not exist %s", csvPath);
+        LOG_ERROR("File does not exist %s", qPrintable(csvPath));
         return std::nullopt;
     }
     return parse(csv);
@@ -71,7 +71,7 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
     {
         LOG_WARN("There are %d operations without fiat price", opsWithoutPrice.size());
         for(auto l : opsWithoutPrice)
-            LOG_DEBUG("%s", l.toStdString());
+            LOG_DEBUG("%s", qPrintable(l));
         return false;
     }
     else

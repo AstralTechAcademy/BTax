@@ -243,7 +243,7 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     data.date = "16/10/2022 16:00:01";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values
 
-    auto ganancia = (58.0 + 10.0) * (0.3489 - 0.487);
+    auto ganancia = ((58.0) * (0.3489 - 0.487)) - (10.0 * 0.3489);
     operation = brokerManager->getLastOperation();
     QCOMPARE(true, operation->getPair1() == "ADA");
     QCOMPARE(true, operation->getPair2() == "EUR");
@@ -588,7 +588,7 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getPair2() == "USD");
     QCOMPARE(true, op->getPair1Amount() ==  4.9632);
     QCOMPARE(true, op->getPair2Amount() == 25.957536);
-    auto ganancia = (4.9632 + 1.0) * (5.23 - 6.24);
+    auto ganancia = ((4.9632 ) * (5.23 - 6.24)) - (1.0 * 5.23);
     QCOMPARE(true, op->getGanancia() < 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "vie. dic. 31 23:59:59 2021");
@@ -630,8 +630,8 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getPair2() == "USD");
     QCOMPARE(true, op->getPair1Amount() ==  3.5267);
     QCOMPARE(true, op->getPair2Amount() == 25.498041);
-    ganancia = (3.5267 + 1.0) * (7.23 - 6.24);
-    QCOMPARE(true, op->getGanancia() > 0);
+    ganancia = ((3.5267) * (7.23 - 6.24)) - (1.0 * 7.23);
+    QCOMPARE(true, op->getGanancia() < 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "sáb. ene. 1 02:25:00 2022");
     qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);

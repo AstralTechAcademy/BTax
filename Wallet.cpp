@@ -18,10 +18,10 @@ void Wallet::print() const noexcept
                 "  Average Cost: %d",
                 "  Wallet Operations: ",
                 walletID_, 
-                coinName_.toStdString(),
+                qPrintable(coinName_),
                 coin_->id(),
-                coin_->type().toStdString(),
-                user_.toStdString(),
+                qPrintable(coin_->type()),
+                qPrintable(user_),
                 amount_,
                 invested_,
                 avgPrice_);

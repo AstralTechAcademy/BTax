@@ -109,7 +109,7 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
         auto coin = findCoin(wallet1->getCoin());
         if(coin == std::nullopt)
         {
-            LOG_ERROR("Coin %s doest not exist", wallet1->getCoin().toStdString());
+            LOG_ERROR("Coin %s doest not exist", qPrintable(wallet1->getCoin()));
             return static_cast<int>( NewOperationRes::COIN_NOT_FOUND);
         }
 
@@ -139,7 +139,7 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
         {          
             if (ws == std::nullopt)
             {
-                LOG_ERROR("The coin %s doest not have wallets already created", wallet1->getCoin().toStdString());
+                LOG_ERROR("The coin %s doest not have wallets already created", qPrintable(wallet1->getCoin()));
                 return static_cast<int>( NewOperationRes::ORI_WALLET_NOT_EXIST);
             }
 
@@ -154,6 +154,8 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
             else
             {
                 LOG_ERROR("Not enough balance in the origin wallet to finish the operation. WalletID: %d", wallet1->getWalletID());
+                emit NotificationManager::getInstance()->
+                    newOperationError(QString("Not enough balance in the origin wallet to finish the operation"));
                 return static_cast<int>( NewOperationRes::INSUF_BALANCE_ORI_WALLET);
             }
         }
@@ -161,7 +163,7 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
         {
             if (ws == std::nullopt)
             {
-                LOG_ERROR("The coin %s doest not have wallets already created", wallet1->getCoin().toStdString());
+                LOG_ERROR("The coin %s doest not have wallets already created", qPrintable(wallet1->getCoin()));
                 return static_cast<int>( NewOperationRes::ORI_WALLET_NOT_EXIST);
             }
             auto wallets = ws.value();
@@ -231,7 +233,7 @@ int BrokerManager::newOperation(const QString& exchange, std::shared_ptr<Operati
 
     if(checkDuplicity(exchange, operation))
     {
-        LOG_WARN("The operation already exist. Operation date: %s",  operation->getDate().toStdString());
+        LOG_WARN("The operation already exist. Operation date: %s",  qPrintable(operation->getDate()));
         return static_cast<int>( NewOperationRes::ALREADY_ADDED);
     }
 
@@ -258,7 +260,7 @@ bool BrokerManager::newAsset(const QString& type, const QString& name, const QSt
                               [&](Coin* coin){return coin->name() == name;});
     if(exist != assets.end())
     {
-        LOG_WARN("The asset %s already exist",  name.toStdString());
+        LOG_WARN("The asset %s already exist",  qPrintable(name));
         return false;
     }
 
@@ -362,7 +364,7 @@ void BrokerManager::setUserID(const QString& username)
     if(!username.isEmpty())
     {
         userID = getUserID(username);
-        LOG_DEBUG("User ID: %d Username: %s" , userID, username);
+        LOG_DEBUG("User ID: %d Username: %s" , userID, qPrintable(username));
         walletsModel_->clear();
         operationsModel_->clear();
         loadWalletsFromDB(userID);
@@ -603,14 +605,14 @@ void BrokerManager::updateCurrentPrice(void)
 
     for(auto c : coinsModel_->coins())
     {
-        LOG_DEBUG("Coin %s Current Price %lf", c->name().toStdString(), c->currentPrice());
+        LOG_DEBUG("Coin %s Current Price %lf", qPrintable(c->name()), c->currentPrice());
     }
 }
 
 std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
 {
     auto coingecko = Coingecko::getInstace();
-    auto c = coingecko->getCoinID("Binance", coin->name().toLower());
+    auto c = coingecko->getCoinID("Binance", qPrintable(coin->name().toLower()));
     if(c == std::nullopt)
         return std::nullopt;
     return coingecko->getCurrentPrice(c.value());

@@ -20,14 +20,14 @@ void WalletOperation::print() const noexcept
                 "  DateUTC: %s", 
                 walletID_, 
                 id_,
-                coinName_.toStdString(),
-                user_.toStdString(),
+                qPrintable(coinName_),
+                qPrintable(user_),
                 amount_,
                 retired_,
                 available_,
                 fiatPrice_,
-                date_.toString().toStdString(),
-                datetimeUTC_.toString().toStdString());
+                qPrintable(date_.toString()),
+                qPrintable(datetimeUTC_.toString()));
 }
 
 void WalletOperation::print2() const noexcept

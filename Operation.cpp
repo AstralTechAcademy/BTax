@@ -131,11 +131,11 @@ void Operation::setGanancia(double ganancia) {
 void Operation::print(void) const
 {
     LOG_DEBUG("Operation Data: %d %s %s %d %d %d %d %d %d %s %s %s %s %d", 
-                id_, pair1_.toStdString(), pair2_.toStdString(), 
+                id_, qPrintable(pair1_), qPrintable(pair2_), 
                 pair1Amount_, pair1AmountFiat_,
                 pair2Amount_, pair2AmountFiat_,
                 comision_, comisionFiat_,
-                status_.toStdString(), date_.toStdString(), 
-                comments_.toStdString(), type_.toStdString(),
+                qPrintable(status_), qPrintable(date_), 
+                qPrintable(comments_), qPrintable(type_),
                 ganancia_);
 }

@@ -18,8 +18,8 @@ private slots:
     void initTestCase();
     void loadTestData();
     void detectExchange();
-    void importB2m();
     void importBinance();
+    void importB2m();
     void OperationsDuplicatedImporting();
     void cleanupTestCase();
 
@@ -95,14 +95,16 @@ void ImporterTest::detectExchange()
 
 void ImporterTest::importB2m()
 {
-
+    QThread::msleep(30000);
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2);
     QCOMPARE(true, importer->opsAddedSize() == 4);
     
+    QThread::msleep(5000);
     importer->write();
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2);
     QCOMPARE(true, importer->opsAlrdyAddedSize() == 4);
 
+    QThread::msleep(5000);
     // Newer file with more earn operations
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2_1);
     QCOMPARE(true, importer->opsAddedSize() == 2);
@@ -112,17 +114,20 @@ void ImporterTest::importB2m()
 
 void ImporterTest::importBinance()
 {
+    QThread::msleep(30000);
     importer->preview(EN_Exchange::BINANCE, pathBinance);
-    QCOMPARE(true, importer->opsAddedSize() == 3);
+    QCOMPARE(true, importer->opsAddedSize() == 5);
 
+    QThread::msleep(5000);
     importer->write();
     importer->preview(EN_Exchange::BINANCE, pathBinance);  
-    QCOMPARE(true, importer->opsAlrdyAddedSize() == 3);
+    QCOMPARE(true, importer->opsAlrdyAddedSize() == 5);
 
+    QThread::msleep(5000);
     // Newer file with more earn operations
     importer->preview(EN_Exchange::BINANCE, pathBinance_1);    
     QCOMPARE(true, importer->opsAddedSize() == 2);
-    QCOMPARE(true, importer->opsAlrdyAddedSize() == 4);
+    QCOMPARE(true, importer->opsAlrdyAddedSize() == 5);
     QCOMPARE(true, importer->opsWithErrorSize() == 0);
 }
 

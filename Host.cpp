@@ -69,9 +69,9 @@ namespace Btax
 
     void Host::printPaths(void)
     {
-        LOG_INFO("%s", getDirPath().toStdString());
-        LOG_INFO("%s", getConfigPath().toStdString());
-        LOG_INFO("%s", getLogPath().toStdString());
+        LOG_INFO("%s", qPrintable(getDirPath()));
+        LOG_INFO("%s", qPrintable(getConfigPath()));
+        LOG_INFO("%s", qPrintable(getLogPath()));
     }
 
     bool Host::isMobile(void) const
