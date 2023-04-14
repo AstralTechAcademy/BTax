@@ -41,6 +41,10 @@ if(WIN)
     set(CMAKE_PREFIX_PATH "G:/Qt/6.4.1/mingw_64/lib/cmake/Qt6")
 endif()
 
+if(MACOS)
+include_directories(/Users/gadominguez/Qt/6.5.0)
+endif()
+
 if(ANDROID)
     add_definitions( -DANDROID )
     set(ANDROID_PACKAGE_SOURCE_DIR /home/gabridc/Repositorio/neptuno-forked/App/android_files)
@@ -176,6 +180,10 @@ if(WIN)
         NO_UNSUPPORTED_PLATFORM_ERROR
     )
     install(SCRIPT ${deploy_script})
+endif()
+
+if(MACOS)
+    target_link_libraries(Broker PRIVATE Qt::Sql Qt::Quick Qt::QuickControls2 Qt::Qml Qt::Network Qt::NetworkAuth Qt::Widgets  Qt::Core5Compat Logger)
 endif()
 
 if(LINUX OR WIN AND GTEST)
