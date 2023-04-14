@@ -39,7 +39,7 @@ void WalletOperation::print2() const noexcept
             retired_,
             available_,
             fiatPrice_,
-            date_.toString().toStdString());
+            qPrintable(date_.toString()));
 }
 
 double WalletOperation::getAmount(void) const noexcept {return amount_;}

@@ -111,7 +111,7 @@ void Broker::newUser(const QString& name)
 {
     if(!BrokerManager::getInstance()->newUser(name))
     {
-        LOG_ERROR("Error creating the user %s The user could be already in database", name);
+        LOG_ERROR("Error creating the user %s The user could be already in database", qPrintable(name));
         emit userAlready();
         return;
     }
