@@ -42,7 +42,7 @@ if(WIN)
 endif()
 
 if(MACOS)
-include_directories(/Users/gadominguez/Qt/6.5.0)
+    set(CMAKE_PREFIX_PATH "/Users/gadominguez/Qt/6.5.0/macos/lib/cmake/Qt6")
 endif()
 
 if(ANDROID)
@@ -100,6 +100,10 @@ include_directories(G:/Qt/6.4.1/mingw64/include/)
 include_directories(G:/Qt/6.4.1/mingw64/include/QtNetworkAuth)
 include_directories(G:/Qt/6.4.1/mingw64/include/QtNetwork)
 include_directories(G:/Qt/6.4.1/mingw64/include/QtWidgets)
+endif()
+
+if(MACOS)
+include_directories(/Users/gadominguez/Qt/6.5.0)
 endif()
 
 include_directories(./)
@@ -184,6 +188,16 @@ endif()
 
 if(MACOS)
     target_link_libraries(Broker PRIVATE Qt::Sql Qt::Quick Qt::QuickControls2 Qt::Qml Qt::Network Qt::NetworkAuth Qt::Widgets  Qt::Core5Compat Logger)
+    set_target_properties(Broker PROPERTIES
+                            MACOSX_BUNDLE TRUE)
+
+#    qt_add_qml_module(Broker
+#        URI Astral
+#        QML_FILES
+#        /Users/gadominguez/Repositorio/medium/Components/Astral/Button.qml
+#        /Users/gadominguez/Repositorio/medium/Components/Astral/IconPlaneButton.qml
+#        /Users/gadominguez/Repositorio/medium/Components/Astral/Loading.qml
+#        /Users/gadominguez/Repositorio/medium/Components/Astral/TextField.qml)
 endif()
 
 if(LINUX OR WIN AND GTEST)

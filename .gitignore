@@ -77,3 +77,15 @@ Test/ImporterTest.exe
 Test/SQLManagerTest.exe
 Test/testlog.txt
 SQLManagerTest_autogen/
+
+*_autogen*
+*.rcc
+*.generated
+*meta_types*
+*qmltypes*
+qrc_qml.cpp
+.DS_Store
+Info.plist
+Broker.app
+broker_qmltyperegistrations.cpp
+qml.qrc.depends

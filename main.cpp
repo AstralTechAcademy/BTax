@@ -71,9 +71,6 @@ int main(int argc, char *argv[])
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
 
-    //Required the qmldir if the QMl files are outside binary directory so it is required in development. In release/deployed mode is disabled.
-    engine.addImportPath("G:/Repositorio/Astral_Academy/medium/Components");
-
     Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
