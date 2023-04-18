@@ -1,0 +1,3 @@
+[submodule "Astral1"]
+	path = Astral
+	url = git@github.com:astralTechAcademy/Astral.git
