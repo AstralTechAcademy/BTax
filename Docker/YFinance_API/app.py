@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import mysql.connector
 from mysql.connector import errorcode
 app = Flask(__name__)
@@ -18,7 +18,7 @@ def conn_geek():
         cnx = mysql.connector.connect(user='user1', password='user1',
                                         host='couple-db',
                                         database='couple')
-        username = "gabridc"
+        username = request.args.get('username')
         query = ("SELECT uuid, username FROM Users "
          "WHERE username='" + username + "'")
 
