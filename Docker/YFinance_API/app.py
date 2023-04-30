@@ -1,5 +1,7 @@
 from flask import Flask, request
 import mysql.connector
+import yfinance as yfinance
+import json
 from mysql.connector import errorcode
 app = Flask(__name__)
 
@@ -11,6 +13,16 @@ def hello_geek():
 def bye_geek():
     return '<h1>Bye from Flask & Docker</h2>'
 
+
+@app.route('/yfinance/getPrice')
+def getPrice():
+    data = ""
+    ticker = request.args.get('ticker')
+    hist = yfinance.Ticker(ticker).history(start="2022-01-01", end="2022-12-31", interval="1h")
+    
+    for index, row in hist.iterrows():
+        data += ticker + " " + str(index) + " " + str(row.Open) + "<br>"
+    return data
 
 @app.route('/connect')
 def conn_geek():
