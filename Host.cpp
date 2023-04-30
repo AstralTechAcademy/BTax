@@ -17,20 +17,9 @@ namespace Btax
         mobile_=false;
         if(kernel == "linux")
         {
-            if(type == "android")
-            {
-                dirPath = AndroidNeptunoPath;
-                configPath = AndroidConfigPath;
-                logPath_ = AndroidLogPath;
-                mobile_ = true;
-            }
-            else
-            {
-                dirPath = LinuxNeptunoPath;
-                configPath = LinuxConfigPath;
-                logPath_ = LinuxLogPath;
-            }
-
+            dirPath = LinuxNeptunoPath;
+            configPath = LinuxConfigPath;
+            logPath_ = LinuxLogPath;
         }
         else if(kernel == "winnt")
         {
@@ -73,9 +62,4 @@ namespace Btax
         LOG_INFO("%s", qPrintable(getConfigPath()));
         LOG_INFO("%s", qPrintable(getLogPath()));
     }
-
-    bool Host::isMobile(void) const
-    {
-        return mobile_;
-    };
 }

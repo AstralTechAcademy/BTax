@@ -6,6 +6,8 @@
 #include <QLocale>
 #include <future>
 #include <unistd.h>
+#include "Host.h"
+#include "Config.h"
 #include "Broker.h"
 #include "OperationsModel.h"
 #include "BrokerManager.h"
@@ -70,6 +72,16 @@ int main(int argc, char *argv[])
 
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
+
+    Btax::Host::getInstance();
+    auto res = Config::getInstance()->read();
+
+    if(!res)
+    {
+        qDebug() << "[main] Error reading configuration file";
+        return app.exec();
+    }
+        
 
     Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
     engine.rootContext()->setContextProperty("BrokerImpl", broker);

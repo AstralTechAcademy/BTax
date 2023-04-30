@@ -3,8 +3,8 @@
 //
 
 #include "SQLManager.h"
-#include "DBCredential_NotPush.h"
 #include "Logger.h"
+#include "Config.h"
 #include <unistd.h>
 
 QSqlDatabase SQLManager::database = QSqlDatabase();
@@ -15,8 +15,8 @@ SQLManager* SQLManager::instance_ = nullptr;
 
 SQLManager* SQLManager::GetInstance(void)
 {
-    server = SERVER;
-    databaseName = DATABASENAME;
+    server = Config::getInstance()->getServer();
+    databaseName = Config::getInstance()->getDatabasename();
     if(instance_ == nullptr){
         instance_ = new SQLManager();
     }
@@ -35,13 +35,13 @@ bool SQLManager::openDatabase(void)
 {
     bool opened = false;
     database = QSqlDatabase::addDatabase("QMYSQL");
-    database.setUserName(USERNAME);
-    database.setPort(PORT);
-    database.setHostName(SERVER);
-    database.setDatabaseName(DATABASENAME);
-    database.setPassword(PASSWORD);
-    server = SERVER;
-    databaseName = DATABASENAME;
+    database.setUserName(Config::getInstance()->getUsername());
+    database.setPort(Config::getInstance()->getPort());
+    database.setHostName(Config::getInstance()->getServer());
+    database.setDatabaseName(Config::getInstance()->getDatabasename());
+    database.setPassword(Config::getInstance()->getPassword());
+    server = Config::getInstance()->getServer();
+    databaseName = Config::getInstance()->getDatabasename();
     return database.open();
 };
 

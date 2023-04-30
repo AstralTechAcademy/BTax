@@ -120,6 +120,12 @@ qt6_add_resources(RESOURCES ./qml.qrc)
 set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.cpp
         WalletOperation.h
+        Managers/SQLManager.cpp
+        Managers/SQLManager.h
+        Host.cpp
+        Host.h
+        Config.cpp
+        Config.h
         Broker.cpp
         Broker.h
         Host.cpp
@@ -133,7 +139,6 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Utils.h
         Utils.cpp
         Statistics.cpp
-        DBCredential_NotPush.h
         WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h
         UsersModel.cpp UsersModel.h
