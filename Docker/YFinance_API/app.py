@@ -2,6 +2,8 @@ from flask import Flask, request
 import mysql.connector
 import yfinance as yfinance
 import json
+import datetime as dtime
+from datetime import timedelta
 from mysql.connector import errorcode
 app = Flask(__name__)
 
@@ -18,10 +20,16 @@ def bye_geek():
 def getPrice():
     data = ""
     ticker = request.args.get('ticker')
-    hist = yfinance.Ticker(ticker).history(start="2022-01-01", end="2022-12-31", interval="1h")
+    dtstr = request.args.get('datetime')
+    datetime = dtime.datetime.strptime(dtstr,'%Y-%m-%d %H:%M:%S')
+    nextHour = datetime + timedelta(days=1)
+    print(str(datetime) + " " + str(nextHour))
+    hist = yfinance.Ticker(ticker).history(start=datetime.strftime("%Y-%m-%d"), end=nextHour.strftime("%Y-%m-%d"), interval="1h")
     
     for index, row in hist.iterrows():
-        data += ticker + " " + str(index) + " " + str(row.Open) + "<br>"
+        d = dtime.datetime.strptime(str(index),'%Y-%m-%d %H:%M:%S%z')
+        if d.timestamp() <= datetime.timestamp():
+            data = ticker + " " + str(d) + " " + str(row.Open) + "<br>"
     return data
 
 @app.route('/connect')
