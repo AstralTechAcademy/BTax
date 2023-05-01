@@ -20,14 +20,17 @@ public:
     QString getUsername(void) const noexcept; 
     QString getPassword(void) const noexcept;
     bool read(void) noexcept;
+    bool validate(const QJsonObject& root) noexcept;
 
 private:
     inline static Config* instance_ = nullptr;
     QString server_ = "";
+    QString yfServer_ = "";
     QString databasename_ = "";
     QString username_ = "";
     QString password_ = "";
     int port_ = 0;
+    int yfPort_ = 0;
     Config();
     
 
