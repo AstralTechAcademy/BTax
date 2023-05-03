@@ -3,6 +3,22 @@
 #include "Host.h"
 #include <QString>
 
+struct dbConn
+{
+    QString server_ = "";
+    QString yfServer_ = "";
+    QString databasename_ = "";
+    QString username_ = "";
+    QString password_ = "";
+    int port_ = 0;
+};
+
+struct yfinanceConn
+{
+    QString server_ = "";
+    int port_ = 0;
+
+};
 class Config
 {
 
@@ -10,24 +26,25 @@ public:
     static Config* getInstance(void)
     {
         if(instance_ == nullptr)
-            return new Config();
+            instance_ = new Config();
         return instance_;
     }
 
-    QString getServer(void) const noexcept;
-    int getPort(void) const noexcept;
-    QString getDatabasename(void) const noexcept;
-    QString getUsername(void) const noexcept; 
-    QString getPassword(void) const noexcept;
+    QString getDbServer(void) const noexcept;
+    int getDbPort(void) const noexcept;
+    QString getDbDatabasename(void) const noexcept;
+    QString getDbUsername(void) const noexcept; 
+    QString getDbPassword(void) const noexcept;
+    QString getYfinServer(void) const noexcept;
+    int getYfinPort(void) const noexcept;
     bool read(void) noexcept;
+    bool validate(const QJsonObject& root) noexcept;
+    void print(void) const noexcept;
 
 private:
     inline static Config* instance_ = nullptr;
-    QString server_ = "";
-    QString databasename_ = "";
-    QString username_ = "";
-    QString password_ = "";
-    int port_ = 0;
+    dbConn dbConfig;
+    yfinanceConn yfinConfig;
     Config();
     
 

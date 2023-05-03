@@ -19,7 +19,7 @@ const QString DarwinNeptunoPath = QDir::homePath()+ "/.Btax/";
 
 const QString WinConfigPath = QDir::homePath()+ "/.Btax/btax.config";
 const QString LinuxConfigPath = LinuxNeptunoPath + "btax.config";
-const QString DarwinConfigPath = QDir::homePath()+ "/.Btax/btax.config";
+const QString DarwinConfigPath = DarwinNeptunoPath + "btax.config";
 
 const QString WinLogPath = QDir::homePath()+ "/.Btax/Logs/";
 const QString LinuxLogPath = LinuxNeptunoPath + "Logs/";

@@ -27,27 +27,96 @@ bool Config::read(void) noexcept
     
     auto root = doc.object();
 
-    qDebug() << root.keys();
-}   
+    qDebug() << root["database"].toObject().keys();
 
+    return validate(root);
 
-QString Config::getServer(void) const noexcept
+    return true;
+}  
+
+bool Config::validate(const QJsonObject& root) noexcept
 {
-    return server_;
+    QString stage = "test";
+#ifdef GTEST
+    stage = "gtest";
+#elif MANUAL_TEST
+    stage = "manual_test";
+#elif OFICIAL    
+    stage = "production";
+#elif PROD    
+    stage = "production";
+#else
+    stage = "test";
+#endif
+
+    QJsonObject content;
+    if(root.keys().indexOf("database") == -1 or root.keys().indexOf("database") == -1)
+        return false;
+    
+    if(root["yfinance_api"].toObject().keys().indexOf(stage) == -1)
+        return false; 
+
+    if(root["database"].toObject().keys().indexOf(stage) == -1)
+        return false;
+
+    content = root["database"][stage].toObject();
+    if(content.keys().indexOf("host") == -1 or
+       content.keys().indexOf("port") == -1 or
+       content.keys().indexOf("username") == -1 or
+       content.keys().indexOf("password") == -1 or
+       content.keys().indexOf("database") == -1)
+        return false;
+    
+    dbConfig.server_ = content["host"].toString();
+    dbConfig.port_ = content["port"].toInt();
+    dbConfig.username_ = content["username"].toString();
+    dbConfig.password_ = content["password"].toString();
+    dbConfig.databasename_ = content["database"].toString();
+    
+
+    content = root["yfinance_api"][stage].toObject();
+    if(content.keys().indexOf("host") == -1 or
+       content.keys().indexOf("port") == -1)
+        return false;
+ 
+    yfinConfig.server_ = content["host"].toString();
+    yfinConfig.port_ = content["port"].toInt();
+
+    return true;
+
 }
-int Config::getPort(void) const noexcept
+
+QString Config::getDbServer(void) const noexcept
 {
-    return port_;
+    return dbConfig.server_;
 }
-QString Config::getDatabasename(void) const noexcept
+int Config::getDbPort(void) const noexcept
 {
-    return databasename_;
+    return dbConfig.port_;
 }
-QString Config::getUsername(void) const noexcept
+QString Config::getDbDatabasename(void) const noexcept
 {
-    return username_;
+    return dbConfig.databasename_;
 }
-QString Config::getPassword(void) const noexcept
+QString Config::getDbUsername(void) const noexcept
 {
-    return password_;
+    return dbConfig.username_;
+}
+QString Config::getDbPassword(void) const noexcept
+{
+    return dbConfig.password_;
+}
+QString Config::getYfinServer(void) const noexcept
+{
+    return yfinConfig.server_;
+}
+int Config::getYfinPort(void) const noexcept
+{
+    return yfinConfig.port_;
+}
+
+void Config::print(void) const noexcept
+{
+    qDebug() << "Database\n\t" << dbConfig.server_ << " " << dbConfig.port_ << dbConfig.username_  << " " << dbConfig.password_  << " " << dbConfig.databasename_; 
+    qDebug() << "YFinance\n\t" <<yfinConfig.server_ << " " <<  yfinConfig.port_ ; 
 }
