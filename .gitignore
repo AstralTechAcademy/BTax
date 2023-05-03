@@ -89,3 +89,5 @@ Info.plist
 Broker.app
 broker_qmltyperegistrations.cpp
 qml.qrc.depends
+Config/btax.json
+Docker/database/data/*
