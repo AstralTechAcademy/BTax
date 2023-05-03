@@ -6,6 +6,8 @@
 #include <QLocale>
 #include <future>
 #include <unistd.h>
+#include "Host.h"
+#include "Config.h"
 #include "Broker.h"
 #include "OperationsModel.h"
 #include "BrokerManager.h"
@@ -71,7 +73,7 @@ int main(int argc, char *argv[])
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
 
-    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     const QUrl url(QStringLiteral("qrc:/Init.qml"));
@@ -103,6 +105,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("importer", importer);
 
     engine.load(url);
+
     //Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
     //auto r = importer->import("Binance", "/home/gabridc/Documentos/Binance_01_01_2022_31_03_2022.csv");
     //r = importer->import("Crypto", "/home/gabridc/Documentos/crypto_transactions_record_20220422_125541.csv");

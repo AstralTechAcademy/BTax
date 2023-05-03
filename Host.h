@@ -15,17 +15,14 @@ namespace Btax
 
 const QString WinNeptunoPath = QDir::homePath()+ "/.Btax/";
 const QString LinuxNeptunoPath = QDir::homePath()+ "/.Btax/";
-const QString AndroidNeptunoPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0] + "/.Btax/";
 const QString DarwinNeptunoPath = QDir::homePath()+ "/.Btax/";
 
 const QString WinConfigPath = QDir::homePath()+ "/.Btax/btax.config";
 const QString LinuxConfigPath = LinuxNeptunoPath + "btax.config";
-const QString AndroidConfigPath = AndroidNeptunoPath + "btax.config";
-const QString DarwinConfigPath = QDir::homePath()+ "/.Btax/btax.config";
+const QString DarwinConfigPath = DarwinNeptunoPath + "btax.config";
 
 const QString WinLogPath = QDir::homePath()+ "/.Btax/Logs/";
 const QString LinuxLogPath = LinuxNeptunoPath + "Logs/";
-const QString AndroidLogPath = AndroidNeptunoPath + "Logs/";
 const QString DarwinLogPath = QDir::homePath()+ "/.Btax/Logs/";
 
 class Host {
@@ -42,7 +39,6 @@ public:
     const QString &getDbPath() const;
     const QString &getConfigPath() const;
     const QString &getLogPath() const;
-    bool isMobile(void) const;
 
 private:
     static Host* instance_;

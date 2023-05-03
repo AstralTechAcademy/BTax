@@ -3,8 +3,8 @@
 //
 
 #include "SQLManager.h"
-#include "DBCredential_NotPush.h"
 #include "Logger.h"
+#include "Config.h"
 #include <unistd.h>
 
 QSqlDatabase SQLManager::database = QSqlDatabase();
@@ -15,8 +15,8 @@ SQLManager* SQLManager::instance_ = nullptr;
 
 SQLManager* SQLManager::GetInstance(void)
 {
-    server = SERVER;
-    databaseName = DATABASENAME;
+    server = Config::getInstance()->getDbServer();
+    databaseName = Config::getInstance()->getDbDatabasename();
     if(instance_ == nullptr){
         instance_ = new SQLManager();
     }
@@ -35,14 +35,17 @@ bool SQLManager::openDatabase(void)
 {
     bool opened = false;
     database = QSqlDatabase::addDatabase("QMYSQL");
-    database.setUserName(USERNAME);
-    database.setPort(PORT);
-    database.setHostName(SERVER);
-    database.setDatabaseName(DATABASENAME);
-    database.setPassword(PASSWORD);
-    server = SERVER;
-    databaseName = DATABASENAME;
-    return database.open();
+    Config::getInstance()->print();
+    database.setUserName(Config::getInstance()->getDbUsername());
+    database.setPort(Config::getInstance()->getDbPort());
+    database.setHostName(Config::getInstance()->getDbServer());
+    database.setDatabaseName(Config::getInstance()->getDbDatabasename());
+    database.setPassword(Config::getInstance()->getDbPassword());
+    server = Config::getInstance()->getDbServer();
+    databaseName = Config::getInstance()->getDbDatabasename();
+    auto res = database.open();
+    qDebug() << database.lastError().text();
+    return res;
 };
 
 bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> walletOperations,

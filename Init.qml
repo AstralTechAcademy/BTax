@@ -48,6 +48,12 @@ Window {
             footer.text = "Database not opened " +  BrokerImpl.getServer()
         }
 
+        function onConfigNotValid()
+        {
+            footer.text = "Config file not found or invalid"
+
+        }
+
         function onOpened()
         {
             footer.text = "Loading data..."
