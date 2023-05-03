@@ -73,19 +73,7 @@ int main(int argc, char *argv[])
     //const QUrl url(QStringLiteral("qrc:/main.qml"));
     QQmlApplicationEngine engine;
 
-    Btax::Host::getInstance();
-    auto res = Config::getInstance()->read();
-
-    if(!res)
-    {
-        qDebug() << "[main] Error reading configuration file";
-    }
-    return app.exec();
-
-
-        
-
-    /*Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     const QUrl url(QStringLiteral("qrc:/Init.qml"));
@@ -117,8 +105,6 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("importer", importer);
 
     engine.load(url);
-
-*/
 
     //Importer *importer = new Importer(std::shared_ptr<BrokerManager>(brokerManager));
     //auto r = importer->import("Binance", "/home/gabridc/Documentos/Binance_01_01_2022_31_03_2022.csv");

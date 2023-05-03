@@ -10,6 +10,7 @@
 #include <QVariant>
 #include "OperationsModel.h"
 #include "BrokerManager.h"
+#include "Config.h"
 #include "SQLManager.h"
 #include "WalletsModel.h"
 #include "WalletsPercModel.h"
@@ -25,12 +26,12 @@ class Broker : public QObject
     Q_OBJECT
 
 public:
-    Broker(const QString& server, const QString& version, const QString database, QObject *parent = nullptr);
+    Broker(const QString& version, QObject *parent = nullptr);
 
 
-    static Broker* getInstance(const QString& server, const QString& version, const QString& database) {
+    static Broker* getInstance(const QString& version) {
         if (!instance)
-            instance = new Broker(server, version, database);
+            instance = new Broker(version);
         return instance;
     }
 
@@ -56,6 +57,7 @@ signals:
     void noUsers(void);
     void userAlready(void);
     void loading(void);
+    void configNotValid(void);
 
 public slots:
     QString getServer(void) const;
@@ -76,6 +78,7 @@ public slots:
 private:
     static QString server_;
     static QString version_;
+    inline static Config* config_ = nullptr;
     inline static QString database_;
     static bool dbOpened_;
 

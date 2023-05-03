@@ -14,20 +14,31 @@ bool Broker::dbOpened_ = false;
 
 using namespace Btax;
 
-Broker::Broker(const QString& server, const QString& version, const QString database, QObject *parent)
+Broker::Broker(const QString& version,QObject *parent)
 {
 
     Host::getInstance();
-    QByteArray ba = QString(Host::getInstance()->getLogPath() + "log.txt").toLocal8Bit();
-    const char *logFPath = ba.data();
-
-    logger_initConsoleLogger(NULL);
-    logger_initFileLogger(logFPath, 0, 0);
-    logger_setLevel(LogLevel_DEBUG);
+    config_ = Config::getInstance();
     
-    LOG_INFO(QSysInfo::kernelType().toStdString().c_str());
-    version_ = version;
-    database_ = database;
+
+    if(config_->read())
+    {
+        QByteArray ba = QString(Host::getInstance()->getLogPath() + "log.txt").toLocal8Bit();
+        const char *logFPath = ba.data();
+
+        logger_initConsoleLogger(NULL);
+        logger_initFileLogger(logFPath, 0, 0);
+        logger_setLevel(LogLevel_DEBUG);
+        
+        LOG_INFO(QSysInfo::kernelType().toStdString().c_str());
+        version_ = version;
+        database_ = config_->getDbDatabasename();
+    }
+    else
+    {
+        qDebug() << "[main] Error reading configuration file";
+        emit configNotValid();
+    }
 };
 
 

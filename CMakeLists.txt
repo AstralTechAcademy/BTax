@@ -19,10 +19,11 @@ if(${CMAKE_BUILD_TYPE} MATCHES Release)
 
 #add_definitions(-DOFICIAL)
 
+if(WIN)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows") #Mingw Linker
+endif()
 
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup") #Visual Studio linker
 endif()
 
 if(MANUAL_TEST)
@@ -194,7 +195,7 @@ endif()
 if(MACOS)
     target_link_libraries(Broker PRIVATE Qt::Sql Qt::Quick Qt::QuickControls2 Qt::Qml Qt::Network Qt::NetworkAuth Qt::Widgets  Qt::Core5Compat Logger)
     set_target_properties(Broker PROPERTIES
-                            MACOSX_BUNDLE TRUE)
+                            MACOSX_BUNDLE FALSE)
 
 #    qt_add_qml_module(Broker
 #        URI Astral

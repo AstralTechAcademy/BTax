@@ -15,6 +15,7 @@
 #include <QTimeZone>
 #include <Operation.h>
 #include "Wallet.h"
+#include "Config.h"
 #include "WalletOperation.h"
 #include "CoinsModel.h"
 #include "Deposit.h"

@@ -1,0 +1,21 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  btax-db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: gabridc
+      MARIADB_PASSWORD: 20z3usG0d22
+    ports:
+      - "3306:3306"
+    networks:
+      - btax-network
+    volumes:
+      - ./data/:/var/lib/mysql
+
+networks:
+  btax-network:
+    driver: bridge

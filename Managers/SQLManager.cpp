@@ -15,8 +15,8 @@ SQLManager* SQLManager::instance_ = nullptr;
 
 SQLManager* SQLManager::GetInstance(void)
 {
-    server = Config::getInstance()->getServer();
-    databaseName = Config::getInstance()->getDatabasename();
+    server = Config::getInstance()->getDbServer();
+    databaseName = Config::getInstance()->getDbDatabasename();
     if(instance_ == nullptr){
         instance_ = new SQLManager();
     }
@@ -35,14 +35,17 @@ bool SQLManager::openDatabase(void)
 {
     bool opened = false;
     database = QSqlDatabase::addDatabase("QMYSQL");
-    database.setUserName(Config::getInstance()->getUsername());
-    database.setPort(Config::getInstance()->getPort());
-    database.setHostName(Config::getInstance()->getServer());
-    database.setDatabaseName(Config::getInstance()->getDatabasename());
-    database.setPassword(Config::getInstance()->getPassword());
-    server = Config::getInstance()->getServer();
-    databaseName = Config::getInstance()->getDatabasename();
-    return database.open();
+    Config::getInstance()->print();
+    database.setUserName(Config::getInstance()->getDbUsername());
+    database.setPort(Config::getInstance()->getDbPort());
+    database.setHostName(Config::getInstance()->getDbServer());
+    database.setDatabaseName(Config::getInstance()->getDbDatabasename());
+    database.setPassword(Config::getInstance()->getDbPassword());
+    server = Config::getInstance()->getDbServer();
+    databaseName = Config::getInstance()->getDbDatabasename();
+    auto res = database.open();
+    qDebug() << database.lastError().text();
+    return res;
 };
 
 bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> walletOperations,
