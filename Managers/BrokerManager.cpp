@@ -574,7 +574,7 @@ std::optional<Coin*> BrokerManager::findCoin(const QString& coin)
 
 void BrokerManager::updateCurrentPrice(void)
 {
-    auto coingecko = Coingecko::getInstace();
+    auto coingecko = Coingecko::getInstance();
 
     auto prices = coingecko->getCurrentPrices();
     if(prices == std::nullopt)
@@ -611,7 +611,7 @@ void BrokerManager::updateCurrentPrice(void)
 
 std::optional<double>  BrokerManager::getCurrentPrice(Coin* coin)
 {
-    auto coingecko = Coingecko::getInstace();
+    auto coingecko = Coingecko::getInstance();
     auto c = coingecko->getCoinID("Binance", qPrintable(coin->name().toLower()));
     if(c == std::nullopt)
         return std::nullopt;

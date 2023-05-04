@@ -71,14 +71,11 @@ std::optional<double> YFinance::getPrice(const QString& coin, const QDateTime& d
     auto resCode = processResponse(response_doc);
     if(resCode != EN_ResponseCode::OK)
         return std::nullopt;
-    else
-        LOG_INFO("%d %s", resCode, qPrintable(response_doc.toJson()));
-
 
     if(response_doc.isNull() == false)
     {
         // TODO
-        qDebug() << response_doc;
+        LOG_INFO("%d %s", resCode, qPrintable(response_doc.toJson()));
         return std::nullopt;
 
     }

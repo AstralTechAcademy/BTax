@@ -18,7 +18,7 @@ public:
         RATE_LIMIT = 429
     };
     Coingecko(void);
-    static std::shared_ptr<Coingecko> getInstace(void);
+    static std::shared_ptr<Coingecko> getInstance(void);
     virtual std::optional<QMap<QString, QString>> getCoins(void);
     virtual std::optional<QString> getCoinID(const QString& coinName);
     virtual std::optional<double> getCurrentPrice(const QString& coin);

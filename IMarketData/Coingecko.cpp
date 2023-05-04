@@ -20,7 +20,7 @@ Coingecko::Coingecko(void)
     }
 }
 
-std::shared_ptr<Coingecko> Coingecko::getInstace(void)
+std::shared_ptr<Coingecko> Coingecko::getInstance(void)
 {
     if(instance_ == nullptr)
         instance_ = std::make_shared<Coingecko>();    
