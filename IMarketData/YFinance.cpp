@@ -76,8 +76,12 @@ std::optional<double> YFinance::getPrice(const QString& coin, const QDateTime& d
     {
         // TODO
         LOG_INFO("%d %s", resCode, qPrintable(response_doc.toJson()));
-        return std::nullopt;
-
+        if(response_doc.isObject())
+        {
+            auto keys = response_doc.object().keys();
+            if(keys.contains("datetime") and keys.contains("ticker") and keys.contains("price"))
+                return response_doc.object()["price"].toDouble();
+        }
     }
     else
     {

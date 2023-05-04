@@ -32,13 +32,12 @@ public:
     virtual uint32_t processResponse(QJsonDocument& doc) = 0;
     virtual QJsonDocument send(std::shared_ptr<QNetworkRequest> request)
     {
-        QThread::msleep(10000);
+        //QThread::msleep(10000);
         QNetworkAccessManager nManager;
 
         auto reply = nManager.get(*request.get());
         while (!reply->isFinished()) qApp->processEvents();
         QByteArray response_data = reply->readAll();
-        LOG_INFO("%d \n%s", reply->error(), qPrintable(response_data));
         return QJsonDocument().fromJson(response_data);
     };
 
