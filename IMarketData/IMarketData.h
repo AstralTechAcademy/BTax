@@ -19,6 +19,8 @@
 #include <iostream>
 #include <QThread>
 
+#include "Logger.h"
+
 class IMarketData {
 public:
     virtual std::optional<QMap<QString, QString>> getCoins(void) = 0;
@@ -36,6 +38,7 @@ public:
         auto reply = nManager.get(*request.get());
         while (!reply->isFinished()) qApp->processEvents();
         QByteArray response_data = reply->readAll();
+        LOG_INFO("%d \n%s", reply->error(), qPrintable(response_data));
         return QJsonDocument().fromJson(response_data);
     };
 

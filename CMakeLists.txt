@@ -152,7 +152,9 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         IfExchanges/B2mV2.cpp IfExchanges/B2mV2.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
-        IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h
+        IMarketData/Coingecko.cpp IMarketData/Coingecko.h 
+        IMarketData/YFinance.cpp IMarketData/YFinance.h
+        Validators/VDate.cpp Validators/VDate.h
         Validators/VOperation.cpp Validators/VOperation.h Notifications/NotificationManager.cpp Notifications/NotificationManager.h)
 
 if(ANDROID)
