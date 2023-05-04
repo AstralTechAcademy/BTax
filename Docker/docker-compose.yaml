@@ -14,8 +14,16 @@ services:
     networks:
       - btax-network
     volumes:
-      - ./data/:/var/lib/mysql
-
+      - ./database/data/:/var/lib/mysql
+  yfinance:
+    image: yfinance-api
+    restart: always
+    ports:
+      - "5001:5000"
+    networks:
+      - btax-network
+    #volumes:
+    #  - ./YFinance_API:/YFinance_API
 networks:
   btax-network:
     driver: bridge
