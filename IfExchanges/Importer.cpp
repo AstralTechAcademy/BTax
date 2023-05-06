@@ -59,9 +59,11 @@ void Importer::importPreview(void) noexcept
     for (auto file : uris_)
     {
         auto path = file.toString();
-        if(path.contains("file:///"))
-            path = path.split("file:///")[1]; 
-        else if(path.contains("file://"))
+        //@gadominguez: TODO: Review parh pattern windows, macos and linux
+        //if(path.contains("file:///"))
+        //    path = path.split("file:///")[1]; 
+        //else if(path.contains("file://"))
+        if(path.contains("file://"))
             path = path.split("file://")[1];
         auto exchange = detectExchange(path);
         if(exchange != EN_Exchange::UNKNOWN)
@@ -91,7 +93,7 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
     auto ops = operations_ = rOps.value();
     std::vector<WalletOperation> wOpsModified;
     double ganancia = 0.0;
-    for(auto index = 0; index < ops.size();)
+    for(auto index = 0; index < ops.size(); index++)
     {
         ganancia +=  ops[index]->getGanancia();
         brokerManager_->newAssetIfNotExist("crypto", ops[index]->getPair1(), "#2acaea");
@@ -111,7 +113,6 @@ bool Importer::preview(const EN_Exchange exchange, const QString csvPath) noexce
                 operationsToAdd_.push_back(ops[index]);
                 opsAdded_.push_back(ops[index]);
             }
-            index++;
         }
     }
 

@@ -76,11 +76,6 @@ int main(int argc, char *argv[])
 
     Broker* broker = Broker::getInstance(version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
-
-    auto price = YFinance::getInstance()->getPrice("ADA", QDateTime::currentDateTime());
-    if(price != std::nullopt)
-        LOG_INFO("%lf", price.value());
-
     const QUrl url(QStringLiteral("qrc:/Init.qml"));
 
     UsersModel usersModel;

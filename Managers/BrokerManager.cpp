@@ -545,7 +545,7 @@ bool BrokerManager::checkDuplicity(const QString& exchange, std::shared_ptr<Oper
                               [&](Operation* op){return *op == *operation.get();});
     if(exist != ops.end())
     {
-        LOG_WARN("Operation is already in database (duplicated)");
+        qDebug() << "Operation is already in database (duplicated)";
         return true; // Return duplicated
     }
     return false;

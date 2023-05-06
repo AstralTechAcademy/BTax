@@ -20,16 +20,25 @@ def bye_geek():
 def getPrice():
     data = ""
     ticker = request.args.get('ticker')
+    yTicker = yfinance.Ticker(ticker + "-EUR")
+    if not yTicker.history_metadata:
+        yTicker = yfinance.Ticker(ticker + "-USD")
+        if not yTicker.history_metadata:
+            return "{\"ticker\":\"" + ticker + "\",\"error\": \"Ticker not valid or data not available\"}"
+
     dtstr = request.args.get('datetime')
     datetime = dtime.datetime.strptime(dtstr,'%Y-%m-%d %H:%M:%S')
     nextHour = datetime + timedelta(days=1)
-    print(str(datetime) + " " + str(nextHour))
-    hist = yfinance.Ticker(ticker).history(start=datetime.strftime("%Y-%m-%d"), end=nextHour.strftime("%Y-%m-%d"), interval="1h")
-    
+
+    hist = yTicker.history(start=datetime.strftime("%Y-%m-%d"), end=nextHour.strftime("%Y-%m-%d"), interval="1d")    
     for index, row in hist.iterrows():
         d = dtime.datetime.strptime(str(index),'%Y-%m-%d %H:%M:%S%z')
         if d.timestamp() <= datetime.timestamp():
-            data = ticker + " " + str(d) + " " + str(row.Open) + "<br>"
+            data = "{\"ticker\":\"" + ticker + "\",\"datetime\":\"" + str(d) + "\",\"price\":" +str(row.Open) + "}"
+    
+    if not data:
+        data = "{\"ticker\":\"" + ticker + "\",\"error\": \"Ticker not valid or data not available\"}"
+    
     return data
 
 @app.route('/connect')
