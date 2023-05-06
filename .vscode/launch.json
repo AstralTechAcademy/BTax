@@ -36,6 +36,19 @@
             "miDebuggerPath": "G:/Qt/Tools/mingw1120_64/bin/gdb.exe",
             "MIMode": "gdb",
             "launchCompleteCommand": "exec-run"
+        },  
+        {
+            "name": "Debug Broker MacOS (Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/",
+            "program": "${workspaceFolder}/Broker",
+            "stopAtEntry": true,
+            "environment": [],
+             "externalConsole": false,
+            //"miDebuggerPath": "/usr/bin/lldb",
+            "MIMode": "lldb",
+            "launchCompleteCommand": "exec-run",
         },        
         {
             "name": "Debug BrokerManagerTest (Debug)",
