@@ -21,8 +21,11 @@ def getPrice():
     data = ""
     ticker = request.args.get('ticker')
     yTicker = yfinance.Ticker(ticker + "-EUR")
+    fiatConverRate = 1.0
     if not yTicker.history_metadata:
         yTicker = yfinance.Ticker(ticker + "-USD")
+        eurusdTicker = yfinance.Ticker("EURUSD=X")
+        fiatConverRate = eurusdTicker.history().tail(1)['Close'].iloc[0]
         if not yTicker.history_metadata:
             return "{\"ticker\":\"" + ticker + "\",\"error\": \"Ticker not valid or data not available\"}"
 
@@ -34,7 +37,8 @@ def getPrice():
     for index, row in hist.iterrows():
         d = dtime.datetime.strptime(str(index),'%Y-%m-%d %H:%M:%S%z')
         if d.timestamp() <= datetime.timestamp():
-            data = "{\"ticker\":\"" + ticker + "\",\"datetime\":\"" + str(d) + "\",\"price\":" +str(row.Open) + "}"
+            price = row.Open / fiatConverRate
+            data = "{\"ticker\":\"" + ticker + "\",\"datetime\":\"" + str(d) + "\",\"price\":" + str(price) +  ",\"price_no_converted\":" +  str(row.Open)  + "}"
     
     if not data:
         data = "{\"ticker\":\"" + ticker + "\",\"error\": \"Ticker not valid or data not available\"}"
