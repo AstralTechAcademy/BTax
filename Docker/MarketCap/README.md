@@ -1,0 +1,1 @@
+docker run -it -v /Users/gadominguez/Repositorio/BTax/Docker/MarketCap:/MarketCap marketcap
