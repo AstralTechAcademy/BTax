@@ -42,7 +42,7 @@ public:
     uint32_t getUserID(const QString& username);
     QString getServer(void) const;
     QString getDatabase(void) const;
-    static QSqlDatabase getDb(void) { return database;};
+    static QSqlDatabase& getDb(void) { return database;};
     QList<std::tuple<uint32_t, QString, QString, QString>> getCoins(void);
     QList<std::tuple<uint32_t, QString, QString>> getExchanges(void);
     std::optional<std::tuple<uint32_t, QString, QString, QString>> getCoin(const QString& coin);

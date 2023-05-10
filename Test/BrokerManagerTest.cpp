@@ -5,6 +5,21 @@
 #include "SQLManager.h"
 #include "Utils.h"
 
+void deleteTablesData(QSqlQuery& query)
+{
+    query.prepare("DELETE FROM WalletOperations");
+    query.exec();
+    query.prepare("DELETE FROM Operations");
+    query.exec();
+    query.prepare("DELETE FROM Withdraws");
+    query.exec();
+    query.prepare("DELETE FROM Deposits");
+    query.exec();
+    query.prepare("DELETE FROM Wallets");
+    query.exec();
+}
+
+
 class BrokerManagerTest: public QObject
 {
 Q_OBJECT
@@ -33,7 +48,8 @@ private slots:
 
 
 
-        private:
+    private:
+    Broker* broker;
     UsersModel usersModel;
     OperationsModel operationsModel;
     WalletsModel walletsModel;
@@ -42,7 +58,7 @@ private slots:
     CoinsModel coinsModel;
     AssetTypeModel assetTypeModel;
     ExchangesModel exchangesModel;
-    NotificationManager notificationManager;
+    NotificationManager* notificationManager = NotificationManager::getInstance();
     BrokerManager* brokerManager;
 };
 
@@ -51,20 +67,19 @@ void BrokerManagerTest::initTestCase()
     QString version = "1.1.0";
     qDebug("Called before everything else.");
     QQmlApplicationEngine engine;
-    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
+    broker = Broker::getInstance(version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
-    QCOMPARE(true, broker->openDatabase());
+    broker->openDatabase();
 }
 
 void BrokerManagerTest::loadTestData()
 {
     QSqlQuery query(SQLManager::getDb());
 
-    query.prepare("drop table  WalletOperations, Operations, Withdraws, Deposits, Wallets, Coins, Version, Exchanges, AssetType, Users");
-    query.exec();
+    deleteTablesData(query);
 
-    SQLManager::GetInstance()->init();
+    LOG_ERROR("%s", qPrintable(query.lastError().text()));
     QCOMPARE(true, SQLManager::GetInstance()->registerUser("user1"));
 
     QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Binance", 1)); // ID = 1 //ETH
@@ -99,7 +114,6 @@ void BrokerManagerTest::loadTestData()
 
     brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     brokerManager->load();
-
 }
 
 void BrokerManagerTest::newAsset()

@@ -1338,8 +1338,10 @@ bool SQLManager::createAssetTypes(void) const
                 name varchar(10) NOT null, \
                 UNIQUE KEY id (id), \
                 UNIQUE KEY name (name)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+    if(query.lastError().text().contains("already exists"))
+        return true;
 
-    LOG_ERROR("%s",qPrintable(query.lastError().text()));  
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1365,8 +1367,10 @@ bool SQLManager::createUsers(void) const
                 PRIMARY KEY (id),\
                 UNIQUE KEY Users_UN (username)\
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+    if(query.lastError().text().contains("already exists"))
+        return true;
 
-    LOG_ERROR("%s",qPrintable(query.lastError().text()));
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1380,8 +1384,10 @@ bool SQLManager::createCoins(void) const
                 color varchar(10) DEFAULT null, \
                 marketcapid varchar(100) DEFAULT null, \
                 PRIMARY KEY (id) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+    if(query.lastError().text().contains("already exists"))
+        return true;
 
-    LOG_ERROR("%s", qPrintable(query.lastError().text()));
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1398,8 +1404,10 @@ bool SQLManager::createDeposits(void) const
                 KEY wallet (wallet),\
                 CONSTRAINT Deposits_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id) \
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+    if(query.lastError().text().contains("already exists"))
+        return true;
 
-    LOG_ERROR("%s", qPrintable(query.lastError().text()));
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1419,7 +1427,10 @@ bool SQLManager::createWallets(void) const
                 CONSTRAINT Wallets_ibfk_2 FOREIGN KEY (coin) REFERENCES Coins (id)\
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
-    LOG_ERROR("%s", qPrintable(query.lastError().text()));
+    if(query.lastError().text().contains("already exists"))
+        return true;
+
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));   
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1438,8 +1449,10 @@ bool SQLManager::createWalletOperations(void) const
                 KEY wallet (wallet),\
                 CONSTRAINT WalletOperations_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id)\
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
+    if(query.lastError().text().contains("already exists"))
+        return true;
 
-    LOG_ERROR("%s",qPrintable(query.lastError().text()));
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1468,7 +1481,10 @@ bool SQLManager::createOperations(void) const
                 CONSTRAINT Operations_ibfk_2 FOREIGN KEY (wallet2) REFERENCES Wallets (id) \
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4");
 
-    LOG_ERROR("%s", qPrintable(query.lastError().text()));
+    if(query.lastError().text().contains("already exists"))
+        return true;
+
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 
@@ -1485,8 +1501,10 @@ bool SQLManager::createWithdraws(void) const
                 CONSTRAINT Withdraws_ibfk_1 FOREIGN KEY (wallet) REFERENCES Wallets (id)\
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-    qDebug() << "[SQLManager::" << __func__ << "] " << query.lastError().text();
-    LOG_ERROR("%s", qPrintable(query.lastError().text()));
+    if(query.lastError().text().contains("already exists"))
+        return true;
+
+    LOG_ERROR("%s",qPrintable(query.lastError().text()));      
     return query.lastError().type() == QSqlError::NoError;
 }
 

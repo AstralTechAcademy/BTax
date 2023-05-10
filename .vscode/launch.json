@@ -71,6 +71,19 @@
             ]
         },
         {
+            "name": "Debug BrokerManagerTest MacOS (Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/Test",
+            "program": "${workspaceFolder}/Test/BrokerManagerTest",
+            //"stopAtEntry": true,
+            "environment": [],
+            "externalConsole": false,
+            //"miDebuggerPath": "/usr/bin/lldb",
+            "MIMode": "lldb",
+            "launchCompleteCommand": "exec-run",
+        },        
+        {
             "name": "Debug B2mTest (Debug)",
             "type": "cppdbg",
             "request": "launch",
@@ -110,6 +123,19 @@
                 }
             ]
         },
+        {
+            "name": "Debug ImporterTest MacOS(Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/Test",
+            "program": "${workspaceFolder}/Test/ImporterTest",
+              //"stopAtEntry": true,
+              "environment": [],
+              "externalConsole": false,
+              //"miDebuggerPath": "/usr/bin/lldb",
+              "MIMode": "lldb",
+              "launchCompleteCommand": "exec-run",
+        },        
         {
             "name": "Debug BinanceTest (Debug)",
             "type": "cppdbg",
