@@ -11,6 +11,7 @@
 #include "Broker.h"
 #include "OperationsModel.h"
 #include "BrokerManager.h"
+#include "YFinance.h"
 #include "SQLManager.h"
 #include "WalletsModel.h"
 #include "WalletsPercModel.h"
@@ -75,7 +76,6 @@ int main(int argc, char *argv[])
 
     Broker* broker = Broker::getInstance(version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
-
     const QUrl url(QStringLiteral("qrc:/Init.qml"));
 
     UsersModel usersModel;

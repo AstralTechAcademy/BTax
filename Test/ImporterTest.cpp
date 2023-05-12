@@ -10,6 +10,22 @@
 #include <QList>
 #include <QUrl>
 
+void deleteTablesData(QSqlQuery& query)
+{
+    query.prepare("DELETE FROM WalletOperations");
+    query.exec();
+    query.prepare("DELETE FROM Operations");
+    query.exec();
+    query.prepare("DELETE FROM Withdraws");
+    query.exec();
+    query.prepare("DELETE FROM Deposits");
+    query.exec();
+    query.prepare("DELETE FROM Wallets");
+    query.exec();
+    query.prepare("DELETE FROM Users");
+    query.exec();    
+}
+
 class ImporterTest: public QObject
 {
 Q_OBJECT
@@ -33,7 +49,7 @@ private:
     CoinsModel coinsModel;
     ExchangesModel exchangesModel;
     AssetTypeModel assetTypeModel;
-    NotificationManager notificationManager;
+    NotificationManager* notificationManager = NotificationManager::getInstance();
 
     BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     Importer *importer = Importer::getInstance(std::shared_ptr<BrokerManager>(brokerManager));
@@ -51,7 +67,7 @@ void ImporterTest::initTestCase()
     QString version = "1.1.0";
     qDebug("Called before everything else.");
     QQmlApplicationEngine engine;
-    Broker* broker = Broker::getInstance(SQLManager::GetInstance()->getServer(), version, SQLManager::GetInstance()->getDatabase());
+    Broker* broker = Broker::getInstance(version);
     engine.rootContext()->setContextProperty("BrokerImpl", broker);
 
     QCOMPARE(true, broker->openDatabase());
@@ -67,8 +83,7 @@ void ImporterTest::initTestCase()
 void ImporterTest::loadTestData()
 {
     QSqlQuery query(SQLManager::getDb());
-    query.prepare("drop table  WalletOperations, Operations, Withdraws, Deposits, Wallets, Coins, Version, Exchanges, AssetType, Users");
-    query.exec();
+    deleteTablesData(query);
 
     SQLManager::GetInstance()->init();
     QCOMPARE(true, SQLManager::GetInstance()->registerUser("user1"));
@@ -95,16 +110,13 @@ void ImporterTest::detectExchange()
 
 void ImporterTest::importB2m()
 {
-    QThread::msleep(30000);
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2);
     QCOMPARE(true, importer->opsAddedSize() == 4);
     
-    QThread::msleep(5000);
     importer->write();
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2);
     QCOMPARE(true, importer->opsAlrdyAddedSize() == 4);
 
-    QThread::msleep(5000);
     // Newer file with more earn operations
     importer->preview(EN_Exchange::B2M_V2, pathB2mV2_1);
     QCOMPARE(true, importer->opsAddedSize() == 2);
@@ -114,16 +126,13 @@ void ImporterTest::importB2m()
 
 void ImporterTest::importBinance()
 {
-    QThread::msleep(30000);
     importer->preview(EN_Exchange::BINANCE, pathBinance);
     QCOMPARE(true, importer->opsAddedSize() == 5);
 
-    QThread::msleep(5000);
     importer->write();
     importer->preview(EN_Exchange::BINANCE, pathBinance);  
     QCOMPARE(true, importer->opsAlrdyAddedSize() == 5);
 
-    QThread::msleep(5000);
     // Newer file with more earn operations
     importer->preview(EN_Exchange::BINANCE, pathBinance_1);    
     QCOMPARE(true, importer->opsAddedSize() == 2);

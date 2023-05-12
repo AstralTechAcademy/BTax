@@ -2,6 +2,8 @@ from flask import Flask, request
 import mysql.connector
 import yfinance as yfinance
 import json
+import datetime as dtime
+from datetime import timedelta
 from mysql.connector import errorcode
 app = Flask(__name__)
 
@@ -18,10 +20,29 @@ def bye_geek():
 def getPrice():
     data = ""
     ticker = request.args.get('ticker')
-    hist = yfinance.Ticker(ticker).history(start="2022-01-01", end="2022-12-31", interval="1h")
-    
+    yTicker = yfinance.Ticker(ticker + "-EUR")
+    fiatConverRate = 1.0
+    if not yTicker.history_metadata:
+        yTicker = yfinance.Ticker(ticker + "-USD")
+        eurusdTicker = yfinance.Ticker("EURUSD=X")
+        fiatConverRate = eurusdTicker.history().tail(1)['Close'].iloc[0]
+        if not yTicker.history_metadata:
+            return "{\"ticker\":\"" + ticker + "\",\"error\": \"Ticker not valid or data not available\"}"
+
+    dtstr = request.args.get('datetime')
+    datetime = dtime.datetime.strptime(dtstr,'%Y-%m-%d %H:%M:%S')
+    nextHour = datetime + timedelta(days=1)
+
+    hist = yTicker.history(start=datetime.strftime("%Y-%m-%d"), end=nextHour.strftime("%Y-%m-%d"), interval="1d")    
     for index, row in hist.iterrows():
-        data += ticker + " " + str(index) + " " + str(row.Open) + "<br>"
+        d = dtime.datetime.strptime(str(index),'%Y-%m-%d %H:%M:%S%z')
+        if d.timestamp() <= datetime.timestamp():
+            price = row.Open / fiatConverRate
+            data = "{\"ticker\":\"" + ticker + "\",\"datetime\":\"" + str(d) + "\",\"price\":" + str(price) +  ",\"price_no_converted\":" +  str(row.Open)  + "}"
+    
+    if not data:
+        data = "{\"ticker\":\"" + ticker + "\",\"error\": \"Ticker not valid or data not available\"}"
+    
     return data
 
 @app.route('/connect')

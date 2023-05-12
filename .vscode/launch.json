@@ -36,6 +36,19 @@
             "miDebuggerPath": "G:/Qt/Tools/mingw1120_64/bin/gdb.exe",
             "MIMode": "gdb",
             "launchCompleteCommand": "exec-run"
+        },  
+        {
+            "name": "Debug Broker MacOS (Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/",
+            "program": "${workspaceFolder}/Broker",
+            //"stopAtEntry": true,
+            "environment": [],
+            "externalConsole": false,
+            //"miDebuggerPath": "/usr/bin/lldb",
+            "MIMode": "lldb",
+            "launchCompleteCommand": "exec-run",
         },        
         {
             "name": "Debug BrokerManagerTest (Debug)",
@@ -57,6 +70,19 @@
                 }
             ]
         },
+        {
+            "name": "Debug BrokerManagerTest MacOS (Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/Test",
+            "program": "${workspaceFolder}/Test/BrokerManagerTest",
+            //"stopAtEntry": true,
+            "environment": [],
+            "externalConsole": false,
+            //"miDebuggerPath": "/usr/bin/lldb",
+            "MIMode": "lldb",
+            "launchCompleteCommand": "exec-run",
+        },        
         {
             "name": "Debug B2mTest (Debug)",
             "type": "cppdbg",
@@ -97,6 +123,19 @@
                 }
             ]
         },
+        {
+            "name": "Debug ImporterTest MacOS(Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/Test",
+            "program": "${workspaceFolder}/Test/ImporterTest",
+              //"stopAtEntry": true,
+              "environment": [],
+              "externalConsole": false,
+              //"miDebuggerPath": "/usr/bin/lldb",
+              "MIMode": "lldb",
+              "launchCompleteCommand": "exec-run",
+        },        
         {
             "name": "Debug BinanceTest (Debug)",
             "type": "cppdbg",

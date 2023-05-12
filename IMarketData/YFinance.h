@@ -2,12 +2,12 @@
 // Created by gabridc on 10/5/22.
 //
 
-#ifndef BROKER_COINGECKO_H
-#define BROKER_COINGECKO_H
+#ifndef BROKER_YFINANCE_H
+#define BROKER_YFINANCE_H
 #include "IMarketData.h"
 #include <QNetworkRequest>
 
-class Coingecko : public IMarketData{
+class YFinance : public IMarketData{
 
 public:
 
@@ -17,8 +17,8 @@ public:
         OK,
         RATE_LIMIT = 429
     };
-    Coingecko(void);
-    static std::shared_ptr<Coingecko> getInstance(void);
+    YFinance(void);
+    static std::shared_ptr<YFinance> getInstance(void);
     virtual std::optional<QMap<QString, QString>> getCoins(void);
     virtual std::optional<QString> getCoinID(const QString& coinName);
     virtual std::optional<double> getCurrentPrice(const QString& coin);
@@ -29,11 +29,9 @@ public:
 
 
 private:
-
-    QMap<QString, QString> coins_;
-    static std::shared_ptr<Coingecko> instance_;
+    static std::shared_ptr<YFinance> instance_;
 
 };
 
 
-#endif //BROKER_COINGECKO_H
+#endif //BROKER_YFINANCE_H

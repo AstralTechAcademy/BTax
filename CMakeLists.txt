@@ -9,6 +9,7 @@ project(Broker)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -16,7 +17,8 @@ set(CMAKE_AUTOUIC ON)
 
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
-
+set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 #add_definitions(-DOFICIAL)
 
 if(WIN)
@@ -152,7 +154,9 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         IfExchanges/B2mV2.cpp IfExchanges/B2mV2.h
         IfExchanges/Binance.cpp IfExchanges/Binance.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
-        IMarketData/Coingecko.cpp IMarketData/Coingecko.h Validators/VDate.cpp Validators/VDate.h
+        IMarketData/Coingecko.cpp IMarketData/Coingecko.h 
+        IMarketData/YFinance.cpp IMarketData/YFinance.h
+        Validators/VDate.cpp Validators/VDate.h
         Validators/VOperation.cpp Validators/VOperation.h Notifications/NotificationManager.cpp Notifications/NotificationManager.h)
 
 if(ANDROID)
@@ -169,17 +173,10 @@ add_executable(Broker
         ${MANAGER_SOURCES})
 endif()
 
-if(LINUX)
-    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets Logger)
-endif()
 
-if(ANDROID)
-    target_link_libraries(Broker Qt5::Sql Qt5::Quick Qt5::Qml Qt5::Network Qt5::NetworkAuth Qt5::Widgets Logger)
-endif()
-
+target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat Logger)
 
 if(WIN)
-    target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat Logger)
     install(TARGETS Broker
         BUNDLE  DESTINATION .
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -193,20 +190,11 @@ if(WIN)
 endif()
 
 if(MACOS)
-    target_link_libraries(Broker PRIVATE Qt::Sql Qt::Quick Qt::QuickControls2 Qt::Qml Qt::Network Qt::NetworkAuth Qt::Widgets  Qt::Core5Compat Logger)
     set_target_properties(Broker PROPERTIES
                             MACOSX_BUNDLE FALSE)
-
-#    qt_add_qml_module(Broker
-#        URI Astral
-#        QML_FILES
-#        /Users/gadominguez/Repositorio/medium/Components/Astral/Button.qml
-#        /Users/gadominguez/Repositorio/medium/Components/Astral/IconPlaneButton.qml
-#        /Users/gadominguez/Repositorio/medium/Components/Astral/Loading.qml
-#        /Users/gadominguez/Repositorio/medium/Components/Astral/TextField.qml)
 endif()
 
-if(LINUX OR WIN AND GTEST)
+if(GTEST)
 #################### QT TEST ####################
 add_definitions(-DGTEST)
 enable_testing(true)

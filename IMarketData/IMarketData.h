@@ -19,6 +19,8 @@
 #include <iostream>
 #include <QThread>
 
+#include "Logger.h"
+
 class IMarketData {
 public:
     virtual std::optional<QMap<QString, QString>> getCoins(void) = 0;
@@ -30,7 +32,7 @@ public:
     virtual uint32_t processResponse(QJsonDocument& doc) = 0;
     virtual QJsonDocument send(std::shared_ptr<QNetworkRequest> request)
     {
-        QThread::msleep(10000);
+        //QThread::msleep(10000);
         QNetworkAccessManager nManager;
 
         auto reply = nManager.get(*request.get());

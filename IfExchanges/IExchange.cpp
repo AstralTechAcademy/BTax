@@ -1,5 +1,6 @@
 #include "IExchange.h"
 #include "Logger.h"
+#include "Notifications/NotificationManager.h"
 
 std::optional<QList<std::shared_ptr<Operation>>> IExchange::parse(QFile& csv)
 {
@@ -34,44 +35,24 @@ bool IExchange::getFiatPrice(QList<std::shared_ptr<Operation>>& operations)
     LOG_INFO("getFiatPrice");
 
     QList<QString> opsWithoutPrice;
-    auto coingecko = MarketDataFactory::createMarketData("Coingecko");
-    auto opt = coingecko->getCoins();
-    if(opt == std::nullopt)
-        return false;
-    QMap<QString, QString> coins = opt.value();
+    auto market = MarketDataFactory::createMarketData("YFinance");
     mutex.lock();
     for(auto o : operations)
     {
-        QString coinID;
-        if(coins.contains(o->getPair2().toLower()))
-            coinID = coins.value(o->getPair2().toLower());
-        else
-            LOG_ERROR("Coin ID %s not found", qPrintable(o->getPair2()));
+        QString coinID = o->getPair2().toUpper();
 
-        if(coinID.isEmpty())
+        auto price = market->getPrice(coinID, o->getDateTime());
+        if(price == std::nullopt)
             opsWithoutPrice.push_back(coinID + " " + o->getDateTime().toString()); 
         else
-        {
-            LOG_DEBUG("Operation: %s %s",  qPrintable(coinID), qPrintable(o->getDateTime().toString()));
-            auto price = coingecko->getPrice(coinID, o->getDateTime());
-            if(price == std::nullopt)
-            {
-                opsWithoutPrice.push_back(coinID + " " + o->getDateTime().toString()); 
-            }
-            else
-            {
-                LOG_DEBUG("  Price: %lf", price.value());
-                o->setPair2AmountFiat(price.value());
-            }
-        }
-
+            o->setPair2AmountFiat(price.value());
     }
     mutex.unlock();        
     if(opsWithoutPrice.size() > 0)
     {
         LOG_WARN("There are %d operations without fiat price", opsWithoutPrice.size());
-        for(auto l : opsWithoutPrice)
-            LOG_DEBUG("%s", qPrintable(l));
+        emit NotificationManager::getInstance()->
+            importingError(QString("There are " + QString::number(opsWithoutPrice.size()) + " operations without fiat price"));
         return false;
     }
     else
