@@ -1,5 +1,6 @@
 #include <QTest>
 #include "Broker.h"
+#include "Test_Utils.h"
 
 
 void deleteTablesData(QSqlQuery& query)

@@ -198,13 +198,17 @@ if(GTEST)
 #################### QT TEST ####################
 add_definitions(-DGTEST)
 enable_testing(true)
-add_executable(BrokerManagerTest Test/BrokerManagerTest.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(BrokerTest Test/BrokerTest.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(B2mTest Test/B2mTest.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(B2mV2Test Test/B2mV2Test.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(BinanceTest Test/BinanceTest.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(ImporterTest Test/ImporterTest.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(SQLManagerTest Test/SQLManagerTest.cpp ${RESOURCES} ${APP_SOURCES} ${MANAGER_SOURCES})
+
+set(TEST_UTILS  Test/Test_Utils.h)
+
+
+add_executable(BrokerManagerTest Test/BrokerManagerTest.cpp ${RESOURCES} ${TEST_UTILS} ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(BrokerTest Test/BrokerTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(B2mTest Test/B2mTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(B2mV2Test Test/B2mV2Test.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(BinanceTest Test/BinanceTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(ImporterTest Test/ImporterTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(SQLManagerTest Test/SQLManagerTest.cpp ${RESOURCES} ${TEST_UTILS} ${APP_SOURCES} ${MANAGER_SOURCES})
 
 
 set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")

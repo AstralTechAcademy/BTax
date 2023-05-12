@@ -16,6 +16,7 @@
         <file>NewAssetForm.qml</file>
         <file>DateSelector.qml</file>
         <file>DataItem.qml</file>
+        <file>Notifications/AMessage.qml</file>
         <file>Notifications/AMessageDialog.qml</file>
     </qresource>
 
@@ -29,6 +30,7 @@
         <file alias="wallets-black">assets/account_balance_wallet_black_48dp.svg</file>
         <file alias="wallets-white">assets/account_balance_wallet_white_48dp.svg</file>
         <file alias="upload-file-black">assets/upload_file_black_48dp.svg</file>
+        <file alias="error-black">assets/error_black_48dp.svg</file>
 
     </qresource>
 </RCC>

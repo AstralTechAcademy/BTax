@@ -2,8 +2,8 @@
 #include <tuple>
 #include "BrokerManager.h"
 #include "Broker.h"
-#include "SQLManager.h"
 #include "Utils.h"
+#include "Test_Utils.h"
 
 void deleteTablesData(QSqlQuery& query)
 {
@@ -27,7 +27,6 @@ Q_OBJECT
 private slots:
     void initTestCase();
     void loadTestData();
-    void newAsset();
     void cleanupTestCase();
     void loadExchangesFromDB();
     void newAssetIfNotExist();
@@ -60,6 +59,20 @@ private slots:
     ExchangesModel exchangesModel;
     NotificationManager* notificationManager = NotificationManager::getInstance();
     BrokerManager* brokerManager;
+    uint16_t userID = 0;
+
+///// COMMON TEST DATA
+    uint16_t eurID = 0;
+    uint16_t ethID = 0;    
+    uint16_t adaID = 0;
+    
+    uint16_t CoinbaseEur = 0;
+    uint16_t B2MEur = 0;
+    uint16_t CoinbaseAda = 0;
+    uint16_t B2MAda = 0;
+    uint16_t BinanceEur = 0;
+    uint16_t BinanceEth = 0;
+////////////    
 };
 
 void BrokerManagerTest::initTestCase()
@@ -79,46 +92,69 @@ void BrokerManagerTest::loadTestData()
 
     deleteTablesData(query);
 
-    LOG_ERROR("%s", qPrintable(query.lastError().text()));
     QCOMPARE(true, SQLManager::GetInstance()->registerUser("user1"));
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Binance", 1)); // ID = 1 //ETH
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Crypto", 1));
+    userID = SQLManager::GetInstance()->getUserID("user1");
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Binance", 1)); // ID = 5 //ADA
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Crypto", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Binance", userID)); // ID = 1 //ETH
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "B2M", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Coinbase", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("4", "Crypto", userID));
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Binance", 1)); // ID = 9 //BTC
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Crypto", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Binance", userID)); // ID = 5 //ADA
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "B2M", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Coinbase", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("5", "Crypto", userID));
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Binance", 1)); // ID = 13 //EUR
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Crypto", 1));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Binance", userID)); // ID = 9 //BTC
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "B2M", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Coinbase", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("3", "Crypto", userID));
+
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Binance", userID)); // ID = 13 //EUR
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "B2M", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Coinbase", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("1", "Crypto", userID));
     
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Binance", 1)); // ID = 17 //USD
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Bitpanda", 1)); // ID = 20
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Binance", userID)); // ID = 17 //USD
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "B2M", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Coinbase", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("2", "Bitpanda", userID)); // ID = 20
 
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Binance", 1)); // ID = 21 //LINK
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "B2M", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Coinbase", 1));
-    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Bitpanda", 1)); // ID = 24
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Binance", userID)); // ID = 21 //LINK
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "B2M", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Coinbase", userID));
+    QCOMPARE(true, (bool) SQLManager::GetInstance()->addWallet("15", "Bitpanda", userID)); // ID = 24
 
     brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     brokerManager->load();
-}
 
-void BrokerManagerTest::newAsset()
-{
-    QCOMPARE(true, brokerManager->newAsset("stock", "prueba", "#FFFFFF")); // compare two values
+///// COMMON TEST DATA
+    auto eur = SQLManager::GetInstance()->getCoin("EUR");
+    auto eth = SQLManager::GetInstance()->getCoin("ETH");
+    auto ada = SQLManager::GetInstance()->getCoin("ADA");
+    QCOMPARE(true, eur != std::nullopt);
+    QCOMPARE(true, ada != std::nullopt);
+    QCOMPARE(true, eth != std::nullopt);
+    eurID = std::get<0>(eur.value());
+    ethID = std::get<0>(eth.value());
+    adaID = std::get<0>(ada.value());
+    
+    CoinbaseEur = SQLManager::GetInstance()->getWalletID(userID, "Coinbase", QString::number(eurID));
+    B2MEur = SQLManager::GetInstance()->getWalletID(userID, "B2M", QString::number(eurID));
+    CoinbaseAda = SQLManager::GetInstance()->getWalletID(userID, "Coinbase", QString::number(adaID));
+    B2MAda = SQLManager::GetInstance()->getWalletID(userID, "B2M", QString::number(adaID));
+    BinanceEur = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(eurID));
+    BinanceEth = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(ethID));
+    QCOMPARE(true, BinanceEur > 0);
+    QCOMPARE(true, BinanceEth > 0);
+    QCOMPARE(true, CoinbaseEur > 0);
+    QCOMPARE(true, B2MEur > 0);
+    QCOMPARE(true, CoinbaseAda > 0);
+    QCOMPARE(true, B2MAda > 0);    
+////////////    
+    
+
 }
 
 void BrokerManagerTest::newAssetIfNotExist()
@@ -138,10 +174,10 @@ void BrokerManagerTest::newOperation()
     std::vector<WalletOperation> wOpsModified;
     WalletOperation::OperationData data;
 
-    QCOMPARE(true, brokerManager->newDeposit(13, 150.0, 0.0, "deposit 1", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(BinanceEur, 150.0, 0.0, "deposit 1", "")); // compare two values
     
-    data.walletID1 = 13;
-    data.walletID2 = 1;
+    data.walletID1 = BinanceEur;
+    data.walletID2 = BinanceEth;
     data.pair1Amount = 90.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.03;
@@ -155,8 +191,8 @@ void BrokerManagerTest::newOperation()
     data.date = "02/10/2022 10:00:00";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values
         
-    data.walletID1 = 13;
-    data.walletID2 = 1;
+    data.walletID1 = BinanceEur;
+    data.walletID2 = BinanceEth;
     data.pair1Amount = 40.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.03;
@@ -194,11 +230,11 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     std::vector<const WalletOperation*> ws;
     std::optional<std::vector<const WalletOperation*>> wallet;
 
-    QCOMPARE(true, brokerManager->newDeposit(15, 133.0, 0.0, "deposit 2", "")); // compare two values
-    QCOMPARE(true, brokerManager->newDeposit(14, 133.0, 0.0, "deposit 2", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(CoinbaseEur, 133.0, 0.0, "deposit 2", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(B2MEur, 133.0, 0.0, "deposit 2", "")); // compare two values
 
-    data.walletID1 = 15;
-    data.walletID2 = 5;
+    data.walletID1 = CoinbaseEur;
+    data.walletID2 = CoinbaseAda;
     data.pair1Amount = 90.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 184.804928131;
@@ -221,8 +257,8 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     QCOMPARE(true, operation->getGanancia() == -10.0);
     QCOMPARE(true, operation->getDate() == "sáb. oct. 15 13:00:00 2022");
 
-    data.walletID1 = 14;
-    data.walletID2 = 6;
+    data.walletID1 = B2MEur;
+    data.walletID2 = B2MAda;
     data.pair1Amount = 100.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 147.492625369;
@@ -242,8 +278,8 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     /*******************************************************************************/
     /*******************************************************************************/
 
-    data.walletID1 = 6;
-    data.walletID2 = 14;
+    data.walletID1 = B2MAda;
+    data.walletID2 = B2MEur;
     data.pair1Amount = 58.0;
     data.pair1AmountFiat = 0.3489;
     data.pair2Amount = 20.2362;
@@ -278,8 +314,8 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
     /******************************** Second Sale  ADA-B2M *************************/
     /*******************************************************************************/
     /*******************************************************************************/
-    data.walletID1 = 6;
-    data.walletID2 = 14;
+    data.walletID1 = B2MAda;
+    data.walletID2 = B2MEur;
     data.pair1Amount = 20.0;
     data.pair1AmountFiat = 0.3489;
     data.pair2Amount = 6.978;
@@ -310,14 +346,14 @@ void BrokerManagerTest::newSaleAssetMultiExchange()
 
     // Check that FIFO algortihm has been used. 
     // ADA-B2M has all amount available.
-    wallet = SQLManager::GetInstance()->getWalletOperations("6");
+    wallet = SQLManager::GetInstance()->getWalletOperations(QString::number(B2MAda));
     ws = wallet.value();
     QCOMPARE(true, ws.size() == 1);
     QCOMPARE(true, QString::number(ws[0]->getRetired()) == "0");
     QCOMPARE(true, QString::number(ws[0]->getAvailable()) == "147.493");
 
     // Check that EUR-B2M has amount available bacause of sales.
-    wallet = SQLManager::GetInstance()->getWalletOperations("14");
+    wallet = SQLManager::GetInstance()->getWalletOperations(QString::number(B2MEur));
     ws = wallet.value();
     QCOMPARE(true, ws.size() == 3);
     QCOMPARE(true, QString::number(ws[1]->getRetired()) == "0");

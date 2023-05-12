@@ -4,6 +4,7 @@
 #include "Broker.h"
 #include "SQLManager.h"
 #include "Utils.h"
+#include "Test_Utils.h"
 
 class SQLManagerTest: public QObject
 {
