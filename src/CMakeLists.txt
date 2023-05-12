@@ -177,6 +177,8 @@ endif()
 target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat Logger)
 
 if(WIN)
+    set_target_properties(Broker PROPERTIES
+                        RUNTIME_OUTPUT_DIRECTORY "../")
     install(TARGETS Broker
         BUNDLE  DESTINATION .
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -191,6 +193,7 @@ endif()
 
 if(MACOS)
     set_target_properties(Broker PROPERTIES
+                            RUNTIME_OUTPUT_DIRECTORY "../"
                             MACOSX_BUNDLE FALSE)
 endif()
 
