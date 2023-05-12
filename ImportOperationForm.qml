@@ -6,6 +6,7 @@ import Astral 1.0
 import es.broker 1.0
 import es.broker.components 1.0
 import es.broker.components.material 1.0
+import es.notifications 1.0
 
 Window
 {
@@ -22,17 +23,40 @@ Window
     x: Screen.width / 2 - width / 2
     y: Screen.height / 2 - height / 2
 
+    Item
+    {
+        id: statesi
+        states: [
+            State {
+                name: "default"
+                PropertyChanges { target: newOp; anchors.topMargin: 20}
+                PropertyChanges {target: mutableBtn; text: "Read"}
+
+            },
+            State{
+                name: "import"
+                PropertyChanges {target: mutableBtn; text: "Import"}
+            },
+            State{
+                name: "error"
+                PropertyChanges {target: newOp; anchors.topMargin: 50}
+                PropertyChanges {target: mutableBtn; text: "Cancel"}
+            }
+        ]
+    }
+
+
     Connections
     {
         target: importer
-        onImported: mutableBtn.text = "Read"
-        onNotImported: mutableBtn.text = "Read"           
+        onImported: statesi.state = "default"
+        onNotImported: statesi.state = "default"         
         onReading: {
             newOp.value = "0"
             alreadyOp.value = "0"
             unknownOp.value = "0"
 
-            mutableBtn.text = "Import"
+            statesi.state= "import"
             loading.visible = true
             dropA.opacity = 0.5
             mutableBtn.enabled = false
@@ -202,6 +226,8 @@ Window
             else
             {
                 console.log("Import")
+                if(statesi.state == "error")
+                    importOperationWindow.close()
                 importer.import()
             }
 
@@ -216,6 +242,26 @@ Window
             //console.log("Canceled")
         }
 
+    }
+
+    Connections{
+        target: notificationManager
+
+        function onImportingError(message)
+        {
+            errorMessage.message = message
+            errorMessage.visible = true
+            statesi.state = 'error'
+        }
+    }
+    
+    AMessage
+    {
+        id: errorMessage
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: false
     }
 
 }

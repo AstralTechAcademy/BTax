@@ -228,7 +228,7 @@ static void getLevelChar(LogLevel level, char* levelc)
         case LogLevel_TRACE: sprintf(levelc, "%s", "[TRACE]");break;
         case LogLevel_DEBUG: sprintf(levelc, "%s", "[DEBUG]");break;
         case LogLevel_INFO:  sprintf(levelc, "%s", "[INFO]");break;
-        case LogLevel_WARN:  sprintf(levelc, "%s", "[WARNING]");break;
+        case LogLevel_WARN:  sprintf(levelc, "%s", "[WARN]");break;
         case LogLevel_ERROR: sprintf(levelc, "%s", "[ERROR]");break;
         case LogLevel_FATAL: sprintf(levelc, "%s", "[FATAL]");break;
         default: sprintf(levelc, "%s", "[UNKNOWN]");break;

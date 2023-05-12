@@ -24,6 +24,7 @@ private:
 signals:
     void dbNotOpened(void);
     void newOperationError(QString message);
+    void importingError(QString message);
 
 
 };

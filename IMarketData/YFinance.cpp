@@ -61,11 +61,11 @@ std::optional<double> YFinance::getPrice(const QString& coin, const QDateTime& d
 {
 
     std::shared_ptr<QNetworkRequest> request = std::make_shared<QNetworkRequest>();
+    auto dateStr = QString::number(date.date().year()) + "-" + QString::number(date.date().month()) + "-" + QString::number(date.date().day());
     auto url = QUrl("http://" + Config::getInstance()->getYfinServer() + ":" + QString::number(Config::getInstance()->getYfinPort()) +
                             "/yfinance/getPrice?ticker=" + coin.toUpper() + 
-                            "&datetime=" + QString::number(date.date().year()) + "-" + QString::number(date.date().month()) + "-" + QString::number(date.date().day()) + " 01:00:00");
+                            "&datetime=" + dateStr + " 01:00:00");
     
-    LOG_INFO("%s", qPrintable(url.toString()));
     request->setUrl(url);
     auto response_doc = IMarketData::send(request);
     auto resCode = processResponse(response_doc);
@@ -74,7 +74,6 @@ std::optional<double> YFinance::getPrice(const QString& coin, const QDateTime& d
 
     if(response_doc.isNull() == false)
     {
-        // TODO
         if(response_doc.isObject())
         {
             auto keys = response_doc.object().keys();
@@ -84,7 +83,7 @@ std::optional<double> YFinance::getPrice(const QString& coin, const QDateTime& d
 
             if(keys.contains("datetime") and keys.contains("ticker") and keys.contains("price"))
             {
-                LOG_INFO("%lf", response_doc.object()["price"].toDouble());
+                LOG_DEBUG("Ticker: %s Date: %s Price: %lf", qPrintable(coin.toUpper()), qPrintable(dateStr), response_doc.object()["price"].toDouble());
                 return response_doc.object()["price"].toDouble();
             }    
                 
@@ -111,6 +110,6 @@ std::optional<QString> YFinance::getCoinID(const QString& coinName)
 uint32_t YFinance::processResponse(QJsonDocument& doc)
 {
     //TODO
-
+    qDebug() << doc;
     return EN_ResponseCode::OK;
 }
