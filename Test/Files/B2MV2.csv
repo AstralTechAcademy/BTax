@@ -1,8 +1,8 @@
-,,,,,,,,,,
-Tipo de operaci髇,Cantidad de destino,Moneda de destino,Cantidad de origen,Moneda de origen,Comisi髇 de la operaci髇,Moneda de la comisi髇,Exchange,Grupo,Descripci髇,Fecha
-Reward / Bonus,"11,0089438",B2M,,,0,EUR,Bit2Me,earn,earn 57a10c46-f08d-4cc5-b5db-23dfad26e656,2022-01-01 11:05
-Reward / Bonus,"7,24459346",B2M,,,0,EUR,Bit2Me,earn,earn a3d49f6a-5295-4ff3-a45c-9fbb9217e84c,2022-01-02 11:01
-Reward / Bonus,"6,9315493",B2M,,,0,EUR,Bit2Me,earn,earn 4ce9d302-8b86-4c44-882a-9ce9ac4d6d98,2022-01-03 11:10
-Reward / Bonus,"6,71889541",B2M,,,0,EUR,Bit2Me,earn,earn d79cdab8-0b1f-4a23-9488-91d9d305ff0c,2022-01-04 11:01
-Trade,"0,02191146",ETH,48,EUR,"0,456",EUR,Bit2Me,pocket,wallet 441aef1a-59f9-4568-a2ca-47bd6011df65,2022-01-22 11:58
-Trade,"0,56103722",SOL,50,EUR,"0,475",EUR,Bit2Me,pocket,wallet 7d2c7b15-3081-4e25-9987-4e3b31482530,2022-01-22 12:02
+ ,,,,,,,,,,
+Tipo de operaci贸n,Cantidad de destino,Moneda de destino,Cantidad de origen,Moneda de origen,Comisi贸n de la operaci贸n,Moneda de la comisi贸n,Exchange,Grupo,Descripci贸n,Fecha
+Reward / Bonus,11.0089438,B2M,,,0,EUR,Bit2Me,earn,earn 57a10c46-f08d-4cc5-b5db-23dfad26e656,2022-01-01 11:05
+Reward / Bonus,7.24459346,B2M,,,0,EUR,Bit2Me,earn,earn a3d49f6a-5295-4ff3-a45c-9fbb9217e84c,2022-01-02 11:01
+Reward / Bonus,6.9315493,B2M,,,0,EUR,Bit2Me,earn,earn 4ce9d302-8b86-4c44-882a-9ce9ac4d6d98,2022-01-03 11:10
+Reward / Bonus,6.71889541,B2M,,,0,EUR,Bit2Me,earn,earn d79cdab8-0b1f-4a23-9488-91d9d305ff0c,2022-01-04 11:01
+Trade,0.02191146,ETH,48,EUR,"0,456",EUR,Bit2Me,pocket,wallet 441aef1a-59f9-4568-a2ca-47bd6011df65,2022-01-22 11:58
+Trade,0.56103722,SOL,50,EUR,"0,475",EUR,Bit2Me,pocket,wallet 7d2c7b15-3081-4e25-9987-4e3b31482530,2022-01-22 12:02

@@ -15,6 +15,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(PROJECT_ROOT_PATH "../")
+
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
 set(CMAKE_BUILD_TYPE "Release")
@@ -202,25 +204,25 @@ if(GTEST)
 add_definitions(-DGTEST)
 enable_testing(true)
 
-set(TEST_UTILS  Test/Test_Utils.h)
+set(TEST_UTILS  ${PROJECT_ROOT_PATH}/Test/Test_Utils.h)
 
 
-add_executable(BrokerManagerTest Test/BrokerManagerTest.cpp ${RESOURCES} ${TEST_UTILS} ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(BrokerTest Test/BrokerTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(B2mTest Test/B2mTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(B2mV2Test Test/B2mV2Test.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(BinanceTest Test/BinanceTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(ImporterTest Test/ImporterTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
-add_executable(SQLManagerTest Test/SQLManagerTest.cpp ${RESOURCES} ${TEST_UTILS} ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(BrokerManagerTest ${PROJECT_ROOT_PATH}/Test/BrokerManagerTest.cpp ${RESOURCES} ${TEST_UTILS} ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(BrokerTest ${PROJECT_ROOT_PATH}/Test/BrokerTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(B2mTest ${PROJECT_ROOT_PATH}/Test/B2mTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(B2mV2Test ${PROJECT_ROOT_PATH}/Test/B2mV2Test.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(BinanceTest ${PROJECT_ROOT_PATH}/Test/BinanceTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(ImporterTest ${PROJECT_ROOT_PATH}/Test/ImporterTest.cpp ${RESOURCES} ${TEST_UTILS}  ${APP_SOURCES} ${MANAGER_SOURCES})
+add_executable(SQLManagerTest ${PROJECT_ROOT_PATH}/Test/SQLManagerTest.cpp ${RESOURCES} ${TEST_UTILS} ${APP_SOURCES} ${MANAGER_SOURCES})
 
 
-set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
-set_target_properties(BrokerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
-set_target_properties(B2mTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
-set_target_properties(B2mV2Test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
-set_target_properties(BinanceTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
-set_target_properties(ImporterTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
-set_target_properties(SQLManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "Test")
+set_target_properties(BrokerManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
+set_target_properties(BrokerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
+set_target_properties(B2mTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
+set_target_properties(B2mV2Test PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
+set_target_properties(BinanceTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
+set_target_properties(ImporterTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
+set_target_properties(SQLManagerTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_PATH}/Test")
 
 
 add_test(NAME BrokerTest COMMAND BrokerTest)
