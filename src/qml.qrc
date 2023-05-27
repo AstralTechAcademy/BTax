@@ -1,23 +1,23 @@
 <RCC>
     <qresource prefix="/">
-        <file>../qml/main.qml</file>
+        <file alias="MainWindow">../qml/main.qml</file>
         <file alias="InitWindow">../qml/Init.qml</file>
-        <file>../qml/body.qml</file>
-        <file>../qml/MaterialTextInput.qml</file>
-        <file>../qml/Operation.qml</file>
-        <file>../qml/SchedulerBody.qml</file>
-        <file>../qml/WalletsBody.qml</file>
-        <file>../qml/Wallet.qml</file>
-        <file>../qml/IconButton.qml</file>
-        <file>../qml/NewOperationForm.qml</file>
-        <file>../qml/NewTransferForm.qml</file>
-        <file>../qml/ImportOperationForm.qml</file>
-        <file>../qml/NewDepositForm.qml</file>
-        <file>../qml/NewAssetForm.qml</file>
-        <file>../qml/DateSelector.qml</file>
-        <file>../qml/DataItem.qml</file>
-        <file>Notifications/AMessage.qml</file>
-        <file>Notifications/AMessageDialog.qml</file>
+        <file alias="BodyWindow">../qml/body.qml</file>
+        <file alias="MaterialTextInput">../qml/MaterialTextInput.qml</file>
+        <file alias="Operation">../qml/Operation.qml</file>
+        <file alias="SchedulerBody">../qml/SchedulerBody.qml</file>
+        <file alias="WalletsBody">../qml/WalletsBody.qml</file>
+        <file alias="Wallet">../qml/Wallet.qml</file>
+        <file alias="IconButton">../qml/IconButton.qml</file>
+        <file alias="NewOperationForm">../qml/NewOperationForm.qml</file>
+        <file alias="NewTransferForm">../qml/NewTransferForm.qml</file>
+        <file alias="ImportOperationForm">../qml/ImportOperationForm.qml</file>
+        <file alias="NewDepositForm">../qml/NewDepositForm.qml</file>
+        <file alias="NewAssetForm">../qml/NewAssetForm.qml</file>
+        <file alias="DateSelector">../qml/DateSelector.qml</file>
+        <file alias="DataItem">../qml/DataItem.qml</file>
+        <file alias="AMessage">Notifications/AMessage.qml</file>
+        <file alias="AMessageDialog">Notifications/AMessageDialog.qml</file>
     </qresource>
 
     <qresource prefix="/assets">

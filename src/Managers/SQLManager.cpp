@@ -1706,7 +1706,12 @@ bool SQLManager::update(void) const
         if(updateVersion(201001, "2.01.001") == false) return false;
     }
 
-    return getVersion() == 201001;
+    if(version < 202000)
+    {
+        if(updateVersion(202000, "2.02.000") == false) return false;
+    }
+
+    return getVersion() == 202000;
 }
 
 

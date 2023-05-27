@@ -18,7 +18,7 @@ Window {
     //OperationsModel{id: operationsModel}
 
     Component.onCompleted: {
-        bodyLoader.source = "WalletsBody.qml"
+        bodyLoader.source = "WalletsBody"
         console.log("Server: " + BrokerImpl.getServer())
     }
 
@@ -181,7 +181,7 @@ Window {
             MouseArea{
                 id: walletMA
                 anchors.fill: parent
-                onClicked: bodyLoader.source = "WalletsBody.qml"
+                onClicked: bodyLoader.source = "WalletsBody"
             }
         }
 
