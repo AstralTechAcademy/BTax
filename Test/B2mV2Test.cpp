@@ -19,6 +19,16 @@ private slots:
     void cleanupTestCase();
 
 private:
+    UsersModel usersModel;
+    OperationsModel operationsModel;
+    WalletsModel walletsModel;
+    WalletsModel walletsModelAll;
+    WalletsPercModel walletsPercModel;
+    CoinsModel coinsModel;
+    ExchangesModel exchangesModel;
+    AssetTypeModel assetTypeModel;
+    NotificationManager* notificationManager = NotificationManager::getInstance();
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     std::shared_ptr<IExchange> b2m = ExchangeFactory::createExchange(EN_Exchange::B2M_V2);
     QList<std::shared_ptr<Operation>> operations;
     QString pathB2m = "Files/B2MV2.csv";
@@ -29,6 +39,9 @@ void B2mV2Test::initTestCase()
 {
     QString version = "1.1.0";
     qDebug("Called before everything else.");
+    QQmlApplicationEngine engine;
+    Broker* broker = Broker::getInstance(version);
+    engine.rootContext()->setContextProperty("BrokerImpl", broker);
 }
 
 void B2mV2Test::read()
@@ -49,8 +62,8 @@ void B2mV2Test::parse()
         {
             QCOMPARE(true, op->getPair2() == "B2M");
             QCOMPARE(true, op->getPair2Amount() == 11.0089438);
-            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.0574138");
-            QCOMPARE(true, QString::number(op->getGanancia()) == "0.632065");
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.0584357");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.643316");
             QCOMPARE(true, op->getDate() == "01/01/2022 12:05:00");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2022-01-01 11:05:00.000");
             //TODO: Date UTC+0
@@ -59,8 +72,8 @@ void B2mV2Test::parse()
         {
             QCOMPARE(true, op->getPair2() == "B2M");
             QCOMPARE(true, op->getPair2Amount() == 7.24459346);
-            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.0609244");
-            QCOMPARE(true, QString::number(op->getGanancia()) == "0.441373");
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.0638296");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.462419");
             QCOMPARE(true, op->getDate() == "02/01/2022 12:01:00");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2022-01-02 11:01:00.000");
         }
@@ -68,8 +81,8 @@ void B2mV2Test::parse()
         {
             QCOMPARE(true, op->getPair2() == "B2M");
             QCOMPARE(true, op->getPair2Amount() == 6.9315493);
-            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.0577615");
-            QCOMPARE(true, QString::number(op->getGanancia()) == "0.400377");
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.0613843");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.425488");
             QCOMPARE(true, op->getDate() == "03/01/2022 12:10:00");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2022-01-03 11:10:00.000");
         }   
@@ -77,8 +90,8 @@ void B2mV2Test::parse()
         {
             QCOMPARE(true, op->getPair2() == "B2M");
             QCOMPARE(true, op->getPair2Amount() == 6.71889541);
-            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.057284");
-            QCOMPARE(true, QString::number(op->getGanancia()) == "0.384885");
+            QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "0.060033");
+            QCOMPARE(true, QString::number(op->getGanancia()) == "0.403355");
             QCOMPARE(true, op->getDate() == "04/01/2022 12:01:00");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2022-01-04 11:01:00.000");
         }         

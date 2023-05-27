@@ -766,22 +766,22 @@ void BrokerManagerTest::updateTimeUTC()
 {
     QSqlQuery query(SQLManager::getDb());
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (7, 10,0,10, \"lun. nov. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ",0,10, \"lun. nov. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (7, 10,0,10, \"mar. jun. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ", 10,0,10, \"mar. jun. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (10, 10,0,10, \"lun. nov. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,10, \"lun. nov. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (10, 10,0,10, \"mar. jun. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,10, \"mar. jun. 28 21:52:28 2022\")");
     query.exec();
 
-    SQLManager::GetInstance()->getWalletOperations("7");
-    SQLManager::GetInstance()->getWalletOperations("10");
+    SQLManager::GetInstance()->getWalletOperations(QString::number(CoinbaseAda));
+    SQLManager::GetInstance()->getWalletOperations(QString::number(B2MBtc));
 
-    auto wops = SQLManager::GetInstance()->getWalletOperations("7");
+    auto wops = SQLManager::GetInstance()->getWalletOperations(QString::number(CoinbaseAda));
     auto w1 = wops->at(wops->size()-1);
     auto w2 = wops->at(wops->size()-2);
 
