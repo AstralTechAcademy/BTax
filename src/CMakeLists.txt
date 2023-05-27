@@ -9,7 +9,6 @@ project(Broker)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -17,17 +16,17 @@ set(CMAKE_AUTOUIC ON)
 
 set(PROJECT_ROOT_PATH "../")
 
+message("${CMAKE_BUILD_TYPE}")
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
-set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-#add_definitions(-DOFICIAL)
+    set(CMAKE_BUILD_TYPE "Release")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+    add_definitions(-DOFICIAL)
 
-if(WIN)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows") #Mingw Linker
-endif()
-
+    if(WIN)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows") #Mingw Linker
+    endif()
 endif()
 
 if(MANUAL_TEST)
@@ -43,7 +42,7 @@ if(LINUX)
 endif()
 
 if(WIN)
-    set(CMAKE_PREFIX_PATH "G:/Qt/6.4.1/mingw_64/lib/cmake/Qt6")
+    set(CMAKE_PREFIX_PATH "G:/Qt/6.5.0/mingw_64/lib/cmake/Qt6")
 endif()
 
 if(MACOS)
@@ -101,10 +100,10 @@ include_directories(~/Qt/5.15.2/gcc_64/include/QtWidgets)
 endif()
 
 if(WIN)
-include_directories(G:/Qt/6.4.1/mingw64/include/)
-include_directories(G:/Qt/6.4.1/mingw64/include/QtNetworkAuth)
-include_directories(G:/Qt/6.4.1/mingw64/include/QtNetwork)
-include_directories(G:/Qt/6.4.1/mingw64/include/QtWidgets)
+include_directories(G:/Qt/6.5.0/mingw64/include/)
+include_directories(G:/Qt/6.5.0/mingw64/include/QtNetworkAuth)
+include_directories(G:/Qt/6.5.0/mingw64/include/QtNetwork)
+include_directories(G:/Qt/6.5.0/mingw64/include/QtWidgets)
 endif()
 
 if(MACOS)
@@ -179,24 +178,25 @@ endif()
 target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt6::Network Qt6::NetworkAuth Qt6::Widgets  Qt6::Core5Compat Logger)
 
 if(WIN)
-    set_target_properties(Broker PROPERTIES
-                        RUNTIME_OUTPUT_DIRECTORY "../")
-    install(TARGETS Broker
-        BUNDLE  DESTINATION .
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    )
-    qt_generate_deploy_app_script(
-        TARGET Broker
-        FILENAME_VARIABLE deploy_script
-        NO_UNSUPPORTED_PLATFORM_ERROR
-    )
-    install(SCRIPT ${deploy_script})
+    if(${CMAKE_BUILD_TYPE} MATCHES Release)
+        set_target_properties(Broker PROPERTIES
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/win)
+    else()
+        set_target_properties(Broker PROPERTIES
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH})
+    endif()
 endif()
 
 if(MACOS)
-    set_target_properties(Broker PROPERTIES
-                            RUNTIME_OUTPUT_DIRECTORY "../"
-                            MACOSX_BUNDLE FALSE)
+    if(${CMAKE_BUILD_TYPE} MATCHES Release)
+        set_target_properties(Broker PROPERTIES
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/macos
+                                MACOSX_BUNDLE TRUE)
+    else()
+        set_target_properties(Broker PROPERTIES
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}
+                                MACOSX_BUNDLE FALSE)
+    endif()
 endif()
 
 if(GTEST)

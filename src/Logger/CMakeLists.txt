@@ -9,6 +9,6 @@ add_library(Logger SHARED
 
 set_target_properties(Logger
     PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ../release/lib
-    ARCHIVE_OUTPUT_DIRECTORY ../release/lib
+    LIBRARY_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/lib
+    ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/lib
 )                
