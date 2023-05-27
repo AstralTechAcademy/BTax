@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../qml/main.qml</file>
+        <file alias="InitWindow">../qml/Init.qml</file>
+        <file>../qml/body.qml</file>
+        <file>../qml/MaterialTextInput.qml</file>
+        <file>../qml/Operation.qml</file>
+        <file>../qml/SchedulerBody.qml</file>
+        <file>../qml/WalletsBody.qml</file>
+        <file>../qml/Wallet.qml</file>
+        <file>../qml/IconButton.qml</file>
+        <file>../qml/NewOperationForm.qml</file>
+        <file>../qml/NewTransferForm.qml</file>
+        <file>../qml/ImportOperationForm.qml</file>
+        <file>../qml/NewDepositForm.qml</file>
+        <file>../qml/NewAssetForm.qml</file>
+        <file>../qml/DateSelector.qml</file>
+        <file>../qml/DataItem.qml</file>
+        <file>Notifications/AMessage.qml</file>
+        <file>Notifications/AMessageDialog.qml</file>
+    </qresource>
+
+    <qresource prefix="/assets">
+        <file alias="home">../assets/home-white-18dp.svg</file>
+        <file alias="average">../assets/calculate_black_48dp.svg</file>
+        <file alias="average-white">../assets/calculate_white_48dp.svg</file>
+        <file alias="schedule-white">../assets/schedule_white_48dp.svg</file>
+        <file alias="lock-black">../assets/lock_black_48dp.svg</file>
+        <file alias="lock-open-black">../assets/lock_open_black_48dp.svg</file>
+        <file alias="wallets-black">../assets/account_balance_wallet_black_48dp.svg</file>
+        <file alias="wallets-white">../assets/account_balance_wallet_white_48dp.svg</file>
+        <file alias="upload-file-black">../assets/upload_file_black_48dp.svg</file>
+        <file alias="error-black">../assets/error_black_48dp.svg</file>
+
+    </qresource>
+</RCC>

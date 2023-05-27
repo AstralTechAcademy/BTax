@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-if(LINUX)
-    set(CMAKE_C_COMPILER "/usr/bin/clang")
-    set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-endif()
-
 project(Broker)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -16,18 +11,21 @@ set(CMAKE_AUTOUIC ON)
 
 set(PROJECT_ROOT_PATH "../")
 
-message("${CMAKE_BUILD_TYPE}")
+
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(CMAKE_BUILD_TYPE "Release")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-    add_definitions(-DOFICIAL)
+    #add_definitions(-DOFICIAL)
 
     if(WIN)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows") #Mingw Linker
     endif()
+else()
+set(CMAKE_BUILD_TYPE "Debug")
 endif()
+message("${CMAKE_BUILD_TYPE}")
 
 if(MANUAL_TEST)
 #################### QT TEST ####################
