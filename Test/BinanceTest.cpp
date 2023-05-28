@@ -72,7 +72,6 @@ void BinanceTest::parse()
         {
             QCOMPARE(true, op->getPair2() == "AVAX");
             QCOMPARE(true, op->getPair2Amount() == 0.00006284);
-            qDebug() << QString::number(op->getPair2AmountFiat()) << " " << QString::number(op->getGanancia());
             QCOMPARE(true, QString::number(op->getPair2AmountFiat()) == "89.9518");
             QCOMPARE(true, QString::number(op->getGanancia()) == "0.00565257"); // = 0.13784104*1.87601
             QCOMPARE(true, op->getDate() == "31/12/2021 00:39:24");

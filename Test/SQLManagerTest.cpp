@@ -17,11 +17,26 @@ private slots:
     void cleanupTestCase();
 
 private:
+    UsersModel usersModel;
+    OperationsModel operationsModel;
+    WalletsModel walletsModel;
+    WalletsModel walletsModelAll;
+    WalletsPercModel walletsPercModel;
+    CoinsModel coinsModel;
+    ExchangesModel exchangesModel;
+    AssetTypeModel assetTypeModel;
+    NotificationManager* notificationManager = NotificationManager::getInstance();
+    BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
+    std::shared_ptr<IExchange> b2m = ExchangeFactory::createExchange(EN_Exchange::B2M);
     void dropTables(void);    
 };
 
 void SQLManagerTest::openDatabase_ok(void)
 {
+    QString version = "1.1.0";
+    QQmlApplicationEngine engine;
+    Broker* broker = Broker::getInstance(version);
+    engine.rootContext()->setContextProperty("BrokerImpl", broker);
     QCOMPARE(true, SQLManager::GetInstance()->openDatabase());
 }
 
@@ -41,7 +56,7 @@ void SQLManagerTest::getVersion_0(void)
 void SQLManagerTest::update(void)
 {
     QCOMPARE(true, SQLManager::GetInstance()->update());
-    QCOMPARE(true, SQLManager::GetInstance()->getVersion() == 201001);
+    QCOMPARE(true, SQLManager::GetInstance()->getVersion() == 202000);
 }
 
 void SQLManagerTest::cleanupTestCase()

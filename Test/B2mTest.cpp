@@ -63,7 +63,6 @@ void B2mTest::parse()
             QCOMPARE(true, op->getPair2Amount() == 10.95043612);
             QCOMPARE(true, op->getPair2AmountFiat() == 0.079312212);
             QCOMPARE(true, op->getGanancia() == 10.95043612*0.079312212);
-            qDebug() << op->getDate() << "  " << op->getDateTime();
             QCOMPARE(true, op->getDate() == "30/12/2021 12:15:12");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2021-12-30 11:15:12.000");
             //TODO: Date UTC+0
@@ -74,8 +73,6 @@ void B2mTest::parse()
             QCOMPARE(true, op->getPair2Amount() == 10.13447556);
             QCOMPARE(true, op->getPair2AmountFiat() == 0.06558892405595308);
             QCOMPARE(true, op->getGanancia() == 10.13447556*0.06558892405595308);
-                        qDebug() << op->getDate() << "  " << op->getDateTime();
-
             QCOMPARE(true, op->getDate() == "31/12/2021 15:15:03");
             QCOMPARE(true, dateTimeToUTC0(op->getDateTime(), "B2M") == "2021-12-31 14:15:03.000");
         }       
