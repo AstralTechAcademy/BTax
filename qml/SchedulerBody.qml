@@ -43,7 +43,7 @@ ListView{
         text: "New Operation"
         onClicked: {
             errorMessage.visible = false
-            formsLoader.source = "NewOperationForm.qml"
+            formsLoader.source = "NewOperationForm"
         }
     }
 
@@ -57,7 +57,7 @@ ListView{
         text: "New Transfer"
         onClicked: {
             errorMessage.visible = false
-            formsLoader.source = "NewTransferForm.qml"
+            formsLoader.source = "NewTransferForm"
         }
     }
 
@@ -71,7 +71,7 @@ ListView{
         text: "Import"
         onClicked: {
             errorMessage.visible = false
-            formsLoader.source = "ImportOperationForm.qml"
+            formsLoader.source = "ImportOperationForm"
         }
     }
 

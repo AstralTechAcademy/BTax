@@ -36,7 +36,7 @@ Broker::Broker(const QString& version,QObject *parent)
     }
     else
     {
-        qDebug() << "[main] Error reading configuration file";
+        qDebug() << "[Broker] Error reading configuration file";
         emit configNotValid();
     }
 };
