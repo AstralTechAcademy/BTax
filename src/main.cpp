@@ -54,9 +54,9 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<NotificationManager>("es.notifications", 1, 0, "NotificationManager", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<Importer>("es.broker", 1, 0, "Importer", "Importer sholud not be created in QMl");
     //qmlRegisterType(QUrl("qrc:Broker.qml"), "es.broker", 1, 0, "Broker");
-    qmlRegisterType(QUrl("qrc:MaterialTextInput"), "es.broker.components.material", 1, 0, "TextInput");
-    qmlRegisterType(QUrl("qrc:IconButton.qml"), "es.broker.components", 1, 0, "IconButton");
-    qmlRegisterType(QUrl("qrc:Operation.qml"), "es.broker", 1, 0, "Operation");
+    qmlRegisterType(QUrl("qrc:MaterialTextInput"), "es.broker.components.material", 1, 0, "MaterialTextInput");
+    qmlRegisterType(QUrl("qrc:IconButton"), "es.broker.components", 1, 0, "IconButton");
+    qmlRegisterType(QUrl("qrc:Operation"), "es.broker", 1, 0, "Operation");
     qmlRegisterType(QUrl("qrc:MainWindow"), "es.broker", 1, 0, "Main");
     qmlRegisterType(QUrl("qrc:SchedulerBody"), "es.broker", 1, 0, "Scheduler");
     qmlRegisterType(QUrl("qrc:WalletsBody"), "es.broker", 1, 0, "WalletsBody");
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
     qmlRegisterType(QUrl("qrc:ImportOperationForm"), "es.broker", 1, 0, "ImportOperationForm");
     qmlRegisterType(QUrl("qrc:DateSelector"), "es.broker.components", 1, 0, "DateSelector");
     qmlRegisterType(QUrl("qrc:DataItem"), "es.broker.components", 1, 0, "Data");
-    qmlRegisterType(QUrl("qrc:AMessage.qml"), "es.notifications", 1, 0, "AMessage");
-    qmlRegisterType(QUrl("qrc:AMessageDialog.qml"), "es.notifications", 1, 0, "AMessageDialog");
+    qmlRegisterType(QUrl("qrc:AMessage"), "es.notifications", 1, 0, "AMessage");
+    qmlRegisterType(QUrl("qrc:AMessageDialog"), "es.notifications", 1, 0, "AMessageDialog");
 
     QQmlApplicationEngine engine;
 

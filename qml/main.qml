@@ -166,7 +166,7 @@ Window {
             MouseArea{
                 id: schMA
                 anchors.fill: parent
-                onClicked: bodyLoader.source = "SchedulerBody.qml"
+                onClicked: bodyLoader.source = "SchedulerBody"
             }
         }
 
