@@ -656,7 +656,7 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getPair2Amount() == 25.957536);
     auto ganancia = ((4.9632 ) * (5.23 - 6.24)) - (1.0 * 5.23);
     QCOMPARE(true, op->getGanancia() < 0);
-    QCOMPARE(true, op->getGanancia() == ganancia);
+    QCOMPARE(true, QString::number(op->getGanancia()) == QString::number(ganancia));
     QCOMPARE(true, op->getDate() == "vie. dic. 31 23:59:59 2021");
     QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "31/12/2021 23:59:59");
 
