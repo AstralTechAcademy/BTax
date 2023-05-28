@@ -91,7 +91,6 @@ std::optional<double> YFinance::getPrice(const QString& coin, const QDateTime& d
     }
     else
     {
-        qDebug() << "1";
         return std::nullopt;
     }
        
@@ -110,6 +109,5 @@ std::optional<QString> YFinance::getCoinID(const QString& coinName)
 uint32_t YFinance::processResponse(QJsonDocument& doc)
 {
     //TODO
-    qDebug() << doc;
     return EN_ResponseCode::OK;
 }

@@ -44,7 +44,6 @@ bool SQLManager::openDatabase(void)
     server = Config::getInstance()->getDbServer();
     databaseName = Config::getInstance()->getDbDatabasename();
     auto res = database.open();
-    qDebug() << database.lastError().text();
     return res;
 };
 
@@ -61,7 +60,6 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
     wOpsModified.clear();
     auto [r1, wallet1] = getWallet(data.walletID1);
     auto [r2, wallet2] = getWallet(data.walletID2);
-    qDebug() << data.date;
     //Ambas wallets existen
     if(r1 and r2)
     {
@@ -223,6 +221,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
             query.exec();
         }
 
+#ifndef GTEST
         std::cout << "INSERT INTO OPERATIONS(wallet1, wallet2, pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia)"
                      " VALUES("
                   << data.walletID1 << ","
@@ -237,7 +236,7 @@ bool SQLManager::registerOperationNew(const std::vector<WalletOperation*> wallet
                   << data.date.toStdString() << ","
                   << data.type.toStdString() << ","
                   << ganancia << std::endl;
-
+#endif
         query.prepare("INSERT INTO Operations(wallet1, wallet2, pair1Amount,pair1AmountFiat,pair2Amount,comision,comisionFiat,pair2AmountFiat,status,date,comments, type, ganancia)"
                       " VALUES(:wallet1,:wallet2,:pair1Amount,:pair1AmountFiat,:pair2Amount,:comision,:comisionFiat,:pair2AmountFiat,:status,:date,:comments,:type,:ganancia)");
         query.bindValue(":wallet1", data.walletID1);
@@ -328,8 +327,6 @@ std::optional<std::vector<Deposit*>> SQLManager::getDeposits(const uint32_t user
     while (query.next()) {
         result = query.value(0).toInt() > 0;
     }
-
-    std::cout << "RES: " << result << std::endl;
 
     if(result)
     {
@@ -436,7 +433,6 @@ std::tuple<bool, std::vector<Deposit*>> SQLManager::getDeposits(const QString& u
 
 int SQLManager::getWalletID(const uint32_t user, const QString& exchange, const QString& coin)
 {
-    std::cout << user << " " << coin.toStdString() << exchange.toStdString() << std::endl;
     QSqlQuery query = QSqlQuery(database);
 
     query.prepare("SELECT * FROM Wallets"
@@ -651,7 +647,6 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(void)
 
 std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t userID)
 {
-    std::cout << "Hey";
     QSqlQuery query = QSqlQuery(database);
     query.prepare("SELECT C.name, U.username,W.*, C.id, C.type, C.color FROM Wallets W"
                   " LEFT JOIN Coins C ON C.id = W.coin"
@@ -797,7 +792,6 @@ std::optional<std::vector<WalletOperation*>> SQLManager::getWalletsOps(const uin
         auto fiat = query.value(4).toDouble();
         auto coin = query.value(6).toString();
         auto date = locale.toDateTime(query.value(5).toString(), format);
-        qDebug() << query.value(10).toString();
         auto datetimeUtc = DatetimeUTCStrToDatetime(query.value(10).toString());
         auto exchange = query.value(7).toString();
         auto user = query.value(8).toString();
@@ -1284,9 +1278,6 @@ QString SQLManager::updateDateTimeUTCFromQTFormat(QString table, QString id, QDa
 Operation* SQLManager::getLastOperation(void) const
 {
     QSqlQuery query = QSqlQuery(database);
-
-    std::cout << "File:SQLManager.cpp Function: getLastOperation" << std::endl;
-
     query.prepare("SELECT OP.id, C1.name, C2.name, pair1Amount, pair1AmountFiat, pair2Amount, pair2AmountFiat, comision, comisionFiat, "
                   "status, date, OP.type, ganancia"
                   " FROM Operations OP"
@@ -1310,8 +1301,6 @@ std::vector<WalletOperation*>  SQLManager::getLastNWalletOperation(int limit) co
 {
     QSqlQuery query = QSqlQuery(database);
     std::vector<WalletOperation*> wOps;
-    std::cout << "File:SQLManager.cpp Function: getLastNWalletOperation" << std::endl;
-
     query.prepare("SELECT WOP.id, C1.name, W1.exchange, U.username, WOP.wallet, WOP.amount, WOP.retired, WOP.available, WOP.fiat, WOP.date, WOP.datetimeUTC FROM WalletOperations WOP"
                   " INNER JOIN Wallets W1 ON W1.id = WOP.wallet"
                   " INNER JOIN Users U ON U.id = W1.user"
@@ -1706,7 +1695,12 @@ bool SQLManager::update(void) const
         if(updateVersion(201001, "2.01.001") == false) return false;
     }
 
-    return getVersion() == 201001;
+    if(version < 202000)
+    {
+        if(updateVersion(202000, "2.02.000") == false) return false;
+    }
+
+    return getVersion() == 202000;
 }
 
 

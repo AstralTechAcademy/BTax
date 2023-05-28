@@ -63,7 +63,7 @@ Item
         anchors.rightMargin: 20
         text: "New Deposit"
         onClicked: {
-            formsLoader.source = "NewDepositForm.qml"
+            formsLoader.source = "NewDepositForm"
         }
     }
 
@@ -76,7 +76,7 @@ Item
         anchors.rightMargin: 20
         text: "New Asset"
         onClicked: {
-            formsLoader.source = "NewAssetForm.qml"
+            formsLoader.source = "NewAssetForm"
         }
     }
 

@@ -63,7 +63,7 @@ Window {
         function onLoaded(){
                 footer.text = "Loaded. Connection with database " +  BrokerImpl.getServer()
                 winld.active = true
-                winld.source = "main.qml"
+                winld.source = "MainWindow"
                 initWindow.visible = false
         }
 
