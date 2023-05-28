@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="MainWindow">../qml/main.qml</file>
+        <file alias="InitWindow">../qml/Init.qml</file>
+        <file alias="BodyWindow">../qml/body.qml</file>
+        <file alias="MaterialTextInput">../qml/MaterialTextInput.qml</file>
+        <file alias="Operation">../qml/Operation.qml</file>
+        <file alias="SchedulerBody">../qml/SchedulerBody.qml</file>
+        <file alias="WalletsBody">../qml/WalletsBody.qml</file>
+        <file alias="Wallet">../qml/Wallet.qml</file>
+        <file alias="IconButton">../qml/IconButton.qml</file>
+        <file alias="NewOperationForm">../qml/NewOperationForm.qml</file>
+        <file alias="NewTransferForm">../qml/NewTransferForm.qml</file>
+        <file alias="ImportOperationForm">../qml/ImportOperationForm.qml</file>
+        <file alias="NewDepositForm">../qml/NewDepositForm.qml</file>
+        <file alias="NewAssetForm">../qml/NewAssetForm.qml</file>
+        <file alias="DateSelector">../qml/DateSelector.qml</file>
+        <file alias="DataItem">../qml/DataItem.qml</file>
+        <file alias="AMessage">Notifications/AMessage.qml</file>
+        <file alias="AMessageDialog">Notifications/AMessageDialog.qml</file>
+    </qresource>
+
+    <qresource prefix="/assets">
+        <file alias="home">../assets/home-white-18dp.svg</file>
+        <file alias="average">../assets/calculate_black_48dp.svg</file>
+        <file alias="average-white">../assets/calculate_white_48dp.svg</file>
+        <file alias="schedule-white">../assets/schedule_white_48dp.svg</file>
+        <file alias="lock-black">../assets/lock_black_48dp.svg</file>
+        <file alias="lock-open-black">../assets/lock_open_black_48dp.svg</file>
+        <file alias="wallets-black">../assets/account_balance_wallet_black_48dp.svg</file>
+        <file alias="wallets-white">../assets/account_balance_wallet_white_48dp.svg</file>
+        <file alias="upload-file-black">../assets/upload_file_black_48dp.svg</file>
+        <file alias="error-black">../assets/error_black_48dp.svg</file>
+
+    </qresource>
+</RCC>

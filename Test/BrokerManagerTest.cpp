@@ -5,21 +5,6 @@
 #include "Utils.h"
 #include "Test_Utils.h"
 
-void deleteTablesData(QSqlQuery& query)
-{
-    query.prepare("DELETE FROM WalletOperations");
-    query.exec();
-    query.prepare("DELETE FROM Operations");
-    query.exec();
-    query.prepare("DELETE FROM Withdraws");
-    query.exec();
-    query.prepare("DELETE FROM Deposits");
-    query.exec();
-    query.prepare("DELETE FROM Wallets");
-    query.exec();
-}
-
-
 class BrokerManagerTest: public QObject
 {
 Q_OBJECT
@@ -65,13 +50,21 @@ private slots:
     uint16_t eurID = 0;
     uint16_t ethID = 0;    
     uint16_t adaID = 0;
+    uint16_t usdID = 0;
+    uint16_t linkID = 0;
+    uint16_t btcID = 0;
     
     uint16_t CoinbaseEur = 0;
     uint16_t B2MEur = 0;
     uint16_t CoinbaseAda = 0;
     uint16_t B2MAda = 0;
+    uint16_t B2MEth = 0;
+    uint16_t B2MBtc = 0;
     uint16_t BinanceEur = 0;
     uint16_t BinanceEth = 0;
+    uint16_t BitpandaUsd = 0;
+    uint16_t BitpandaLink = 0;
+    uint16_t BinanceBtc = 0;
 ////////////    
 };
 
@@ -133,25 +126,46 @@ void BrokerManagerTest::loadTestData()
     auto eur = SQLManager::GetInstance()->getCoin("EUR");
     auto eth = SQLManager::GetInstance()->getCoin("ETH");
     auto ada = SQLManager::GetInstance()->getCoin("ADA");
+    auto usd = SQLManager::GetInstance()->getCoin("USD");
+    auto link = SQLManager::GetInstance()->getCoin("LINK");
+    auto btc = SQLManager::GetInstance()->getCoin("BTC");
     QCOMPARE(true, eur != std::nullopt);
     QCOMPARE(true, ada != std::nullopt);
     QCOMPARE(true, eth != std::nullopt);
+    QCOMPARE(true, usd != std::nullopt);
+    QCOMPARE(true, link != std::nullopt);
+    QCOMPARE(true, btc != std::nullopt);
     eurID = std::get<0>(eur.value());
     ethID = std::get<0>(eth.value());
     adaID = std::get<0>(ada.value());
+    usdID = std::get<0>(usd.value());
+    linkID = std::get<0>(link.value());
+    btcID = std::get<0>(link.value());
     
     CoinbaseEur = SQLManager::GetInstance()->getWalletID(userID, "Coinbase", QString::number(eurID));
     B2MEur = SQLManager::GetInstance()->getWalletID(userID, "B2M", QString::number(eurID));
     CoinbaseAda = SQLManager::GetInstance()->getWalletID(userID, "Coinbase", QString::number(adaID));
     B2MAda = SQLManager::GetInstance()->getWalletID(userID, "B2M", QString::number(adaID));
+    B2MEth = SQLManager::GetInstance()->getWalletID(userID, "B2M", QString::number(ethID));
+    B2MBtc = SQLManager::GetInstance()->getWalletID(userID, "B2M", QString::number(btcID));
+
     BinanceEur = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(eurID));
     BinanceEth = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(ethID));
+    BinanceBtc = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(btcID));
+    BitpandaUsd = SQLManager::GetInstance()->getWalletID(userID, "Bitpanda", QString::number(usdID));
+    BitpandaLink = SQLManager::GetInstance()->getWalletID(userID, "Bitpanda", QString::number(linkID));
     QCOMPARE(true, BinanceEur > 0);
     QCOMPARE(true, BinanceEth > 0);
     QCOMPARE(true, CoinbaseEur > 0);
     QCOMPARE(true, B2MEur > 0);
+    QCOMPARE(true, B2MEth > 0);
+    QCOMPARE(true, B2MBtc > 0);
     QCOMPARE(true, CoinbaseAda > 0);
     QCOMPARE(true, B2MAda > 0);    
+    QCOMPARE(true, BitpandaUsd > 0);    
+    QCOMPARE(true, BitpandaLink > 0);
+    QCOMPARE(true, BinanceBtc > 0); 
+
 ////////////    
     
 
@@ -159,6 +173,9 @@ void BrokerManagerTest::loadTestData()
 
 void BrokerManagerTest::newAssetIfNotExist()
 {
+    QSqlQuery query(SQLManager::getDb());
+    query.prepare("DELETE FROM Coins WHERE name = \"MONEDA1\"");
+    query.exec();
     QCOMPARE(true, brokerManager->newAssetIfNotExist("crypto", "MONEDA1", "#FFFFFFF")); // No exist -> Create
     QCOMPARE(false, brokerManager->newAssetIfNotExist("crypto", "MONEDA1", "#FFFFFFF")); // Already created
 }
@@ -375,10 +392,10 @@ void BrokerManagerTest::getAverage()
     std::vector<WalletOperation> wOpsModified;
     WalletOperation::OperationData data;
     auto average="";
-    QCOMPARE(true, brokerManager->newDeposit(1, 177.0, 0.0, "deposit getAverage", "")); // compare two values
-    QCOMPARE(true, brokerManager->newDeposit(2, 177.0, 0.0, "deposit getAverage", "")); // compare two values
-    data.walletID1 = 1;
-    data.walletID2 = 9;
+    QCOMPARE(true, brokerManager->newDeposit(BinanceEur, 177.0, 0.0, "deposit getAverage", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(B2MEur, 177.0, 0.0, "deposit getAverage", "")); // compare two values
+    data.walletID1 = BinanceEur;
+    data.walletID2 = BinanceBtc;
     data.pair1Amount = 56.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.00085826043;
@@ -392,8 +409,8 @@ void BrokerManagerTest::getAverage()
     data.date = "17/10/2022 13:00:00";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values
     
-    data.walletID1 = 1;
-    data.walletID2 = 9;
+    data.walletID1 = BinanceEur;
+    data.walletID2 = BinanceBtc;
     data.pair1Amount = 80.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.00189131555;
@@ -407,8 +424,8 @@ void BrokerManagerTest::getAverage()
     data.date = "17/10/2022 13:00:00";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values
     
-    data.walletID1 = 2;
-    data.walletID2 = 10;
+    data.walletID1 = B2MEur;
+    data.walletID2 = B2MBtc;
     data.pair1Amount = 90.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.00270690857;
@@ -427,21 +444,21 @@ void BrokerManagerTest::getAverage()
     for(auto w : ws.value())
     {
 
-        if(w->getWalletID() == 9)
+        if(w->getWalletID() == BinanceBtc)
         {
             average = "49461.9"; // = (56.0+80.0)/(0.0008582604 + 0.0018913155);
             QCOMPARE(true, QString::number(w->getAverageCost()) == average); // Este test no funciona porque los decimales no son precisos
         }
 
-        if(w->getWalletID() == 10)
+        if(w->getWalletID() == B2MBtc)
         {
             average = "33248.3";
             QCOMPARE(true, QString::number(w->getAverageCost()) == average);
         }
     }
 
-    data.walletID1 = 9;
-    data.walletID2 = 1;
+    data.walletID1 = BinanceBtc;
+    data.walletID2 = BinanceEth;
     data.pair1Amount = 0.000143;
     data.pair1AmountFiat = 65000;
     data.pair2Amount = 9.295;
@@ -458,10 +475,9 @@ void BrokerManagerTest::getAverage()
     ws = SQLManager::GetInstance()->getCryptoWallets(BrokerManager::userID);
     for(auto w : ws.value())
     {
-        if(w->getWalletID() == 9)
+        if(w->getWalletID() == BinanceBtc)
         {
             average = "48595.9"; // = (46.6694+80.0)/(0.00071526043+0.00189131555);
-            qDebug() <<  QString::number(w->getAverageCost())  << " " <<average;
             QCOMPARE(true, QString::number(w->getAverageCost()) == average);
         }
     }
@@ -488,8 +504,8 @@ void BrokerManagerTest::newTransferencia()
     std::vector<WalletOperation> wOpsModified;
     WalletOperation::OperationData data;
 
-    data.walletID1 = 1;
-    data.walletID2 = 2;
+    data.walletID1 = BinanceEth;
+    data.walletID2 = B2MEth;
     data.pair1Amount = 0.04;
     data.pair1AmountFiat = 0.0;
     data.pair2Amount = 0.04;
@@ -519,10 +535,10 @@ void BrokerManagerTest::newTransferencia()
 void BrokerManagerTest::newSale()
 {
     std::vector<WalletOperation> wOpsModified;
-    QCOMPARE(true, brokerManager->newDeposit(13, 150.0, 0.0, "deposit 1", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(BinanceEur, 150.0, 0.0, "deposit 1", "")); // compare two values
     WalletOperation::OperationData data;
-    data.walletID1 = 13;
-    data.walletID2 = 1;
+    data.walletID1 = BinanceEur;
+    data.walletID2 = BinanceEth;
     data.pair1Amount = 90.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.03;
@@ -536,8 +552,8 @@ void BrokerManagerTest::newSale()
     data.date = "02/10/2022 10:00:00";
     QCOMPARE(1, brokerManager->newOperation(data, wOpsModified)); // compare two values
         
-    data.walletID1 = 13;
-    data.walletID2 = 1;
+    data.walletID1 = BinanceEur;
+    data.walletID2 = BinanceEth;
     data.pair1Amount = 40.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.03;
@@ -571,11 +587,11 @@ void BrokerManagerTest::fullUseCase()
     // TEST WORKING. RESULT = OK
 
     std::vector<WalletOperation> wOpsModified;
-    QCOMPARE(true, brokerManager->newDeposit(20, 133.33333, 0.0, "deposit full use case", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(BitpandaUsd, 133.33333, 0.0, "deposit full use case", "")); // compare two values
 
     WalletOperation::OperationData data;
-    data.walletID1 = 20;
-    data.walletID2 = 24;
+    data.walletID1 = BitpandaUsd;
+    data.walletID2 = BitpandaLink;
     data.pair1Amount = 68.6685;
     data.pair1AmountFiat = 1.0; // USD = EUR
     data.pair2Amount = 11.004567;
@@ -601,11 +617,11 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, wops.at(1)->getRetired() == 73.6685);
     QCOMPARE(true, wops.at(1)->getAvailable() == 59.664829999999995);
 
-    auto w = std::get<1>(SQLManager::GetInstance()->getWallet(24));
+    auto w = std::get<1>(SQLManager::GetInstance()->getWallet(BitpandaLink));
     QCOMPARE(true, QString::number(w->getAverageCost()) == "6.24");
 
-    data.walletID1 = 24;
-    data.walletID2 = 20;
+    data.walletID1 = BitpandaLink;
+    data.walletID2 = BitpandaUsd;
     data.pair1Amount = 4.9632;
     data.pair1AmountFiat = 5.23; 
     data.pair2Amount = 25.957536;
@@ -640,14 +656,13 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getPair2Amount() == 25.957536);
     auto ganancia = ((4.9632 ) * (5.23 - 6.24)) - (1.0 * 5.23);
     QCOMPARE(true, op->getGanancia() < 0);
-    QCOMPARE(true, op->getGanancia() == ganancia);
+    QCOMPARE(true, QString::number(op->getGanancia()) == QString::number(ganancia));
     QCOMPARE(true, op->getDate() == "vie. dic. 31 23:59:59 2021");
-    qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);
     QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "31/12/2021 23:59:59");
 
 
-    data.walletID1 = 24;
-    data.walletID2 = 20;
+    data.walletID1 = BitpandaLink;
+    data.walletID2 = BitpandaUsd;
     data.pair1Amount = 3.5267;
     data.pair1AmountFiat = 7.23; 
     data.pair2Amount = 25.498041;
@@ -684,8 +699,6 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getGanancia() < 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "sáb. ene. 1 02:25:00 2022");
-    qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);
-
     QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "01/01/2022 02:25:00");
 
 }
@@ -698,11 +711,11 @@ void BrokerManagerTest::newDateCoversion()
 void BrokerManagerTest::newOperationWallet1NotExist()
 {
     std::vector<WalletOperation> wOpsModified;
-    QCOMPARE(true, brokerManager->newDeposit(13, 100.0, 0.0, "deposit 1", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(BinanceEur, 100.0, 0.0, "deposit 1", "")); // compare two values
 
     WalletOperation::OperationData data;
     data.walletID1 = 99;
-    data.walletID2 = 1;
+    data.walletID2 = BinanceEth;
     data.pair1Amount = 90.0;
     data.pair1AmountFiat = 1.0;
     data.pair2Amount = 0.03;
@@ -720,7 +733,7 @@ void BrokerManagerTest::newOperationWallet1NotExist()
 void BrokerManagerTest::newOperationWallet2NotExist()
 {
     std::vector<WalletOperation> wOpsModified;
-    QCOMPARE(true, brokerManager->newDeposit(13, 100.0, 0.0, "deposit 1", "")); // compare two values
+    QCOMPARE(true, brokerManager->newDeposit(BinanceEur, 100.0, 0.0, "deposit 1", "")); // compare two values
 
 
     WalletOperation::OperationData data;
@@ -749,24 +762,20 @@ void BrokerManagerTest::updateTimeUTC()
 {
     QSqlQuery query(SQLManager::getDb());
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (7, 10,0,10, \"lun. nov. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ",0,10, \"lun. nov. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (7, 10,0,10, \"mar. jun. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ",0,11, \"mar. jun. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (10, 10,0,10, \"lun. nov. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,12, \"lun. nov. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (10, 10,0,10, \"mar. jun. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,13, \"mar. jun. 28 21:52:28 2022\")");
     query.exec();
 
-    SQLManager::GetInstance()->getWalletOperations("7");
-    SQLManager::GetInstance()->getWalletOperations("10");
-
-    auto wops = SQLManager::GetInstance()->getWalletOperations("7");
-    auto w1 = wops->at(wops->size()-1);
-    auto w2 = wops->at(wops->size()-2);
+    SQLManager::GetInstance()->getWalletOperations(QString::number(CoinbaseAda));
+    SQLManager::GetInstance()->getWalletOperations(QString::number(B2MBtc));
 
     query.prepare("select datetimeUTC from WalletOperations ORDER BY id DESC limit 4");
     query.exec();
@@ -775,13 +784,13 @@ void BrokerManagerTest::updateTimeUTC()
     while(query.next())
     {
         if(index == 0)
-            QCOMPARE(true, query.value(0).toString() == "2022-06-28T19:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-06-28T19:52:28.000");  //B2M
         if(index == 1)
-            QCOMPARE(true, query.value(0).toString() == "2022-11-28T20:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-11-28T20:52:28.000"); //B2M
         if(index == 2)
-            QCOMPARE(true, query.value(0).toString() == "2022-06-28T21:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-06-28T21:52:28.000"); //Coinbase
         if(index == 3)
-            QCOMPARE(true, query.value(0).toString() == "2022-11-28T21:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-11-28T21:52:28.000"); //Coinbase
         index++;
     }
 }
