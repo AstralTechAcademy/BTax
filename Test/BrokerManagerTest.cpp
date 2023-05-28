@@ -152,8 +152,8 @@ void BrokerManagerTest::loadTestData()
     BinanceEur = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(eurID));
     BinanceEth = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(ethID));
     BinanceBtc = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(btcID));
-    BitpandaUsd = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(usdID));
-    BitpandaLink = SQLManager::GetInstance()->getWalletID(userID, "Binance", QString::number(linkID));
+    BitpandaUsd = SQLManager::GetInstance()->getWalletID(userID, "Bitpanda", QString::number(usdID));
+    BitpandaLink = SQLManager::GetInstance()->getWalletID(userID, "Bitpanda", QString::number(linkID));
     QCOMPARE(true, BinanceEur > 0);
     QCOMPARE(true, BinanceEth > 0);
     QCOMPARE(true, CoinbaseEur > 0);
@@ -444,13 +444,13 @@ void BrokerManagerTest::getAverage()
     for(auto w : ws.value())
     {
 
-        if(w->getWalletID() == 9)
+        if(w->getWalletID() == BinanceBtc)
         {
             average = "49461.9"; // = (56.0+80.0)/(0.0008582604 + 0.0018913155);
             QCOMPARE(true, QString::number(w->getAverageCost()) == average); // Este test no funciona porque los decimales no son precisos
         }
 
-        if(w->getWalletID() == 10)
+        if(w->getWalletID() == B2MBtc)
         {
             average = "33248.3";
             QCOMPARE(true, QString::number(w->getAverageCost()) == average);
@@ -475,10 +475,9 @@ void BrokerManagerTest::getAverage()
     ws = SQLManager::GetInstance()->getCryptoWallets(BrokerManager::userID);
     for(auto w : ws.value())
     {
-        if(w->getWalletID() == 9)
+        if(w->getWalletID() == BinanceBtc)
         {
             average = "48595.9"; // = (46.6694+80.0)/(0.00071526043+0.00189131555);
-            qDebug() <<  QString::number(w->getAverageCost())  << " " <<average;
             QCOMPARE(true, QString::number(w->getAverageCost()) == average);
         }
     }
@@ -618,7 +617,7 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, wops.at(1)->getRetired() == 73.6685);
     QCOMPARE(true, wops.at(1)->getAvailable() == 59.664829999999995);
 
-    auto w = std::get<1>(SQLManager::GetInstance()->getWallet(24));
+    auto w = std::get<1>(SQLManager::GetInstance()->getWallet(BitpandaLink));
     QCOMPARE(true, QString::number(w->getAverageCost()) == "6.24");
 
     data.walletID1 = BitpandaLink;
@@ -657,9 +656,8 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getPair2Amount() == 25.957536);
     auto ganancia = ((4.9632 ) * (5.23 - 6.24)) - (1.0 * 5.23);
     QCOMPARE(true, op->getGanancia() < 0);
-    QCOMPARE(true, op->getGanancia() == ganancia);
+    QCOMPARE(true, QString::number(op->getGanancia()) == QString::number(ganancia));
     QCOMPARE(true, op->getDate() == "vie. dic. 31 23:59:59 2021");
-    qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);
     QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "31/12/2021 23:59:59");
 
 
@@ -701,8 +699,6 @@ void BrokerManagerTest::fullUseCase()
     QCOMPARE(true, op->getGanancia() < 0);
     QCOMPARE(true, op->getGanancia() == ganancia);
     QCOMPARE(true, op->getDate() == "sáb. ene. 1 02:25:00 2022");
-    qDebug() << op->getDateTime() <<" "<< BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms);
-
     QCOMPARE(true, BTime::toString(op->getDateTime(), QLocale::Spanish, EN_DateFormat::DMYhms) == "01/01/2022 02:25:00");
 
 }
@@ -769,21 +765,17 @@ void BrokerManagerTest::updateTimeUTC()
     query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ",0,10, \"lun. nov. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ", 10,0,10, \"mar. jun. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(CoinbaseAda) + ", " + QString::number(B2MBtc) + ",0,11, \"mar. jun. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,10, \"lun. nov. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,12, \"lun. nov. 28 21:52:28 2022\")");
     query.exec();
 
-    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,10, \"mar. jun. 28 21:52:28 2022\")");
+    query.prepare("insert into WalletOperations(wallet,amount,retired,available,date) VALUES (" + QString::number(B2MBtc) + ", "  + QString::number(B2MBtc) + ",0,13, \"mar. jun. 28 21:52:28 2022\")");
     query.exec();
 
     SQLManager::GetInstance()->getWalletOperations(QString::number(CoinbaseAda));
     SQLManager::GetInstance()->getWalletOperations(QString::number(B2MBtc));
-
-    auto wops = SQLManager::GetInstance()->getWalletOperations(QString::number(CoinbaseAda));
-    auto w1 = wops->at(wops->size()-1);
-    auto w2 = wops->at(wops->size()-2);
 
     query.prepare("select datetimeUTC from WalletOperations ORDER BY id DESC limit 4");
     query.exec();
@@ -792,13 +784,13 @@ void BrokerManagerTest::updateTimeUTC()
     while(query.next())
     {
         if(index == 0)
-            QCOMPARE(true, query.value(0).toString() == "2022-06-28T19:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-06-28T19:52:28.000");  //B2M
         if(index == 1)
-            QCOMPARE(true, query.value(0).toString() == "2022-11-28T20:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-11-28T20:52:28.000"); //B2M
         if(index == 2)
-            QCOMPARE(true, query.value(0).toString() == "2022-06-28T21:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-06-28T21:52:28.000"); //Coinbase
         if(index == 3)
-            QCOMPARE(true, query.value(0).toString() == "2022-11-28T21:52:28.000");
+            QCOMPARE(true, query.value(0).toString() == "2022-11-28T21:52:28.000"); //Coinbase
         index++;
     }
 }

@@ -11,7 +11,6 @@ set(CMAKE_AUTOUIC ON)
 
 set(PROJECT_ROOT_PATH "../")
 
-
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(CMAKE_BUILD_TYPE "Release")
