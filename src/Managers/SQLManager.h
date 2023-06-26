@@ -62,6 +62,7 @@ public:
     std::optional<std::vector<const WalletOperation*>> getWalletOperations(const QString& walletID);
     //virtual Wallet getWallet(const QString& wallet) = 0;
     //std::tuple<bool, std::vector<Operation*>> getOperations(void);
+    std::optional<std::vector<std::unique_ptr<Operation>>> getOperations(const uint32_t userID, const int year);
     std::tuple<bool, std::vector<Operation*>> getOperations(const uint32_t userID);
     std::tuple<bool, std::vector<Operation*>> getOperations(const QString& walletID);
     Operation* getLastOperation(void) const;

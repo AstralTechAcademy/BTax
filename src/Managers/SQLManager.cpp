@@ -1068,6 +1068,48 @@ QString SQLManager::getDatabase(void) const
 
 };*/
 
+std::optional<std::vector<std::unique_ptr<Operation>>> SQLManager::getOperations(const uint32_t userID, const int year)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT C.name,C2.name,O.* FROM Operations O \
+                        LEFT JOIN Wallets W1 on W1.id = O.wallet1 \
+                        LEFT JOIN Coins C on C.id = W1.coin \
+                        LEFT JOIN Wallets W2 on W2.id = O.wallet2 \
+                        LEFT JOIN Coins C2 on C2.id = W2.coin \
+                        WHERE W2.user=:user AND W1.user =:user AND O.date LIKE \"% " + QString::number(year) + "\"");
+    query.bindValue(":user", userID);
+    query.exec();
+
+    if(query.lastError().type() != QSqlError::NoError)
+    {
+        LOG_ERROR("%s", qPrintable(query.lastError().text()));
+        return std::nullopt;
+    }
+
+    std::vector<std::unique_ptr<Operation>> operations;
+    while(query.next())
+    {
+        operations.push_back(
+            std::make_unique<Operation>(query.value(static_cast<int>(Operation::EN_OperationColumns_t::ID)+2).toInt(),
+                            query.value(0).toString(),
+                            query.value(1).toString(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNT)+2).toDouble(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIRA1AMOUNTFIAT)+2).toDouble(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNT)+2).toDouble(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::PAIR2AMOUNTFIAT)+2).toDouble(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISION)+2).toDouble(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMISIONFIAT)+2).toDouble(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::STATUS)+2).toString(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::DATE)+2).toString(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::COMMENTS)+2).toString(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::TYPE)+2).toString(),
+                            query.value(static_cast<int>(Operation::EN_OperationColumns_t::GANANCIA)+2).toDouble()
+            ));
+    }
+
+    return operations;        
+}
+
 std::tuple<bool, std::vector<Operation*>> SQLManager::getOperations(const uint32_t userID)
 {
     QSqlQuery query = QSqlQuery(database);
@@ -1695,6 +1737,7 @@ bool SQLManager::update(void) const
         if(updateVersion(201001, "2.01.001") == false) return false;
     }
 
+    LOG_DEBUG("%d", version);
     if(version < 202000)
     {
         if(updateVersion(202000, "2.02.000") == false) return false;

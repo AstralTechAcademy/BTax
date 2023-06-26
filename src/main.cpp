@@ -22,6 +22,7 @@
 #include "IfExchanges/Importer.h"
 #include "IMarketData/Coingecko.h"
 #include "Notifications/NotificationManager.h"
+#include "Reporter.h"
 
 #include "logger.h"
 

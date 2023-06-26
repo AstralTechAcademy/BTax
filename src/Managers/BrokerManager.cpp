@@ -4,6 +4,7 @@
 
 #include "BrokerManager.h"
 #include "Broker.h"
+#include "Reporter.h"
 #include "Utils.h"
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
@@ -101,6 +102,13 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
 
     double totalAmount = 0.0;
 
+    if(data.walletID1 == data.walletID2)
+    {
+        emit NotificationManager::getInstance()->
+            newOperationError(QString("Same wallet origin and destination"));
+        return static_cast<int>( NewOperationRes::SAME_WALLETS);
+    }
+
     auto [r1, wallet1] = SQLManager::GetInstance()->getWallet(data.walletID1);
     auto [r2, wallet2] = SQLManager::GetInstance()->getWallet(data.walletID2);
 
@@ -177,6 +185,8 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
             else
             {
                 LOG_ERROR("Not enough balance in the origin wallet to finish the operation. WalletID: %d", wallet1->getWalletID());
+                emit NotificationManager::getInstance()->
+                    newOperationError(QString("Not enough balance in the origin wallet to finish the operation"));
                 return static_cast<int>( NewOperationRes::INSUF_BALANCE_ORI_WALLET);
             }
         }
@@ -369,6 +379,9 @@ void BrokerManager::setUserID(const QString& username)
         operationsModel_->clear();
         loadWalletsFromDB(userID);
         loadOperationsFromDB(userID);
+
+        Reporter reporter;
+        reporter.generate(2023);
     }
 }
 

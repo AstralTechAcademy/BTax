@@ -32,6 +32,7 @@ public:
         COIN_NOT_FOUND,
         ORI_COIN_NOT_EXIST,
         DEST_COIN_NOT_EXIST,
+        SAME_WALLETS,
         OK
 
     };

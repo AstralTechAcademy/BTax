@@ -11,6 +11,10 @@ set(CMAKE_AUTOUIC ON)
 
 set(PROJECT_ROOT_PATH "../")
 
+message(STATUS "------- HOST DETAILS -------")
+cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
+message("Detected operating system: ${OS_DETAILS}")
+
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(CMAKE_BUILD_TYPE "Release")
@@ -42,9 +46,11 @@ if(WIN)
     set(CMAKE_PREFIX_PATH "G:/Qt/6.5.0/mingw_64/lib/cmake/Qt6")
 endif()
 
-if(MACOS)
-    set(CMAKE_PREFIX_PATH "/Users/gadominguez/Qt/6.5.0/macos/lib/cmake/Qt6")
+if(${OS_DETAILS} STREQUAL macOS)
+    set(CMAKE_PREFIX_PATH "$ENV{Qt_DIR}/$ENV{Qt_Version}/macos/lib/cmake/Qt6")
 endif()
+
+message(STATUS "    CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 
 if(ANDROID)
     add_definitions( -DANDROID )
@@ -103,8 +109,8 @@ include_directories(G:/Qt/6.5.0/mingw64/include/QtNetwork)
 include_directories(G:/Qt/6.5.0/mingw64/include/QtWidgets)
 endif()
 
-if(MACOS)
-include_directories(/Users/gadominguez/Qt/6.5.0)
+if(${OS_DETAILS} STREQUAL macOS)
+    include_directories($ENV{Qt_DIR}/$ENV{Qt_Version})
 endif()
 
 include_directories(./)
@@ -140,6 +146,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Utils.h
         Utils.cpp
         Statistics.cpp
+        Reporter.cpp
+        Reporter.h
         WalletsPercModel.cpp WalletsPercModel.h
         Statistics.h WalletsModel.cpp WalletsModel.h
         UsersModel.cpp UsersModel.h
@@ -184,7 +192,7 @@ if(WIN)
     endif()
 endif()
 
-if(MACOS)
+if(${OS_DETAILS} STREQUAL macOS)
     if(${CMAKE_BUILD_TYPE} MATCHES Release)
         set_target_properties(Broker PROPERTIES
                                 RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/macos
