@@ -249,6 +249,7 @@ endif()
 # Copy external libs and files
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${PROJECT_ROOT_PATH}/debug/${OS_DETAILS}/Astral
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${PROJECT_ROOT_PATH}/Astral ${PROJECT_ROOT_PATH}/debug/${OS_DETAILS}/Astral)
 
