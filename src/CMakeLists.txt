@@ -11,6 +11,10 @@ set(CMAKE_AUTOUIC ON)
 
 set(PROJECT_ROOT_PATH "../")
 
+message(STATUS "------- HOST DETAILS -------")
+cmake_host_system_information(RESULT OS_DETAILS QUERY OS_NAME)
+message("Detected operating system: ${OS_DETAILS}")
+
 #Avoid open windows terminal when the application is in Release Mode and deployed
 if(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(CMAKE_BUILD_TYPE "Release")
@@ -42,9 +46,11 @@ if(WIN)
     set(CMAKE_PREFIX_PATH "G:/Qt/6.5.0/mingw_64/lib/cmake/Qt6")
 endif()
 
-if(MACOS)
-    set(CMAKE_PREFIX_PATH "/Users/gadominguez/Qt/6.5.0/macos/lib/cmake/Qt6")
+if(${OS_DETAILS} STREQUAL macOS)
+    set(CMAKE_PREFIX_PATH "$ENV{Qt_DIR}/$ENV{Qt_Version}/macos/lib/cmake/Qt6")
 endif()
+
+message(STATUS "    CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 
 if(ANDROID)
     add_definitions( -DANDROID )
@@ -103,8 +109,8 @@ include_directories(G:/Qt/6.5.0/mingw64/include/QtNetwork)
 include_directories(G:/Qt/6.5.0/mingw64/include/QtWidgets)
 endif()
 
-if(MACOS)
-include_directories(/Users/gadominguez/Qt/6.5.0)
+if(${OS_DETAILS} STREQUAL macOS)
+    include_directories($ENV{Qt_DIR}/$ENV{Qt_Version})
 endif()
 
 include_directories(./)
@@ -177,21 +183,21 @@ target_link_libraries(Broker Qt6::Sql Qt6::Quick Qt6::QuickControls2 Qt6::Qml Qt
 if(WIN)
     if(${CMAKE_BUILD_TYPE} MATCHES Release)
         set_target_properties(Broker PROPERTIES
-                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/win)
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/${OS_DETAILS})
     else()
         set_target_properties(Broker PROPERTIES
-                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH})
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/debug/${OS_DETAILS})
     endif()
 endif()
 
-if(MACOS)
+if(${OS_DETAILS} STREQUAL macOS)
     if(${CMAKE_BUILD_TYPE} MATCHES Release)
         set_target_properties(Broker PROPERTIES
-                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/macos
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/${OS_DETAILS}
                                 MACOSX_BUNDLE TRUE)
     else()
         set_target_properties(Broker PROPERTIES
-                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}
+                                RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/debug/${OS_DETAILS}
                                 MACOSX_BUNDLE FALSE)
     endif()
 endif()
@@ -239,4 +245,10 @@ target_link_libraries(B2mV2Test PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network
 target_link_libraries(BinanceTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth Logger)
 target_link_libraries(ImporterTest PRIVATE Qt6::Test Qt6::Sql Qt6::Qml Qt6::Network Qt6::NetworkAuth Logger)
 endif()
+
+# Copy external libs and files
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${PROJECT_ROOT_PATH}/Astral ${PROJECT_ROOT_PATH}/debug/${OS_DETAILS}/Astral)
 

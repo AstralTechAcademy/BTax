@@ -42,7 +42,7 @@
             "type": "cppdbg",
             "request": "launch",
             "cwd": "${workspaceFolder}/",
-            "program": "${workspaceFolder}/Broker",
+            "program": "${workspaceFolder}/debug/macOS/Broker",
             //"stopAtEntry": true,
             "environment": [],
             "externalConsole": false,
