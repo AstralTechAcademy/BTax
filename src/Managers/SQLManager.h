@@ -18,6 +18,7 @@
 #include "Config.h"
 #include "WalletOperation.h"
 #include "CoinsModel.h"
+#include "WalletsModel.h"
 #include "Deposit.h"
 #include "Utils.h"
 
@@ -53,6 +54,7 @@ public:
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) ;
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
+    std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types);
     std::optional<Wallet> getWallets(const uint32_t userID, const QString& coin, const QString exchange);
     std::optional<std::vector<WalletOperation*>>  getWalletsOps(const uint32_t userID, const QString& coin, const QString exchange = "");
     std::optional<std::vector<Wallet*>> getNonCryptoWallets(const uint32_t userID);
@@ -126,6 +128,8 @@ protected:
 
 private:
     SQLManager() {};
+
+    QString in(const QList<WalletsModel::AssetType> types) const;
     
     static SQLManager* instance_;
     std::tuple<bool, std::vector<Operation*>> processGetOperations(QSqlQuery& query);

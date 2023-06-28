@@ -5,6 +5,7 @@ import QtQuick.Controls 2.14
 import es.broker.components.material 1.0 as Material
 import es.broker.components 1.0 as Components
 import es.broker 1.0
+import Astral 1.0
 
 Item
 {
@@ -118,9 +119,40 @@ Item
     }
 
 
+ListView {
+
+    id: tabs
+    anchors.top: percentageBar.bottom
+    anchors.topMargin: 5
+    anchors.left: walletsBody.left
+    anchors.leftMargin: 10
+    anchors.right: walletsBody.right
+    anchors.rightMargin: 10
+
+    width: 210
+    height: 100
+
+    orientation: Qt.Horizontal
+    spacing: 5
+
+    model: ListModel {
+        ListElement {
+            name: "Shares & Funds"
+        }
+        ListElement {
+            name: "Crypto"
+        }
+    }
+
+    delegate: ATabButton
+    {
+        onClicked: console.log(name)
+    }
+}
+
 ScrollView
 {
-    anchors.top: percentageBar.bottom
+    anchors.top: tabs.bottom
     anchors.topMargin: 10
     anchors.left: walletsBody.left
     anchors.leftMargin: 10
@@ -142,7 +174,10 @@ ScrollView
     Column
     {
         id: wallets
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.leftMargin: 50
+        anchors.right: parent.right
+        anchors.rightMargin: 50
 
         Repeater
         {
@@ -156,8 +191,5 @@ ScrollView
         }
     }
 }
-
-
-
 
 }

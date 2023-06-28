@@ -689,6 +689,54 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
     }
 }
 
+std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types)
+{
+    QSqlQuery query = QSqlQuery(database);
+    auto filterTyes = in(types);
+
+    QString str = QString("SELECT C.name, U.username,W.*, C.id, C.type, C.color FROM Wallets W"
+                  " LEFT JOIN Coins C ON C.id = W.coin"
+                  " LEFT JOIN Users U ON U.id = W.user"
+                  " WHERE W.user=:userID AND C.type IN (::types)");
+    str.replace("::types", filterTyes);
+    query.prepare(str);
+    query.bindValue(":userID", userID);
+    query.exec();
+    bool result = query.result()->handle().isValid();
+    if(result)
+    {
+        std::vector<Wallet*> wallets;
+        while (query.next())
+        {
+
+            auto id = query.value(2).toInt();
+            auto coinName = query.value(0).toString();
+            auto exchange = query.value(4).toString();
+            auto user = query.value(1).toString();
+            auto coinID = query.value(7).toInt();
+            auto color = query.value(9).toString();
+            auto type = query.value(8).toString();
+
+            auto ws = getWalletOperations(QString::number(id));
+            Wallet* wallet;
+            if (ws == std::nullopt)
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+            else
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+
+            setWalletData(*wallet);
+            wallets.push_back(wallet);
+
+        }
+
+        return std::tuple<bool, std::vector<Wallet*>> (true, wallets);
+    }
+    else
+    {
+        return std::tuple<bool, std::vector<Wallet*>> (false, {});
+    }
+}
+
 QString SQLManager::getUsername(uint32_t userid)
 {
     QSqlQuery query = QSqlQuery(database);
@@ -1318,6 +1366,48 @@ std::vector<WalletOperation*>  SQLManager::getLastNWalletOperation(int limit) co
     }
     return wOps;
 }
+
+
+QString SQLManager::in(const QList<WalletsModel::AssetType> assetTypes) const
+{
+
+    QStringList filter;
+    for(auto assetType : assetTypes)
+    {
+        switch(assetType)
+        {
+            case WalletsModel::AssetType::SHARE: 
+                filter.append("'stock'");
+                filter.append("'share'");
+                break;
+            case WalletsModel::AssetType::CRYPTO:
+                filter.append("'crypto'");
+                break;
+            case WalletsModel::AssetType::DEBT:
+                filter.append("'debt'");
+                break;                
+            case WalletsModel::AssetType::FUND:
+                filter.append("'fund'");
+                break;
+            case WalletsModel::AssetType::REAL_STATE:
+                filter.append("'real state'");
+                break;
+            case WalletsModel::AssetType::ETF:
+                filter.append("'etf'");
+                break;   
+            case WalletsModel::AssetType::ALL:
+            default:
+                filter = {"'stock'","'fiat'","'share'","'debt'","'fund'","'crypto'","'etf'","'real state'"};
+                break;                                                          
+        }
+        filter.append("'fiat'");
+    }
+
+    filter.removeDuplicates();
+    return filter.join(",");
+}
+
+
 
 bool SQLManager::createAssetTypes(void) const
 {

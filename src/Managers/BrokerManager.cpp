@@ -432,11 +432,12 @@ void BrokerManager::loadAssetTypesFromDB(void)
         assetTypesModel_->add(new AssetType(std::get<0>(c), std::get<1>(c)));
 }
 
-void BrokerManager::loadWalletsFromDB(const uint32_t userID)
+void BrokerManager::loadWalletsFromDB(const uint32_t userID, const QList<WalletsModel::AssetType> assetTypes)
 {
     walletsModel_->clear();
     walletsModelAll_->clear();
-    auto result = SQLManager::GetInstance()->getWallets(userID);
+    
+    auto result = SQLManager::GetInstance()->getWallets(userID, assetTypes);
     if(std::get<0>(result) == true)
     {
         auto wallets = std::get<1>(result);
@@ -450,7 +451,7 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
         }
     }
 
-     walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
+    walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
     //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
     walletsModelAll_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 

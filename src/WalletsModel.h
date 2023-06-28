@@ -48,6 +48,17 @@ public:
         EARNINGS
     };
 
+    enum class AssetType {
+        ALL = 0,
+        CRYPTO,
+        DEBT,
+        ETF,
+        FIAT,
+        FUND,
+        REAL_STATE,
+        SHARE
+    };    
+
     WalletsModel(QAbstractListModel* parent = 0){};
     //Expone el nombre de los atributos y los relaciona entre QML y C++
     QHash<int, QByteArray> roleNames() const;
