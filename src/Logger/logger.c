@@ -307,13 +307,13 @@ static int rotateLogFiles(void)
 }
 
 static long vflog(FILE* fp, const char* levelc, const char* timestamp, long threadID,
-        const char* file, int line, const char* fmt, va_list arg,
+        const char* file, int line, const char* function, const char* fmt, va_list arg,
         unsigned long long currentTime, unsigned long long* flushedTime)
 {
     int size;
     long totalsize = 0;
 
-    if ((size = fprintf(fp, "%s %s %ld %s:%d: ", levelc, timestamp, threadID, file, line)) > 0) {
+    if ((size = fprintf(fp, "%s %s %ld %s:%d [%s]: ", levelc, timestamp, threadID, file, line, function)) > 0) {
         totalsize += size;
     }
     if ((size = vfprintf(fp, fmt, arg)) > 0) {
@@ -326,7 +326,7 @@ static long vflog(FILE* fp, const char* levelc, const char* timestamp, long thre
     return totalsize;
 }
 
-void logger_log(LogLevel level, const char* file, int line, const char* fmt, ...)
+void logger_log(LogLevel level, const char* function, const char* file, int line, const char* fmt, ...)
 {
     struct timeval now;
     unsigned long long currentTime; /* milliseconds */
@@ -352,14 +352,14 @@ void logger_log(LogLevel level, const char* file, int line, const char* fmt, ...
     if (hasFlag(s_logger, kConsoleLogger)) {
         va_start(carg, fmt);
         vflog(s_clog.output, levelc, timestamp, threadID,
-                file, line, fmt, carg, currentTime, &s_clog.flushedTime);
+                file, line, function, fmt, carg, currentTime, &s_clog.flushedTime);
         va_end(carg);
     }
     if (hasFlag(s_logger, kFileLogger)) {
         if (rotateLogFiles()) {
             va_start(farg, fmt);
             s_flog.currentFileSize += vflog(s_flog.output, levelc, timestamp, threadID,
-                    file, line, fmt, farg, currentTime, &s_flog.flushedTime);
+                    file, line, function, fmt, farg, currentTime, &s_flog.flushedTime);
             va_end(farg);
         }
     }
