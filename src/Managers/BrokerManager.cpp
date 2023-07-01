@@ -23,6 +23,9 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
     coinsModel_ = coinsModel;
     exchangesModel_ = exchangesModel;
     assetTypesModel_ = assetTypesModel;
+
+
+    connect(WalletsFilterBarManager::getInstance(), SIGNAL(assetCategorySelected(const QString&)), this ,SLOT(updateAssetTypeModel(const QString&)));
 }
 
 
@@ -432,6 +435,15 @@ void BrokerManager::loadAssetTypesFromDB(void)
         assetTypesModel_->add(new AssetType(std::get<0>(c), std::get<1>(c)));
 }
 
+void BrokerManager::filterAssetTypes(const QString& category)
+{
+    assetTypesModel_->clear();
+    auto assets = SQLManager::GetInstance()->getAssetTypes(category);
+    for(auto c : assets)
+        assetTypesModel_->add(new AssetType(std::get<0>(c), std::get<1>(c)));
+    assetTypesModel_->updateLayout();
+}
+
 void BrokerManager::loadWalletsFromDB(const uint32_t userID, const QList<WalletsModel::AssetType> assetTypes)
 {
     walletsModel_->clear();
@@ -682,5 +694,16 @@ int BrokerManager::setWallets(const QString& exchange, std::shared_ptr<Operation
     operation->setWalletID2(walletPair2->getWalletID());
 
     return static_cast<int>(NewOperationRes::OK);
+}
+
+
+
+// Slots from filter bar C++ class
+
+void BrokerManager::updateAssetTypeModel(const QString& category)
+{
+    LOG_DEBUG("");
+
+    filterAssetTypes(category);
 }
 

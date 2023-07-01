@@ -1024,6 +1024,19 @@ QList<std::tuple<uint32_t, QString>> SQLManager::getAssetTypes(void)
     return assets;
 }
 
+QList<std::tuple<uint32_t, QString>> SQLManager::getAssetTypes(const QString& category)
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.prepare("SELECT * FROM AssetType WHERE category=:category");
+    query.bindValue(":category", category);
+    query.exec();
+    QList<std::tuple<uint32_t, QString>> assets;
+    while(query.next())
+        assets.push_back({query.value(0).toUInt(),  query.value(1).toString()});
+
+    return assets;
+}
+
 
 QList<std::tuple<uint32_t, QString>> SQLManager::getUsers(void)
 {
@@ -1641,6 +1654,25 @@ bool SQLManager::update201001(void) const
     return query.lastError().type() == QSqlError::NoError;
 }
 
+bool SQLManager::update203000(void) const
+{
+    QSqlQuery query = QSqlQuery(database);
+    query.exec("ALTER TABLE AssetType \
+                ADD category TEXT");
+
+    LOG_ERROR("%s", qPrintable(query.lastError().text()));
+
+    if(query.lastError().type() == QSqlError::NoError)
+    {
+        query.exec("UPDATE AssetType SET category = 'traditional' WHERE name != 'crypto'");
+        LOG_ERROR("%s", qPrintable(query.lastError().text()));
+        query.exec("UPDATE AssetType SET category = 'crypto' WHERE name = 'crypto'");
+        LOG_ERROR("%s", qPrintable(query.lastError().text()));        
+    }
+
+    return query.lastError().type() == QSqlError::NoError;
+}
+
 bool SQLManager::insertVersion(uint32_t version, QString remark) const
 {
     QSqlQuery query = QSqlQuery(database);
@@ -1790,7 +1822,13 @@ bool SQLManager::update(void) const
         if(updateVersion(202000, "2.02.000") == false) return false;
     }
 
-    return getVersion() == 202000;
+    if(version < 203000)
+    {
+        if(update203000() == false) return false;
+        if(updateVersion(203000, "2.03.000") == false) return false;
+    }
+
+    return getVersion() == 203000;
 }
 
 

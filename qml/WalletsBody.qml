@@ -5,6 +5,7 @@ import QtQuick.Controls 2.14
 import es.broker.components.material 1.0 as Material
 import es.broker.components 1.0 as Components
 import es.broker 1.0
+import es.filters 1.0
 import Astral 1.0
 
 Item
@@ -119,7 +120,7 @@ Item
     }
 
 
-ListView {
+/*ListView {
 
     id: tabs
     anchors.top: percentageBar.bottom
@@ -146,8 +147,53 @@ ListView {
 
     delegate: ATabButton
     {
-        onClicked: console.log(name)
+        onClicked: {
+            walletsFilterManager.filter("AssetType", name);
+        }
     }
+}*/
+
+Row
+{
+    id: tabs
+    anchors.top: percentageBar.bottom
+    anchors.topMargin: 5
+    anchors.left: walletsBody.left
+    anchors.leftMargin: 10
+    anchors.right: walletsBody.right
+    anchors.rightMargin: 10
+    spacing: 5
+
+    height: 100
+    width: 210
+
+    ATabButton
+    {
+        category: "AssetType"
+        text: "Traditional"
+        onClicked: {
+            walletsFilterManager.filter("AssetType", text);
+        }
+    }
+
+    ComboBox
+    {
+        id: assetCategory
+        model: ["Traditional" , "Crypto"]
+        popup.onClosed: {
+            walletsFilterManager.filter("AssetCategory", model[currentIndex]);
+        }
+    }
+
+    ComboBox
+    {
+        id: assetType
+        model: assetTypesModel
+        textRole: "name"
+        popup.onClosed: {
+            walletsFilterManager.filter("AssetType", assetTypesModel.getName(currentIndex));
+        }
+    }    
 }
 
 ScrollView

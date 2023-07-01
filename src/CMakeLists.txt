@@ -129,6 +129,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         WalletOperation.h
         Managers/SQLManager.cpp
         Managers/SQLManager.h
+        Managers/WalletsFilterBarManager.cpp
+        Managers/WalletsFilterBarManager.h
         Host.cpp
         Host.h
         Config.cpp
@@ -160,6 +162,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         IfExchanges/ExchangeFactory.cpp IfExchanges/ExchangeFactory.h IfExchanges/Importer.cpp IfExchanges/Importer.h
         IMarketData/Coingecko.cpp IMarketData/Coingecko.h 
         IMarketData/YFinance.cpp IMarketData/YFinance.h
+        Filters/SelectionMultipleFilter.h
+        Filters/SelectionMultipleFilter.cpp
         Validators/VDate.cpp Validators/VDate.h
         Validators/VOperation.cpp Validators/VOperation.h Notifications/NotificationManager.cpp Notifications/NotificationManager.h)
 

@@ -48,6 +48,7 @@ public:
     QList<std::tuple<uint32_t, QString, QString>> getExchanges(void);
     std::optional<std::tuple<uint32_t, QString, QString, QString>> getCoin(const QString& coin);
     QList<std::tuple<uint32_t, QString>> getAssetTypes(void);
+    QList<std::tuple<uint32_t, QString>> getAssetTypes(const QString& category);
     QList<std::tuple<uint32_t, QString>> getUsers(void);
     std::optional<std::vector<Deposit*>> getDeposits(void);
     std::optional<std::vector<Deposit*>> getDeposits(const uint32_t user);
@@ -112,6 +113,7 @@ public:
     bool update200000(void) const;
     bool update201000(void) const;
     bool update201001(void) const;
+    bool update203000(void) const;
 
 
     /*

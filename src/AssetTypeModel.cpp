@@ -41,6 +41,11 @@ void AssetTypeModel::add(AssetType *asset) {
     assets_.push_back(asset);
 }
 
+void AssetTypeModel::clear(void)
+{
+    assets_.clear();
+}
+
 int AssetTypeModel::getID(const int index)
 {
     return (*assets_.at(index)).id();

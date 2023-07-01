@@ -22,6 +22,7 @@
 #include "IfExchanges/Importer.h"
 #include "IMarketData/Coingecko.h"
 #include "Notifications/NotificationManager.h"
+#include "Managers/WalletsFilterBarManager.h"
 
 #include "logger.h"
 
@@ -34,7 +35,7 @@ void timeout(void)
 
 int main(int argc, char *argv[])
 {
-    QString version = "2.02.000";
+    QString version = "2.03.000";
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QQuickStyle::setStyle("Imagine");
     
@@ -52,6 +53,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<WalletsModel>("es.broker", 1, 0, "WalletsPercModel", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<BrokerManager>("es.broker", 1, 0, "BrokerManager", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<NotificationManager>("es.notifications", 1, 0, "NotificationManager", "Operation sholud not be created in QMl");
+    qmlRegisterUncreatableType<WalletsFilterBarManager>("es.filters", 1, 0, "WalletsFilterBarManager", "Operation sholud not be created in QMl");
     qmlRegisterUncreatableType<Importer>("es.broker", 1, 0, "Importer", "Importer sholud not be created in QMl");
     //qmlRegisterType(QUrl("qrc:Broker.qml"), "es.broker", 1, 0, "Broker");
     qmlRegisterType(QUrl("qrc:MaterialTextInput"), "es.broker.components.material", 1, 0, "MaterialTextInput");
@@ -86,6 +88,7 @@ int main(int argc, char *argv[])
     ExchangesModel exchangesModel;
     AssetTypeModel assetTypeModel;
     NotificationManager* notificationManager = NotificationManager::getInstance();
+    WalletsFilterBarManager* walletsFilterManager = WalletsFilterBarManager::getInstance();
 
     engine.rootContext()->setContextProperty("operationsModel", &operationsModel);
     engine.rootContext()->setContextProperty("walletsModel", &walletsModel);
@@ -96,6 +99,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("exchangesModel", &exchangesModel);
     engine.rootContext()->setContextProperty("assetTypesModel", &assetTypeModel);
     engine.rootContext()->setContextProperty("notificationManager", notificationManager);
+    engine.rootContext()->setContextProperty("walletsFilterManager", walletsFilterManager);
 
     BrokerManager* brokerManager = BrokerManager::getInstance(&operationsModel, &walletsModel, &walletsModelAll, &walletsPercModel, &coinsModel, &assetTypeModel, &exchangesModel);
     engine.rootContext()->setContextProperty("brokerManager", brokerManager);

@@ -11,10 +11,6 @@
 
 
 class WalletsModel : public QAbstractListModel{
-
-
-
-
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(QList<Wallet* > wallets READ wallets)

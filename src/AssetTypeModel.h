@@ -48,6 +48,9 @@ public:
 
     QList<AssetType*> assetTypes(void);
     void add(AssetType* asset);
+    void clear(void);
+    void updateLayout(void){emit layoutChanged();};
+
 public slots:
     int getID(const int index);
     QString getName(const int index);

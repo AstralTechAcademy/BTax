@@ -8,6 +8,7 @@
 #include "OperationsModel.h"
 #include "WalletsModel.h"
 #include "WalletsPercModel.h"
+#include "WalletsFilterBarManager.h"
 #include "CoinsModel.h"
 #include "ExchangesModel.h"
 #include "AssetTypeModel.h"
@@ -117,10 +118,16 @@ public slots:
     void setUserID(const QString& username);
     void setYear(const QString& year);
     void updateCurrentPrice(void);
-    std::optional<double>  getCurrentPrice(Coin* coin);
+    std::optional<double> getCurrentPrice(Coin* coin);
+
+    // From filter bars C++ classes
+    void updateAssetTypeModel(const QString& category);
+
 
 private:
     inline static BrokerManager *instance;
+
+    void filterAssetTypes(const QString& category);
 
 #ifdef GTEST
 public:
