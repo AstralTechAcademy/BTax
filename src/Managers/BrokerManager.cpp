@@ -26,6 +26,8 @@ BrokerManager::BrokerManager(const QObject* parent, OperationsModel*const operat
 
 
     connect(WalletsFilterBarManager::getInstance(), SIGNAL(assetCategorySelected(const QString&)), this ,SLOT(updateAssetTypeModel(const QString&)));
+    connect(WalletsFilterBarManager::getInstance(), SIGNAL(apply()), this ,SLOT(filterWallets()));
+
 }
 
 
@@ -705,5 +707,19 @@ void BrokerManager::updateAssetTypeModel(const QString& category)
     LOG_DEBUG("");
 
     filterAssetTypes(category);
+}
+
+void BrokerManager::filterWallets()
+{
+    LOG_DEBUG("");
+
+    auto assetType = WalletsFilterBarManager::getInstance()->getAssetTypes();
+
+    qDebug() << assetType.size();
+
+    //loadWalletsFromDB(userID, assetType);
+
+
+
 }
 

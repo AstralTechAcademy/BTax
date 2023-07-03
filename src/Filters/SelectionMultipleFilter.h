@@ -11,6 +11,7 @@ public:
 
 public:
     void update(QString element);
+    const QList<QString>& get() const noexcept;
 
 private:
     QList<QString> elements_;

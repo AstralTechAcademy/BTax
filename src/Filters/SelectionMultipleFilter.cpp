@@ -11,3 +11,5 @@ void SelectionMultipleFilter::update(QString element)
     
     LOG_DEBUG("%s %s %d", qPrintable(filterName_), qPrintable(element), elements_.size());
 }
+
+const QList<QString>& SelectionMultipleFilter::get() const noexcept {return elements_;}

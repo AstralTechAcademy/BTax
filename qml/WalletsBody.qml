@@ -167,15 +167,6 @@ Row
     height: 100
     width: 210
 
-    ATabButton
-    {
-        category: "AssetType"
-        text: "Traditional"
-        onClicked: {
-            walletsFilterManager.filter("AssetType", text);
-        }
-    }
-
     ComboBox
     {
         id: assetCategory
@@ -194,6 +185,14 @@ Row
             walletsFilterManager.filter("AssetType", assetTypesModel.getName(currentIndex));
         }
     }    
+
+    ATabButton
+    {
+        text: "Apply"
+        onClicked: {
+            walletsFilterManager.apply();
+        }
+    }
 }
 
 ScrollView
