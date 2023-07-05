@@ -20,7 +20,7 @@ void Wallet::print() const noexcept
                 walletID_, 
                 qPrintable(coinName_),
                 coin_->id(),
-                qPrintable(coin_->type()),
+                qPrintable(toString(coin_->type())),
                 qPrintable(user_),
                 amount_,
                 invested_,
@@ -53,9 +53,8 @@ const Coin* Wallet::getpCoin(void) const noexcept { return coin_;}
 
 const bool Wallet::isFiat(void) const noexcept
 {
-    return coin_->type() == "fiat";
+    return coin_->type() == EN_AssetType::FIAT;
 }
-
 
 void Wallet::setInvested(const double invested)
 {

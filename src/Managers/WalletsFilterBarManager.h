@@ -11,6 +11,7 @@
 #include <variant>
 #include "Filters/SelectionMultipleFilter.h"
 #include "WalletsModel.h"
+#include "Enumerations.h"
 
 class WalletsFilterBarManager : public QObject
 {
@@ -23,7 +24,7 @@ class WalletsFilterBarManager : public QObject
         return instance_;
     }
 
-    const QList<WalletsModel::AssetType> getAssetTypes() const noexcept;
+    const QList<EN_AssetType> getAssetTypes() const noexcept;
 
 public slots:
    // void filter(QString filterName, QDate value1, QDate value2);

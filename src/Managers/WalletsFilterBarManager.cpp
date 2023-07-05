@@ -23,29 +23,29 @@ void WalletsFilterBarManager::clean()
     assetCategoryFilter_.clear();
 }
 
-const QList<WalletsModel::AssetType> WalletsFilterBarManager::getAssetTypes() const noexcept 
+const QList<EN_AssetType> WalletsFilterBarManager::getAssetTypes() const noexcept 
 {
-    QList<WalletsModel::AssetType> selected;
+    QList<EN_AssetType> selected;
     auto assets = assetTypeFilter_.get();
 
     for(auto ass : assets)
     {
         if (ass == "debt")
-            selected.push_back(WalletsModel::AssetType::DEBT);
+            selected.push_back(EN_AssetType::DEBT);
         else if (ass == "crypto")
-            selected.push_back(WalletsModel::AssetType::CRYPTO);
+            selected.push_back(EN_AssetType::CRYPTO);
         else if (ass == "fund")
-            selected.push_back(WalletsModel::AssetType::FUND);
+            selected.push_back(EN_AssetType::FUND);
         else if (ass == "share")
-            selected.push_back(WalletsModel::AssetType::SHARE);
+            selected.push_back(EN_AssetType::SHARE);
         else if (ass == "real state")
-            selected.push_back(WalletsModel::AssetType::REAL_STATE);
+            selected.push_back(EN_AssetType::REAL_STATE);
         else if (ass == "fiat")
-            selected.push_back(WalletsModel::AssetType::FIAT);
+            selected.push_back(EN_AssetType::FIAT);
         else if (ass == "etf")
-            selected.push_back(WalletsModel::AssetType::ETF);
+            selected.push_back(EN_AssetType::ETF);
         else
-            LOG_ERROR("Asset type %s not found", qPrintable(ass));
+            LOG_ERROR("EN_AssetType type %s not found", qPrintable(ass));
     }
 
     return selected;

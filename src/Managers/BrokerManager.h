@@ -145,7 +145,7 @@ public:
 
     void loadOperationsFromDB(const uint32_t userID);
     void loadOperationsFromDB(const uint32_t userID, const uint32_t year);
-    void loadWalletsFromDB(const uint32_t userID, const QList<WalletsModel::AssetType> assetTypes = {WalletsModel::AssetType::ALL});
+    void loadWalletsFromDB(const uint32_t userID, const QList<EN_AssetType> assetTypes = {EN_AssetType::ALL});
     void loadCoinsFromDB(void);
     void loadExchangesFromDB(void);
     void loadAssetTypesFromDB(void);

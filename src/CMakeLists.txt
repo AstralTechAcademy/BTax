@@ -145,6 +145,8 @@ set(APP_SOURCES  Wallet.cpp Wallet.h
         Operation.h
         Deposit.cpp
         Deposit.h
+        Enumerations.h
+        Enumerations.cpp
         Utils.h
         Utils.cpp
         Statistics.cpp

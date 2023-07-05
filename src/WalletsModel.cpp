@@ -129,7 +129,7 @@ double WalletsModel::getTotalInvested2(void) const
 
     for(auto w : wallets_)
     {
-        if(w->getpCoin()->type() != "fiat")
+        if(!w->isFiat())
             invested += w->getInvested();
     }
 

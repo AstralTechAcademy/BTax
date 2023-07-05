@@ -631,9 +631,9 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(void)
             auto ws = getWalletOperations(QString::number(id));
             Wallet* wallet;
             if (ws == std::nullopt)
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), std::vector<const WalletOperation*>());
             else
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), ws.value());
 
             wallets.push_back(wallet);
         }
@@ -672,9 +672,9 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
             auto ws = getWalletOperations(QString::number(id));
             Wallet* wallet;
             if (ws == std::nullopt)
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), std::vector<const WalletOperation*>());
             else
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), ws.value());
 
             setWalletData(*wallet);
             wallets.push_back(wallet);
@@ -689,7 +689,7 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
     }
 }
 
-std::tuple<bool, std::vector<Wallet*>> SQLManager::filterWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types)
+std::tuple<bool, std::vector<Wallet*>> SQLManager::filterWallets(const uint32_t userID, const QList<EN_AssetType> types)
 {
     QSqlQuery query = QSqlQuery(database);
     auto filterTyes = in(types);
@@ -720,9 +720,9 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::filterWallets(const uint32_t 
             auto ws = getWalletOperations(QString::number(id));
             Wallet* wallet;
             if (ws == std::nullopt)
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), std::vector<const WalletOperation*>());
             else
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), ws.value());
 
             setWalletData(*wallet);
             wallets.push_back(wallet);
@@ -787,9 +787,9 @@ std::optional<Wallet> SQLManager::getWallets(const uint32_t userID, const QStrin
         auto ws = getWalletOperations(QString::number(id));
         Wallet* wallet;
         if (ws == std::nullopt)
-            wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+            wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), std::vector<const WalletOperation*>());
         else
-            wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+            wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), ws.value());
 
         setWalletData(*wallet);
         return *wallet;
@@ -878,9 +878,9 @@ std::optional<std::vector<Wallet*>> SQLManager::getNonCryptoWallets(const uint32
             auto ws = getWalletOperations(QString::number(id));
             Wallet* wallet;
             if (ws == std::nullopt)
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), std::vector<const WalletOperation*>());
             else
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), ws.value());
 
             setWalletData(*wallet);
             wallets.push_back(wallet);
@@ -921,9 +921,9 @@ std::optional<std::vector<Wallet*>> SQLManager::getCryptoWallets(const uint32_t 
             auto ws = getWalletOperations(QString::number(id));
             Wallet* wallet;
             if (ws == std::nullopt)
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), std::vector<const WalletOperation*>());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), std::vector<const WalletOperation*>());
             else
-                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, type), ws.value());
+                wallet = new Wallet(id, coinName, exchange, user, new Coin(coinID, coinName, color, toEN_AssetType(type)), ws.value());
 
             setWalletData(*wallet);
             wallets.push_back(wallet);
@@ -1381,7 +1381,7 @@ std::vector<WalletOperation*>  SQLManager::getLastNWalletOperation(int limit) co
 }
 
 
-QString SQLManager::in(const QList<WalletsModel::AssetType> assetTypes) const
+QString SQLManager::in(const QList<EN_AssetType> assetTypes) const
 {
 
     QStringList filter;
@@ -1389,27 +1389,27 @@ QString SQLManager::in(const QList<WalletsModel::AssetType> assetTypes) const
     {
         switch(assetType)
         {
-            case WalletsModel::AssetType::SHARE: 
+            case EN_AssetType::SHARE: 
                 filter.append("'stock'");
                 filter.append("'share'");
                 break;
-            case WalletsModel::AssetType::CRYPTO:
+            case EN_AssetType::CRYPTO:
                 filter.append("'crypto'");
                 break;
-            case WalletsModel::AssetType::DEBT:
+            case EN_AssetType::DEBT:
                 filter.append("'debt'");
                 break;                
-            case WalletsModel::AssetType::FUND:
+            case EN_AssetType::FUND:
                 filter.append("'fund'");
                 break;
-            case WalletsModel::AssetType::REAL_STATE:
+            case EN_AssetType::REAL_STATE:
                 filter.append("'real state'");
                 break;
-            case WalletsModel::AssetType::ETF:
+            case EN_AssetType::ETF:
                 filter.append("'etf'");
                 break;   
-            case WalletsModel::AssetType::ALL:
-            case WalletsModel::AssetType::FIAT:
+            case EN_AssetType::ALL:
+            case EN_AssetType::FIAT:
             default:
                 filter = {"'stock'","'fiat'","'share'","'debt'","'fund'","'crypto'","'etf'","'real state'"};
                 break;                                                          

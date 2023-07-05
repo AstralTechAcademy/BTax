@@ -135,12 +135,12 @@ int BrokerManager::newOperation(WalletOperation::OperationData data, std::vector
 
          // Calculate Total Available amount
         std::optional<std::vector<WalletOperation*>> ws;
-        if(data.type == "Transferencia" or coin.value()->type() == "fiat") 
+        if(data.type == "Transferencia" or coin.value()->type() == EN_AssetType::FIAT) 
             ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()), wallet1->getExchange());   //Se comprueba que haya saldo suficiente para la compra antes de proceder
         else
             ws = getAvailableBalancesOrdered(QString::number(coin.value()->id()));
 
-         if(coin.value()->type() == "fiat")
+         if(coin.value()->type() == EN_AssetType::FIAT)
         {          
             if (ws == std::nullopt)
             {
@@ -265,7 +265,7 @@ bool BrokerManager::newAsset(const QString& type, const QString& name, const QSt
                               [&](Coin* coin){return coin->name() == name;});
     if(exist != assets.end())
     {
-        LOG_WARN("The asset %s already exist",  qPrintable(name));
+        LOG_WARN("The EN_AssetType %s already exist",  qPrintable(name));
         return false;
     }
 
@@ -419,7 +419,7 @@ void BrokerManager::loadCoinsFromDB(void)
     coinsModel_->clear();
     auto coins = SQLManager::GetInstance()->getCoins();
     for(auto c : coins)
-        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c), std::get<3>(c)));
+        coinsModel_->add(new Coin(std::get<0>(c), std::get<1>(c), std::get<2>(c), toEN_AssetType(std::get<3>(c))));
 }
 
 void BrokerManager::loadExchangesFromDB(void)
@@ -446,7 +446,7 @@ void BrokerManager::filterAssetTypes(const QString& category)
     assetTypesModel_->updateLayout();
 }
 
-void BrokerManager::loadWalletsFromDB(const uint32_t userID, const QList<WalletsModel::AssetType> assetTypes)
+void BrokerManager::loadWalletsFromDB(const uint32_t userID, const QList<EN_AssetType> assetTypes)
 {
     walletsModel_->clear();
     walletsModelAll_->clear();
@@ -495,7 +495,7 @@ void BrokerManager::groupCoinBySymbol(void)
     {
         auto coin = findCoin(walletsModel_->getCoin(index));
 
-        if(coin != std::nullopt && coin.value()->type() != "fiat")
+        if(coin != std::nullopt && coin.value()->type() != EN_AssetType::FIAT)
         {
             bool exist = false;
             auto index2 = 0;
@@ -584,7 +584,7 @@ std::optional<Coin*> BrokerManager::findCoin(const QString& coin)
     if(res == std::nullopt)
         return std::nullopt;
     else
-        return new Coin(std::get<0>(res.value()), std::get<1>(res.value()), std::get<2>(res.value()), std::get<3>(res.value()));
+        return new Coin(std::get<0>(res.value()), std::get<1>(res.value()), std::get<2>(res.value()), toEN_AssetType(std::get<3>(res.value())));
 }
 
 void BrokerManager::updateCurrentPrice(void)
