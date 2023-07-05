@@ -10,6 +10,7 @@ public:
     SelectionMultipleFilter(QString name) : filterName_(name){};
 
 public:
+    void clear();
     void update(QString element);
     const QList<QString>& get() const noexcept;
 

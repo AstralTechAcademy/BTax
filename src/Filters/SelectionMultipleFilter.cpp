@@ -13,3 +13,4 @@ void SelectionMultipleFilter::update(QString element)
 }
 
 const QList<QString>& SelectionMultipleFilter::get() const noexcept {return elements_;}
+void SelectionMultipleFilter::clear() {elements_.clear();}

@@ -451,7 +451,7 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID, const QList<Wallets
     walletsModel_->clear();
     walletsModelAll_->clear();
     
-    auto result = SQLManager::GetInstance()->getWallets(userID, assetTypes);
+    auto result = SQLManager::GetInstance()->filterWallets(userID, assetTypes);
     if(std::get<0>(result) == true)
     {
         auto wallets = std::get<1>(result);
@@ -717,7 +717,7 @@ void BrokerManager::filterWallets()
 
     qDebug() << assetType.size();
 
-    //loadWalletsFromDB(userID, assetType);
+    loadWalletsFromDB(userID, assetType);
 
 
 

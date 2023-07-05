@@ -689,7 +689,7 @@ std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t use
     }
 }
 
-std::tuple<bool, std::vector<Wallet*>> SQLManager::getWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types)
+std::tuple<bool, std::vector<Wallet*>> SQLManager::filterWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types)
 {
     QSqlQuery query = QSqlQuery(database);
     auto filterTyes = in(types);
@@ -1409,11 +1409,11 @@ QString SQLManager::in(const QList<WalletsModel::AssetType> assetTypes) const
                 filter.append("'etf'");
                 break;   
             case WalletsModel::AssetType::ALL:
+            case WalletsModel::AssetType::FIAT:
             default:
                 filter = {"'stock'","'fiat'","'share'","'debt'","'fund'","'crypto'","'etf'","'real state'"};
                 break;                                                          
         }
-        filter.append("'fiat'");
     }
 
     filter.removeDuplicates();

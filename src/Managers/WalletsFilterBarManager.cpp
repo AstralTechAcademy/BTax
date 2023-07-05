@@ -8,6 +8,7 @@ void WalletsFilterBarManager::filter(QString filterName, QString value)
        
     if(filterName == "AssetCategory")
     {
+        assetTypeFilter_.clear();
         assetCategoryFilter_.update(value);
         emit assetCategorySelected(value);
     }
@@ -16,18 +17,14 @@ void WalletsFilterBarManager::filter(QString filterName, QString value)
 
 }
 
+void WalletsFilterBarManager::clean()
+{
+    assetTypeFilter_.clear();
+    assetCategoryFilter_.clear();
+}
+
 const QList<WalletsModel::AssetType> WalletsFilterBarManager::getAssetTypes() const noexcept 
 {
-   /*     enum class AssetType {
-        ALL = 0,
-        CRYPTO,
-        DEBT,
-        ETF,
-        FIAT,
-        FUND,
-        REAL_STATE,
-        SHARE
-    };  */
     QList<WalletsModel::AssetType> selected;
     auto assets = assetTypeFilter_.get();
 
@@ -50,10 +47,6 @@ const QList<WalletsModel::AssetType> WalletsFilterBarManager::getAssetTypes() co
         else
             LOG_ERROR("Asset type %s not found", qPrintable(ass));
     }
-
-
-
-
 
     return selected;
 }

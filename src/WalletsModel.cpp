@@ -127,23 +127,9 @@ double WalletsModel::getTotalInvested2(void) const
 {
     double invested = 0.0 ;
 
-    auto wsNon = SQLManager::GetInstance()->getNonCryptoWallets(BrokerManager::userID);
-    auto wsCry = SQLManager::GetInstance()->getCryptoWallets(BrokerManager::userID);
-
-    if(wsNon == std::nullopt and wsCry == std::nullopt)
-        return 0.0;
-
-    if(wsNon != std::nullopt)
+    for(auto w : wallets_)
     {
-        auto wallets = wsNon.value();
-        for(auto w : wallets)
-            invested += w->getInvested();
-    }
-
-    if(wsCry != std::nullopt)
-    {
-        auto wallets = wsCry.value();
-        for(auto w : wallets)
+        if(w->getpCoin()->type() != "fiat")
             invested += w->getInvested();
     }
 

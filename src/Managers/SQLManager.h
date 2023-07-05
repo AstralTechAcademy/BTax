@@ -55,7 +55,7 @@ public:
     std::tuple<bool, std::vector<Deposit*>> getDeposits(const QString& user, const QString& exchange) ;
     std::tuple<bool, std::vector<Wallet*>> getWallets(void);
     std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID );
-    std::tuple<bool, std::vector<Wallet*>> getWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types);
+    std::tuple<bool, std::vector<Wallet*>> filterWallets(const uint32_t userID, const QList<WalletsModel::AssetType> types = {WalletsModel::AssetType::ALL});
     std::optional<Wallet> getWallets(const uint32_t userID, const QString& coin, const QString exchange);
     std::optional<std::vector<WalletOperation*>>  getWalletsOps(const uint32_t userID, const QString& coin, const QString exchange = "");
     std::optional<std::vector<Wallet*>> getNonCryptoWallets(const uint32_t userID);

@@ -14,13 +14,27 @@ Item
     id: walletsBody
     anchors.fill: parent
 
-    Components.Data
+    Text
     {
-        id: noNcryptoInvested
+        id: portfolio
+        text: "Portfolio"
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.left: walletsBody.left
-        anchors.leftMargin: 40
+        anchors.leftMargin: 20
+        font.bold: true
+        font.pixelSize : 30
+        opacity: 0.5
+
+    }
+
+    Components.Data
+    {
+        id: noNcryptoInvested
+        anchors.top: portfolio.bottom
+        anchors.topMargin: 20
+        anchors.left: walletsBody.left
+        anchors.leftMargin: 50
         width: 80
         visible: true
         title: "Non Crypto Invested"
@@ -31,8 +45,8 @@ Item
     Components.Data
     {
         id: cryptoInvested
-        anchors.top: parent.top
-        anchors.topMargin: 20
+        anchors.top: noNcryptoInvested.top
+        anchors.topMargin: 0
         anchors.left: noNcryptoInvested.right
         anchors.leftMargin: 40
         width: 80
@@ -45,8 +59,8 @@ Item
     Components.Data
     {
         id: totalInvested
-        anchors.top: parent.top
-        anchors.topMargin: 20
+        anchors.top: noNcryptoInvested.top
+        anchors.topMargin: 0
         anchors.left: cryptoInvested.right
         anchors.leftMargin: 60
         width: 80
@@ -86,9 +100,9 @@ Item
     {
         id: percentageBar
         anchors.left: parent.left
-        anchors.leftMargin: 10
+        anchors.leftMargin: 30
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: 30
         anchors.top: totalInvested.bottom
         anchors.topMargin: 50
         height: 20
@@ -104,6 +118,8 @@ Item
                     height: percentageBar.height - 5
                     width: portfolioPercentage * percentageBar.width / 100
                     color: coinColor
+
+                    Component.onCompleted: console.log("PortPerc: " + portfolioPercentage + " " + percentageBar.width)
 
                     Text
                     {
@@ -157,9 +173,9 @@ Row
 {
     id: tabs
     anchors.top: percentageBar.bottom
-    anchors.topMargin: 5
+    anchors.topMargin: 30
     anchors.left: walletsBody.left
-    anchors.leftMargin: 10
+    anchors.leftMargin: 30
     anchors.right: walletsBody.right
     anchors.rightMargin: 10
     spacing: 5
@@ -186,11 +202,19 @@ Row
         }
     }    
 
-    ATabButton
+    Button
     {
         text: "Apply"
         onClicked: {
             walletsFilterManager.apply();
+        }
+    }
+
+    Button
+    {
+        text: "Clean"
+        onClicked: {
+            walletsFilterManager.clean();
         }
     }
 }
@@ -199,10 +223,10 @@ ScrollView
 {
     anchors.top: tabs.bottom
     anchors.topMargin: 10
-    anchors.left: walletsBody.left
-    anchors.leftMargin: 10
-    anchors.right: walletsBody.right
-    anchors.rightMargin: 10
+    anchors.left: percentageBar.left
+    anchors.leftMargin: 0
+    anchors.right: percentageBar.right
+    anchors.rightMargin: 0
     anchors.bottom: parent.bottom
     anchors.bottomMargin: 10
     clip: true
@@ -220,9 +244,9 @@ ScrollView
     {
         id: wallets
         anchors.left: parent.left
-        anchors.leftMargin: 50
+        anchors.leftMargin: 5
         anchors.right: parent.right
-        anchors.rightMargin: 50
+        anchors.rightMargin: 5
 
         Repeater
         {
