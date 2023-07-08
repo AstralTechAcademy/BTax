@@ -202,6 +202,12 @@ Row
         }
     }    
 
+    ASelectionCombo
+    {
+        id: assetType1
+        z:6
+    }
+
     Button
     {
         text: "Apply"

@@ -200,7 +200,7 @@ if(${OS_DETAILS} STREQUAL macOS)
     if(${CMAKE_BUILD_TYPE} MATCHES Release)
         set_target_properties(Broker PROPERTIES
                                 RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/release/${OS_DETAILS}
-                                MACOSX_BUNDLE TRUE)
+                                MACOSX_BUNDLE FALSE)
     else()
         set_target_properties(Broker PROPERTIES
                                 RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_PATH}/debug/${OS_DETAILS}
