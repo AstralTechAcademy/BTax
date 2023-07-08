@@ -94,6 +94,8 @@ public:
     std::vector<WalletOperation*> getLastNWalletOperation(int limit = 1) const;
     int newOperation(const QString& exchange, const std::shared_ptr<Operation> operation, std::vector<WalletOperation>& wOpsModified);
     int setWallets(const QString& exchange, std::shared_ptr<Operation> operation);
+    std::optional<Coin*> findPreparedCoin(QSqlQuery& query, const QString& coin);
+
 signals:
     void depositCompleted(void);
 

@@ -88,6 +88,11 @@ public:
     QString updateDateTimeUTCFromQTFormat(QString table,QString id, QDateTime time, QString exchange);
 
 
+QSqlQuery& getPreparedQueryCoin(const QString& coin);
+std::optional<std::tuple<uint32_t, QString, QString, QString>>  processPreparedQuery(QSqlQuery& query, const QString& coin);
+
+
+
     /*
      * Create database and tables functions
      */
@@ -128,6 +133,7 @@ private:
     SQLManager() {};
     
     static SQLManager* instance_;
+    static QSqlQuery mQuery;
     std::tuple<bool, std::vector<Operation*>> processGetOperations(QSqlQuery& query);
     QString query_view_operations = "SELECT OP.date, OP.type, OP.wallet1, W1.exchange, C1.name, OP.pair1Amount, OP.pair1AmountFiat,"
                                     "    OP.wallet2, W2.exchange, C2.name, OP.pair2Amount, OP.pair2AmountFiat,"

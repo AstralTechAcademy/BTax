@@ -454,8 +454,11 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID)
     //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
     walletsModelAll_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 
+    LOG_DEBUG("");
     groupCoinBySymbol();
+    LOG_DEBUG("");
     setCoinPtrInWallets();
+    LOG_DEBUG("");
 }
 
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
@@ -476,9 +479,10 @@ void BrokerManager::groupCoinBySymbol(void)
 {
     walletsModelPerc_->clear();
     auto index = 0;
+    auto query = SQLManager::GetInstance()->getPreparedQueryCoin(walletsModel_->getCoin(index));
     for(index = 0; index <  walletsModel_->count() ; index++ )
     {
-        auto coin = findCoin(walletsModel_->getCoin(index));
+        auto coin = findPreparedCoin(query, walletsModel_->getCoin(index));
 
         if(coin != std::nullopt && coin.value()->type() != "fiat")
         {
@@ -565,6 +569,18 @@ std::optional<Coin*> BrokerManager::findCoin(const QString& coin)
 {
 
     auto res = SQLManager::GetInstance()->getCoin(coin);
+
+
+    if(res == std::nullopt)
+        return std::nullopt;
+    else
+        return new Coin(std::get<0>(res.value()), std::get<1>(res.value()), std::get<2>(res.value()), std::get<3>(res.value()));
+}
+
+std::optional<Coin*> BrokerManager::findPreparedCoin(QSqlQuery& query, const QString& coin)
+{
+
+    auto res = SQLManager::GetInstance()->processPreparedQuery(query, coin);
 
     if(res == std::nullopt)
         return std::nullopt;

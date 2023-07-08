@@ -11,6 +11,7 @@ QSqlDatabase SQLManager::database = QSqlDatabase();
 QString SQLManager::server = "None";
 QString SQLManager::databaseName = "None";
 SQLManager* SQLManager::instance_ = nullptr;
+QSqlQuery SQLManager::mQuery = QSqlQuery();
 
 
 SQLManager* SQLManager::GetInstance(void)
@@ -945,6 +946,7 @@ QList<std::tuple<uint32_t, QString, QString>> SQLManager::getExchanges(void)
     QList<std::tuple<uint32_t, QString, QString>> exchanges;
     while(query.next())
     {
+        LOG_DEBUG("");
         exchanges.push_back({query.value(0).toUInt(),  query.value(1).toString(), query.value(2).toString()});
     }
 
@@ -959,10 +961,30 @@ std::optional<std::tuple<uint32_t, QString, QString, QString>> SQLManager::getCo
     query.exec();
     if(query.size() == 0)
         return std::nullopt;
-
+    LOG_DEBUG("");
     while(query.next())
         return std::tuple(query.value(0).toUInt(),  query.value(1).toString(), query.value(3).toString(), query.value(2).toString());
 }
+
+QSqlQuery& SQLManager::getPreparedQueryCoin(const QString& coin)
+{
+    mQuery = QSqlQuery(database);
+    mQuery.prepare("SELECT id, name, type, color FROM Coins WHERE name=:coin");
+    return mQuery;
+}
+
+std::optional<std::tuple<uint32_t, QString, QString, QString>> SQLManager::processPreparedQuery(QSqlQuery& query, const QString& coin)
+{
+    query.bindValue(":coin", coin);
+    query.exec();
+    if(query.size() == 0)
+        return std::nullopt;
+      LOG_DEBUG("%s", __FUNCTION__);
+    while(query.next())
+        return std::tuple(query.value(0).toUInt(),  query.value(1).toString(), query.value(3).toString(), query.value(2).toString());
+}
+
+
 
 QList<std::tuple<uint32_t, QString>> SQLManager::getAssetTypes(void)
 {
