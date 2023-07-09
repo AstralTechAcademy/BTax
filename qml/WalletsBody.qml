@@ -179,6 +179,7 @@ Row
     anchors.right: walletsBody.right
     anchors.rightMargin: 10
     spacing: 5
+    z:2
 
     height: 100
     width: 210
@@ -205,7 +206,9 @@ Row
     ASelectionCombo
     {
         id: assetType1
-        z:6
+        z:2
+        model: assetTypesModel
+        onClicked: name => console.log(name)
     }
 
     Button
@@ -236,6 +239,7 @@ ScrollView
     anchors.bottom: parent.bottom
     anchors.bottomMargin: 10
     clip: true
+    z:1
 
     Connections
     {
