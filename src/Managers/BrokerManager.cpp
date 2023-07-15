@@ -463,14 +463,24 @@ void BrokerManager::loadWalletsFromDB(const uint32_t userID, const QList<EN_Asse
             }
             walletsModelAll_->add(w);
         }
+
+        walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
+        //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
+        walletsModelAll_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
+
+        groupCoinBySymbol();
+        setCoinPtrInWallets();
+
+        emit walletsFound();
+    }
+    else
+    {
+        emit noWalletsFound();
     }
 
-    walletsModel_->orderBy(WalletsModel::Attribute::PORTFOLIO, WalletsModel::Order::ASC);
-    //walletsModel_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
-    walletsModelAll_->orderBy(WalletsModel::Attribute::TYPE, WalletsModel::Order::FIAT_FIRST);
 
-    groupCoinBySymbol();
-    setCoinPtrInWallets();
+
+    walletsModel_->updateLayout();
 }
 
 void BrokerManager::loadDepositsFromDB(const uint32_t userID)
@@ -711,7 +721,7 @@ void BrokerManager::updateAssetTypeModel(const QString& category)
 
 void BrokerManager::filterWallets()
 {
-    LOG_DEBUG("");
+    LOG_DEBUG("called");
 
     auto assetType = WalletsFilterBarManager::getInstance()->getAssetTypes();
 

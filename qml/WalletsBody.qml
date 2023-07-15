@@ -14,6 +14,8 @@ Item
     id: walletsBody
     anchors.fill: parent
 
+    property bool walletsFound_: false
+
     Text
     {
         id: portfolio
@@ -228,8 +230,18 @@ Row
     }
 }
 
+Text
+{
+    anchors.top: tabs.bottom
+    anchors.topMargin: 10
+    anchors.horizontalCenter: walletsBody.horizontalCenter
+    visible: walletsFound_
+    text: "No wallets found"
+}
+
 ScrollView
 {
+    visible: walletsFound_
     anchors.top: tabs.bottom
     anchors.topMargin: 10
     anchors.left: percentageBar.left
@@ -240,15 +252,6 @@ ScrollView
     anchors.bottomMargin: 10
     clip: true
     z:1
-
-    Connections
-    {
-        target: brokerManager
-
-       function onDepositCompleted() {
-            console.log("Deposit done")
-       }
-    }
 
     Column
     {
@@ -268,6 +271,25 @@ ScrollView
                 width: wallets.width
             }
         }
+    }
+}
+
+Connections
+{
+    target: brokerManager
+
+    function onDepositCompleted() {
+        console.log("Deposit done")
+    }
+
+    function onNoWalletsFound()
+    {
+        walletsFound_ = false
+    }
+
+    function onWalletsFound()
+    {
+        walletsFound_ = true
     }
 }
 

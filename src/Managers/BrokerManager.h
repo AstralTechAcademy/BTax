@@ -97,6 +97,8 @@ public:
     int setWallets(const QString& exchange, std::shared_ptr<Operation> operation);
 signals:
     void depositCompleted(void);
+    void noWalletsFound(void);
+    void walletsFound(void);
 
 
 
