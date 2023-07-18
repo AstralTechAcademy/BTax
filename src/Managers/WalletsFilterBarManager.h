@@ -29,10 +29,12 @@ class WalletsFilterBarManager : public QObject
 public slots:
    // void filter(QString filterName, QDate value1, QDate value2);
     void filter(QString filterName, QString value);
+    void remove(QString filterName, QString value);
     void clean();
     
 signals:
     void apply();
+    void sClean();
     void assetCategorySelected(const QString& category);
 
 private:

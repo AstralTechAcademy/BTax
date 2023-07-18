@@ -12,15 +12,19 @@ void WalletsFilterBarManager::filter(QString filterName, QString value)
         assetCategoryFilter_.update(value);
         emit assetCategorySelected(value);
     }
-        
-    
+}
 
+void WalletsFilterBarManager::remove(QString filterName, QString value)
+{
+    if(filterName == "AssetType")
+        assetTypeFilter_.remove(value);
 }
 
 void WalletsFilterBarManager::clean()
 {
     assetTypeFilter_.clear();
     assetCategoryFilter_.clear();
+    emit sClean();
 }
 
 const QList<EN_AssetType> WalletsFilterBarManager::getAssetTypes() const noexcept 

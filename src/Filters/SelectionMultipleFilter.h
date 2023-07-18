@@ -12,6 +12,7 @@ public:
 public:
     void clear();
     void update(QString element);
+    void remove(QString element);
     const QList<QString>& get() const noexcept;
 
 private:

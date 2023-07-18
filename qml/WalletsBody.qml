@@ -210,7 +210,8 @@ Row
         id: assetType1
         z:2
         model: assetTypesModel
-        onClicked: name => console.log(name)
+        onClicked: name => walletsFilterManager.filter("AssetType", name);
+        onRemoved: name => walletsFilterManager.remove("AssetType", name);
     }
 
     Button

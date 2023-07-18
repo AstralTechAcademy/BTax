@@ -125,6 +125,7 @@ public slots:
     // From filter bars C++ classes
     void updateAssetTypeModel(const QString& category);
     void filterWallets();
+    void clean();
 
 
 
